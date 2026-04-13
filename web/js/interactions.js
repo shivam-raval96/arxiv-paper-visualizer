@@ -101,7 +101,11 @@ const Interactions = (() => {
     Canvas.render();
   }
 
-  function _onMouseLeave() {
+  function _onMouseLeave(e) {
+    // If the pointer moved onto the tooltip div, keep it visible so
+    // the user can click the arXiv link inside it.
+    const tt = document.getElementById('tooltip');
+    if (tt && (e.relatedTarget === tt || tt.contains(e.relatedTarget))) return;
     APP.hoveredPaper = null;
     UI.hideTooltip();
     Canvas.render();
