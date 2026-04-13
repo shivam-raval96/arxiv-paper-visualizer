@@ -31,7 +31,10 @@ const Canvas = (() => {
     ctx = canvas.getContext('2d');
 
     _resize();
-    window.addEventListener('resize', _resize);
+
+    // ResizeObserver fires whenever the container changes size —
+    // covers window resize AND the detail panel sliding in/out.
+    new ResizeObserver(_resize).observe(document.getElementById('canvas-container'));
 
     _buildScales();
     _buildLegend();
@@ -39,12 +42,14 @@ const Canvas = (() => {
 
   function _resize() {
     const container = document.getElementById('canvas-container');
-    width  = container.clientWidth;
-    height = container.clientHeight;
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    if (w === width && h === height) return; // no change, skip
+    width  = w;
+    height = h;
     canvas.width  = width;
     canvas.height = height;
 
-    // Sync SVG overlay size
     const svg = document.getElementById('lasso-overlay');
     svg.setAttribute('width', width);
     svg.setAttribute('height', height);
