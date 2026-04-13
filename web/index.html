@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>arXiv Paper Visualizer</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Header Controls -->
+  <header id="header">
+    <div id="header-left">
+      <h1 id="app-title">arXiv Paper Visualizer</h1>
+      <div id="view-toggle">
+        <button class="view-btn active" data-view="daily">Daily</button>
+        <button class="view-btn" data-view="saved">Saved <span id="saved-count-badge">0</span></button>
+        <button class="view-btn" data-view="search">Search Results</button>
+      </div>
+    </div>
+    <div id="header-right">
+      <div id="date-filter">
+        <label for="date-start">From:</label>
+        <input type="date" id="date-start" />
+        <label for="date-end">To:</label>
+        <input type="date" id="date-end" />
+      </div>
+      <div id="category-filter">
+        <button id="category-dropdown-btn" class="filter-btn">Categories <span class="arrow">▾</span></button>
+        <div id="category-dropdown" class="dropdown hidden">
+          <label><input type="checkbox" value="cs.AI" /> cs.AI</label>
+          <label><input type="checkbox" value="cs.CV" /> cs.CV</label>
+          <label><input type="checkbox" value="cs.LG" /> cs.LG</label>
+          <label><input type="checkbox" value="cs.NLP" /> cs.NLP</label>
+          <label><input type="checkbox" value="stat.ML" /> stat.ML</label>
+          <label><input type="checkbox" value="math.ST" /> math.ST</label>
+          <hr />
+          <button id="clear-categories">Clear</button>
+        </div>
+      </div>
+      <div id="author-filter">
+        <input type="text" id="author-input" placeholder="Filter by author..." />
+      </div>
+      <button id="reset-view-btn" class="icon-btn" title="Reset View">⊕</button>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div id="main-layout">
+    <!-- Canvas Area -->
+    <div id="canvas-container">
+      <canvas id="main-canvas"></canvas>
+      <svg id="lasso-overlay"></svg>
+
+      <!-- Toolbar overlay -->
+      <div id="toolbar">
+        <button id="lasso-btn" class="tool-btn" title="Lasso Select (L)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+            <path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4"/>
+          </svg>
+          Lasso
+        </button>
+        <div id="lasso-mode-selector" class="hidden">
+          <button class="lasso-mode-btn active" data-mode="replace" title="Replace selection">Replace</button>
+          <button class="lasso-mode-btn" data-mode="add" title="Add to selection">+ Add</button>
+          <button class="lasso-mode-btn" data-mode="subtract" title="Remove from selection">- Remove</button>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div id="legend">
+        <div class="legend-title">Categories</div>
+        <div id="legend-items"></div>
+      </div>
+
+      <!-- Tooltip -->
+      <div id="tooltip" class="hidden"></div>
+
+      <!-- Loading overlay -->
+      <div id="loading-overlay">
+        <div id="loading-spinner"></div>
+        <div id="loading-text">Loading papers...</div>
+      </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <aside id="detail-panel" class="panel hidden">
+      <button id="close-detail" class="close-btn" aria-label="Close detail panel">×</button>
+      <div id="detail-content">
+        <div id="detail-category-badge"></div>
+        <h2 id="detail-title"></h2>
+        <div id="detail-authors"></div>
+        <div id="detail-date"></div>
+        <div id="detail-abstract-container">
+          <h3>Abstract</h3>
+          <p id="detail-abstract"></p>
+        </div>
+        <div id="detail-actions">
+          <button id="detail-save-btn" class="action-btn primary">Save Paper</button>
+          <a id="detail-arxiv-link" href="#" target="_blank" rel="noopener" class="action-btn secondary">Open on arXiv</a>
+          <button id="detail-copy-btn" class="action-btn secondary">Copy arXiv ID</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Saved Sidebar -->
+    <aside id="saved-sidebar" class="panel hidden">
+      <div id="saved-header">
+        <h2>Saved Papers <span id="saved-sidebar-count">0</span></h2>
+        <div id="saved-controls">
+          <input type="text" id="saved-search-input" placeholder="Search saved..." />
+          <div id="saved-actions">
+            <button id="export-saved-btn" class="action-btn secondary small">Export JSON</button>
+            <button id="import-saved-btn" class="action-btn secondary small">Import JSON</button>
+            <input type="file" id="import-file-input" accept=".json" class="hidden" />
+            <button id="clear-saved-btn" class="action-btn danger small">Clear All</button>
+          </div>
+        </div>
+      </div>
+      <div id="saved-list"></div>
+    </aside>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div id="bottom-bar">
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="Search papers by title, abstract, or author..." />
+      <button id="search-btn" class="action-btn primary">Search</button>
+      <button id="clear-search-btn" class="action-btn secondary hidden">Clear</button>
+    </div>
+    <div id="selection-info">
+      <span id="selection-count">0 papers visible</span>
+      <button id="add-selection-btn" class="action-btn primary hidden">Add Selected to Saved</button>
+      <button id="deselect-btn" class="action-btn secondary hidden">Deselect All</button>
+    </div>
+  </div>
+
+  <!-- Scripts (order matters for dependencies) -->
+  <script src="js/storage.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/canvas.js"></script>
+  <script src="js/lasso.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/interactions.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

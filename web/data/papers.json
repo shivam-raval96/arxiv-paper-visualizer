@@ -1,0 +1,1590 @@
+{
+  "date": "2025-04-13",
+  "generated_at": "2025-04-13T08:45:00Z",
+  "papers": [
+    {
+      "arxiv_id": "2504.10036",
+      "title": "Knowledge Distillation for Model Compression",
+      "authors": [
+        "Mia Young",
+        "Grace Wilson"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        1.8484,
+        -5.1177
+      ],
+      "relevance_score": 0.884
+    },
+    {
+      "arxiv_id": "2504.10016",
+      "title": "Diffusion Models for High-Resolution Image Synthesis",
+      "authors": [
+        "Rosa Jones",
+        "Sam Young",
+        "Paul Davis"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -3.8544,
+        5.4276
+      ],
+      "relevance_score": 0.923
+    },
+    {
+      "arxiv_id": "2504.10089",
+      "title": "Nonparametric Regression with Irregular Designs",
+      "authors": [
+        "Rosa Taylor",
+        "Carol Thomas",
+        "Alice Wilson",
+        "Rosa Brown",
+        "Olivia Taylor"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -0.702,
+        -3.0703
+      ],
+      "relevance_score": 0.834
+    },
+    {
+      "arxiv_id": "2504.10024",
+      "title": "Open-Vocabulary Object Detection at Scale",
+      "authors": [
+        "Henry Wilson",
+        "Mia Jones",
+        "Jack White",
+        "Karen Williams"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -3.1941,
+        3.1495
+      ],
+      "relevance_score": 0.783
+    },
+    {
+      "arxiv_id": "2504.10054",
+      "title": "Commonsense Reasoning in Language Models",
+      "authors": [
+        "Jack Robinson",
+        "David Young"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -3.6658,
+        -4.2007
+      ],
+      "relevance_score": 0.739
+    },
+    {
+      "arxiv_id": "2504.10011",
+      "title": "Constitutional AI: Harmlessness from AI Feedback",
+      "authors": [
+        "Tara Anderson",
+        "Paul Smith"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        5.699,
+        5.7357
+      ],
+      "relevance_score": 0.972
+    },
+    {
+      "arxiv_id": "2504.10032",
+      "title": "Federated Learning with Differential Privacy Guarantees",
+      "authors": [
+        "Henry Garcia",
+        "Frank Jackson",
+        "Alice Garcia"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        2.9911,
+        -4.8834
+      ],
+      "relevance_score": 0.913
+    },
+    {
+      "arxiv_id": "2504.10048",
+      "title": "Document Understanding with Long-Context Transformers",
+      "authors": [
+        "Olivia Jones",
+        "Tara Thompson",
+        "Alice Thomas"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        -3.5699,
+        -3.6943
+      ],
+      "relevance_score": 0.826
+    },
+    {
+      "arxiv_id": "2504.10084",
+      "title": "Random Matrix Theory for High-Dimensional Data Analysis",
+      "authors": [
+        "Liam Young",
+        "Jack Jackson",
+        "Iris White",
+        "Jack Miller",
+        "Mia Harris"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -1.3349,
+        -5.6848
+      ],
+      "relevance_score": 0.695
+    },
+    {
+      "arxiv_id": "2504.10040",
+      "title": "Linear Attention Mechanisms for Efficient Transformers",
+      "authors": [
+        "Carol Martinez",
+        "Quinn Robinson",
+        "Karen Williams"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        2.8945,
+        -7.1726
+      ],
+      "relevance_score": 0.869
+    },
+    {
+      "arxiv_id": "2504.10077",
+      "title": "Concentration Inequalities for Dependent Random Variables",
+      "authors": [
+        "Grace Davis",
+        "Sam Thomas",
+        "Henry Jackson",
+        "Bob Anderson"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -0.8978,
+        -6.261
+      ],
+      "relevance_score": 0.882
+    },
+    {
+      "arxiv_id": "2504.10018",
+      "title": "Video Understanding with Temporal Attention Mechanisms",
+      "authors": [
+        "Iris White",
+        "Henry Williams",
+        "Olivia Thompson"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -4.696,
+        3.3385
+      ],
+      "relevance_score": 0.62
+    },
+    {
+      "arxiv_id": "2504.10062",
+      "title": "Bayesian Deep Learning for Uncertainty Quantification",
+      "authors": [
+        "Paul Brown",
+        "Alice Young",
+        "Jack Harris"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        1.5178,
+        1.863
+      ],
+      "relevance_score": 0.776
+    },
+    {
+      "arxiv_id": "2504.10074",
+      "title": "Energy-Based Models with Contrastive Divergence",
+      "authors": [
+        "Eve Harris",
+        "Jack Martin"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        0.8466,
+        0.9644
+      ],
+      "relevance_score": 0.766
+    },
+    {
+      "arxiv_id": "2504.10066",
+      "title": "Probabilistic Graphical Models for Structured Prediction",
+      "authors": [
+        "Olivia Robinson",
+        "Paul Martinez",
+        "Bob Davis",
+        "Jack Martinez",
+        "Olivia Williams"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        -0.2184,
+        1.2566
+      ],
+      "relevance_score": 0.97
+    },
+    {
+      "arxiv_id": "2504.10070",
+      "title": "PAC-Bayes Generalization Bounds for Neural Networks",
+      "authors": [
+        "Iris Garcia",
+        "Sam Jackson",
+        "Paul Williams",
+        "Paul Taylor",
+        "Noah Anderson"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        0.5664,
+        0.6959
+      ],
+      "relevance_score": 0.868
+    },
+    {
+      "arxiv_id": "2504.10007",
+      "title": "Alignment Methods for Large-Scale AI Systems",
+      "authors": [
+        "Grace Harris",
+        "Mia White",
+        "Eve Wilson",
+        "Eve Davis"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        5.438,
+        2.1267
+      ],
+      "relevance_score": 0.816
+    },
+    {
+      "arxiv_id": "2504.10010",
+      "title": "Reward Modeling for RLHF at Scale",
+      "authors": [
+        "Quinn Garcia",
+        "Quinn Brown",
+        "Jack Martin",
+        "Tara Miller"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        6.0799,
+        3.0424
+      ],
+      "relevance_score": 0.75
+    },
+    {
+      "arxiv_id": "2504.10001",
+      "title": "Emergent Reasoning in Transformer Architectures",
+      "authors": [
+        "Rosa Miller",
+        "Rosa Jackson"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        4.302,
+        4.5126
+      ],
+      "relevance_score": 0.78
+    },
+    {
+      "arxiv_id": "2504.10000",
+      "title": "Large Language Models as General Problem Solvers",
+      "authors": [
+        "Henry Davis",
+        "Eve Brown",
+        "Rosa Williams",
+        "Sam Jackson"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        3.8127,
+        2.7752
+      ],
+      "relevance_score": 0.612
+    },
+    {
+      "arxiv_id": "2504.10019",
+      "title": "Foundation Models for Visual Grounding Tasks",
+      "authors": [
+        "Henry Garcia",
+        "Noah Harris"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -1.5279,
+        3.4889
+      ],
+      "relevance_score": 0.685
+    },
+    {
+      "arxiv_id": "2504.10035",
+      "title": "Neural Architecture Search with Gradient Methods",
+      "authors": [
+        "Rosa Anderson",
+        "Alice Brown",
+        "Iris Garcia",
+        "Sam Wilson",
+        "Bob Brown"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        1.6612,
+        -2.1691
+      ],
+      "relevance_score": 0.774
+    },
+    {
+      "arxiv_id": "2504.10020",
+      "title": "Self-Supervised Visual Representation Learning",
+      "authors": [
+        "Alice Thomas",
+        "Iris White",
+        "Jack Jackson",
+        "Rosa Harris",
+        "Eve Miller"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -4.3673,
+        3.7632
+      ],
+      "relevance_score": 0.687
+    },
+    {
+      "arxiv_id": "2504.10065",
+      "title": "Score-Based Generative Models and Diffusion Bridges",
+      "authors": [
+        "Grace Miller",
+        "Iris Williams"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        -0.7919,
+        0.271
+      ],
+      "relevance_score": 0.696
+    },
+    {
+      "arxiv_id": "2504.10021",
+      "title": "Segment Anything Model: Extensions and Applications",
+      "authors": [
+        "Karen Johnson",
+        "Bob Young"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -2.0207,
+        4.2619
+      ],
+      "relevance_score": 0.801
+    },
+    {
+      "arxiv_id": "2504.10058",
+      "title": "Dialogue State Tracking with Minimal Supervision",
+      "authors": [
+        "Paul Thompson",
+        "Henry Harris",
+        "Paul White",
+        "Alice Williams",
+        "Jack Davis"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -2.479,
+        -2.6763
+      ],
+      "relevance_score": 0.877
+    },
+    {
+      "arxiv_id": "2504.10067",
+      "title": "Monte Carlo Methods for Intractable Posteriors",
+      "authors": [
+        "Noah Brown",
+        "Rosa Davis",
+        "Eve Wilson"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        0.9287,
+        -0.2697
+      ],
+      "relevance_score": 0.629
+    },
+    {
+      "arxiv_id": "2504.10053",
+      "title": "Coreference Resolution with Neural Encoders",
+      "authors": [
+        "Jack Young",
+        "Mia Thomas"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        -2.4213,
+        -1.5386
+      ],
+      "relevance_score": 0.63
+    },
+    {
+      "arxiv_id": "2504.10027",
+      "title": "Image Editing via Diffusion Model Inversion",
+      "authors": [
+        "Iris Brown",
+        "David Thompson",
+        "Eve Wilson"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -5.5915,
+        0.87
+      ],
+      "relevance_score": 0.842
+    },
+    {
+      "arxiv_id": "2504.10033",
+      "title": "Continual Learning without Catastrophic Forgetting",
+      "authors": [
+        "Iris Garcia",
+        "David Thomas",
+        "Bob Harris"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        0.3547,
+        -2.9805
+      ],
+      "relevance_score": 0.68
+    },
+    {
+      "arxiv_id": "2504.10055",
+      "title": "Token-Efficient Training for Large Language Models",
+      "authors": [
+        "Alice Jackson",
+        "Paul Brown",
+        "Noah Taylor",
+        "Olivia Jones"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -4.1264,
+        -1.9559
+      ],
+      "relevance_score": 0.67
+    },
+    {
+      "arxiv_id": "2504.10045",
+      "title": "Chain-of-Thought Prompting for Multi-Step Reasoning",
+      "authors": [
+        "Eve Davis",
+        "Mia Jones",
+        "Grace Williams"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -3.6873,
+        -1.0325
+      ],
+      "relevance_score": 0.763
+    },
+    {
+      "arxiv_id": "2504.10025",
+      "title": "Contrastive Learning for Medical Image Analysis",
+      "authors": [
+        "Rosa Miller",
+        "Quinn Wilson"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        0.3293,
+        3.458
+      ],
+      "relevance_score": 0.973
+    },
+    {
+      "arxiv_id": "2504.10083",
+      "title": "Empirical Process Theory and Statistical Applications",
+      "authors": [
+        "Henry White",
+        "Iris White",
+        "Iris Smith"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -0.8346,
+        -2.133
+      ],
+      "relevance_score": 0.96
+    },
+    {
+      "arxiv_id": "2504.10022",
+      "title": "Multi-Modal Fusion for Scene Understanding",
+      "authors": [
+        "Frank Williams",
+        "Tara Williams"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        -3.5423,
+        2.8921
+      ],
+      "relevance_score": 0.762
+    },
+    {
+      "arxiv_id": "2504.10057",
+      "title": "Question Answering over Structured and Unstructured Data",
+      "authors": [
+        "Karen Garcia",
+        "Paul Miller",
+        "Liam Wilson",
+        "Karen Wilson",
+        "Tara Wilson"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        -3.5789,
+        -3.5252
+      ],
+      "relevance_score": 0.604
+    },
+    {
+      "arxiv_id": "2504.10069",
+      "title": "Statistical Learning Theory for Overparameterized Networks",
+      "authors": [
+        "Tara Wilson",
+        "Alice Williams",
+        "Henry Young",
+        "Sam Smith"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -1.7267,
+        -0.0762
+      ],
+      "relevance_score": 0.83
+    },
+    {
+      "arxiv_id": "2504.10068",
+      "title": "Deep Generative Models for Missing Data Imputation",
+      "authors": [
+        "Olivia Brown",
+        "Olivia Martinez",
+        "Mia Wilson",
+        "Quinn Thompson"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        1.0618,
+        2.4627
+      ],
+      "relevance_score": 0.775
+    },
+    {
+      "arxiv_id": "2504.10043",
+      "title": "Deep Reinforcement Learning for Combinatorial Optimization",
+      "authors": [
+        "Eve White",
+        "Quinn Thompson",
+        "Tara Anderson",
+        "Olivia Robinson",
+        "Quinn Jackson"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        2.0127,
+        -1.4752
+      ],
+      "relevance_score": 0.778
+    },
+    {
+      "arxiv_id": "2504.10015",
+      "title": "Vision Transformers for Dense Prediction Tasks",
+      "authors": [
+        "Bob Davis",
+        "Carol Johnson"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -3.8857,
+        4.4098
+      ],
+      "relevance_score": 0.628
+    },
+    {
+      "arxiv_id": "2504.10050",
+      "title": "Semantic Parsing with Pre-trained Language Models",
+      "authors": [
+        "Noah Wilson",
+        "Carol Harris",
+        "Alice Thompson",
+        "Bob Taylor"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        -4.3978,
+        -0.2191
+      ],
+      "relevance_score": 0.86
+    },
+    {
+      "arxiv_id": "2504.10082",
+      "title": "Semiparametric Efficiency in Survival Analysis",
+      "authors": [
+        "Eve Davis",
+        "Quinn Jackson",
+        "Sam Garcia",
+        "Frank Garcia",
+        "Carol Robinson"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        0.1495,
+        -4.577
+      ],
+      "relevance_score": 0.848
+    },
+    {
+      "arxiv_id": "2504.10087",
+      "title": "U-Statistics and Their Applications in Testing",
+      "authors": [
+        "Carol Martinez",
+        "Karen Jackson",
+        "Frank Miller"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        0.2115,
+        -4.7422
+      ],
+      "relevance_score": 0.915
+    },
+    {
+      "arxiv_id": "2504.10061",
+      "title": "Normalizing Flows for Flexible Density Estimation",
+      "authors": [
+        "Liam Garcia",
+        "Jack Smith",
+        "Rosa Jones"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        1.1893,
+        2.0043
+      ],
+      "relevance_score": 0.618
+    },
+    {
+      "arxiv_id": "2504.10002",
+      "title": "Multi-Agent Systems for Complex Task Decomposition",
+      "authors": [
+        "Noah Anderson",
+        "Iris Jones",
+        "Grace Anderson"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        3.5379,
+        5.5815
+      ],
+      "relevance_score": 0.637
+    },
+    {
+      "arxiv_id": "2504.10064",
+      "title": "Causal Discovery from Observational Data",
+      "authors": [
+        "Tara Robinson",
+        "Tara Davis",
+        "Quinn Thomas",
+        "Olivia White",
+        "Jack Young"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        0.5189,
+        3.1613
+      ],
+      "relevance_score": 0.722
+    },
+    {
+      "arxiv_id": "2504.10051",
+      "title": "Factuality in Large Language Model Outputs",
+      "authors": [
+        "Henry Miller",
+        "Alice Robinson"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        -2.6318,
+        -4.352
+      ],
+      "relevance_score": 0.695
+    },
+    {
+      "arxiv_id": "2504.10039",
+      "title": "Robust Training under Distribution Shift",
+      "authors": [
+        "Grace Jackson",
+        "Sam Robinson",
+        "Karen White",
+        "Olivia White"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        1.9646,
+        -4.011
+      ],
+      "relevance_score": 0.804
+    },
+    {
+      "arxiv_id": "2504.10031",
+      "title": "Mixture of Experts for Efficient Transformers",
+      "authors": [
+        "Liam Miller",
+        "Henry Brown"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        1.0037,
+        -1.4008
+      ],
+      "relevance_score": 0.912
+    },
+    {
+      "arxiv_id": "2504.10006",
+      "title": "Self-Improving AI Systems via Iterative Refinement",
+      "authors": [
+        "Karen Johnson",
+        "Henry Johnson",
+        "Karen Thomas"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        4.6574,
+        4.0866
+      ],
+      "relevance_score": 0.626
+    },
+    {
+      "arxiv_id": "2504.10080",
+      "title": "Bootstrap Methods for Heavy-Tailed Distributions",
+      "authors": [
+        "Karen Harris",
+        "Rosa Johnson",
+        "Tara Williams",
+        "Henry Martinez",
+        "Henry Williams"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        0.5439,
+        -7.0606
+      ],
+      "relevance_score": 0.991
+    },
+    {
+      "arxiv_id": "2504.10056",
+      "title": "Summarization with Abstractive Faithfulness Constraints",
+      "authors": [
+        "Olivia Jackson",
+        "Sam Wilson",
+        "Karen Davis",
+        "Carol Wilson",
+        "Olivia Davis"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -4.8673,
+        -2.7567
+      ],
+      "relevance_score": 0.828
+    },
+    {
+      "arxiv_id": "2504.10009",
+      "title": "Neural Theorem Proving with Formal Verification",
+      "authors": [
+        "Quinn Wilson",
+        "Rosa Smith",
+        "David Thompson",
+        "Iris Anderson",
+        "David Martinez"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        2.689,
+        4.1592
+      ],
+      "relevance_score": 0.663
+    },
+    {
+      "arxiv_id": "2504.10046",
+      "title": "Instruction Tuning for Generalist Language Models",
+      "authors": [
+        "Noah Thomas",
+        "Sam Smith",
+        "Sam Thomas"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -4.2998,
+        -2.8566
+      ],
+      "relevance_score": 0.602
+    },
+    {
+      "arxiv_id": "2504.10076",
+      "title": "Minimax Optimal Estimation in Nonparametric Models",
+      "authors": [
+        "Jack Young",
+        "Sam Harris",
+        "Eve White",
+        "Rosa Harris"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -3.4068,
+        -5.1171
+      ],
+      "relevance_score": 0.733
+    },
+    {
+      "arxiv_id": "2504.10037",
+      "title": "Adaptive Optimization for Deep Neural Networks",
+      "authors": [
+        "Liam Jackson",
+        "Carol Anderson",
+        "Tara Anderson"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        4.9631,
+        -3.9685
+      ],
+      "relevance_score": 0.888
+    },
+    {
+      "arxiv_id": "2504.10026",
+      "title": "Depth Estimation from Monocular Video",
+      "authors": [
+        "Jack Garcia",
+        "Olivia Thompson",
+        "Jack Robinson",
+        "Quinn Smith"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        -2.0414,
+        1.6807
+      ],
+      "relevance_score": 0.72
+    },
+    {
+      "arxiv_id": "2504.10034",
+      "title": "Meta-Learning for Few-Shot Classification",
+      "authors": [
+        "Henry Smith",
+        "Grace Thomas",
+        "Karen Wilson"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        3.0511,
+        -4.5912
+      ],
+      "relevance_score": 0.987
+    },
+    {
+      "arxiv_id": "2504.10044",
+      "title": "Hyperparameter Optimization via Neural Processes",
+      "authors": [
+        "Iris Davis",
+        "Iris Martin",
+        "Paul Davis",
+        "Iris White",
+        "Carol Martinez"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        3.3966,
+        -1.8248
+      ],
+      "relevance_score": 0.709
+    },
+    {
+      "arxiv_id": "2504.10088",
+      "title": "Asymptotic Theory for M-Estimators in Misspecified Models",
+      "authors": [
+        "Frank Wilson",
+        "Paul Martinez",
+        "Karen Brown",
+        "Olivia Williams"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        -0.1146,
+        -5.8693
+      ],
+      "relevance_score": 0.902
+    },
+    {
+      "arxiv_id": "2504.10042",
+      "title": "Lottery Ticket Hypothesis: Extensions to Large Models",
+      "authors": [
+        "Paul Thomas",
+        "Henry Jones",
+        "Alice Brown",
+        "Noah Davis",
+        "Frank Martin"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        3.2848,
+        -5.1165
+      ],
+      "relevance_score": 0.62
+    },
+    {
+      "arxiv_id": "2504.10023",
+      "title": "Neural Radiance Fields with Dynamic Scenes",
+      "authors": [
+        "Tara Williams",
+        "Noah Young"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        -2.4242,
+        2.8943
+      ],
+      "relevance_score": 0.809
+    },
+    {
+      "arxiv_id": "2504.10085",
+      "title": "Adaptive Estimation in Gaussian Sequence Models",
+      "authors": [
+        "Alice Thomas",
+        "Iris Smith",
+        "Sam Johnson",
+        "Tara Harris"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -2.5295,
+        -5.7424
+      ],
+      "relevance_score": 0.91
+    },
+    {
+      "arxiv_id": "2504.10049",
+      "title": "Retrieval-Augmented Generation for Knowledge Tasks",
+      "authors": [
+        "Olivia Garcia",
+        "Bob Wilson",
+        "Mia Anderson"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        -1.1617,
+        -2.1839
+      ],
+      "relevance_score": 0.782
+    },
+    {
+      "arxiv_id": "2504.10072",
+      "title": "Double Descent Phenomenon in Neural Network Training",
+      "authors": [
+        "Noah Johnson",
+        "Grace Martin",
+        "Liam Robinson",
+        "Paul White",
+        "Bob Miller"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        0.5283,
+        1.4444
+      ],
+      "relevance_score": 0.82
+    },
+    {
+      "arxiv_id": "2504.10030",
+      "title": "Scaling Laws for Neural Language Models",
+      "authors": [
+        "Liam Young",
+        "Rosa Jones"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        1.7325,
+        -4.6885
+      ],
+      "relevance_score": 0.651
+    },
+    {
+      "arxiv_id": "2504.10012",
+      "title": "Sparse Autoencoders for Mechanistic Interpretability",
+      "authors": [
+        "Henry Johnson",
+        "Henry Young",
+        "Carol Williams",
+        "Paul Williams"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        5.7754,
+        1.3058
+      ],
+      "relevance_score": 0.906
+    },
+    {
+      "arxiv_id": "2504.10073",
+      "title": "Neural Ordinary Differential Equations for Time Series",
+      "authors": [
+        "David Smith",
+        "Tara Davis",
+        "Frank Martinez",
+        "Rosa Smith",
+        "Rosa Jackson"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        1.7542,
+        0.8873
+      ],
+      "relevance_score": 0.69
+    },
+    {
+      "arxiv_id": "2504.10063",
+      "title": "Gaussian Processes for Large-Scale Regression",
+      "authors": [
+        "David Williams",
+        "Mia Harris",
+        "Carol Young",
+        "Bob Jones",
+        "Eve Young"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        0.6692,
+        1.8868
+      ],
+      "relevance_score": 0.634
+    },
+    {
+      "arxiv_id": "2504.10075",
+      "title": "High-Dimensional Statistical Inference with Sparsity",
+      "authors": [
+        "Rosa Jones",
+        "Mia Miller",
+        "Tara Martin",
+        "Eve Williams",
+        "Iris Jackson"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -2.4608,
+        -4.8387
+      ],
+      "relevance_score": 0.974
+    },
+    {
+      "arxiv_id": "2504.10004",
+      "title": "Planning with Neural World Models",
+      "authors": [
+        "Bob Davis",
+        "Jack Williams"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        3.4518,
+        3.649
+      ],
+      "relevance_score": 0.947
+    },
+    {
+      "arxiv_id": "2504.10005",
+      "title": "Causal Inference in Deep Learning Systems",
+      "authors": [
+        "Frank Taylor",
+        "Liam Miller",
+        "Iris Williams",
+        "Tara Garcia"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        2.9576,
+        3.9773
+      ],
+      "relevance_score": 0.892
+    },
+    {
+      "arxiv_id": "2504.10017",
+      "title": "3D Gaussian Splatting for Novel View Synthesis",
+      "authors": [
+        "Liam Jackson",
+        "Noah White",
+        "Bob Brown",
+        "Bob Thomas",
+        "Karen Brown"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        -3.7853,
+        4.0464
+      ],
+      "relevance_score": 0.677
+    },
+    {
+      "arxiv_id": "2504.10014",
+      "title": "Inference-Time Compute Scaling for Reasoning Models",
+      "authors": [
+        "Olivia Martin",
+        "Olivia Brown",
+        "Henry Davis",
+        "Carol Anderson"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        2.4376,
+        4.1504
+      ],
+      "relevance_score": 0.835
+    },
+    {
+      "arxiv_id": "2504.10052",
+      "title": "Multilingual Models for Low-Resource Languages",
+      "authors": [
+        "Olivia Wilson",
+        "Liam Garcia",
+        "Tara Robinson"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -3.632,
+        -2.394
+      ],
+      "relevance_score": 0.911
+    },
+    {
+      "arxiv_id": "2504.10038",
+      "title": "Graph Neural Networks for Molecular Property Prediction",
+      "authors": [
+        "Karen Thomas",
+        "Jack Thompson",
+        "Eve Miller",
+        "Noah Thomas",
+        "Frank Robinson"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        1.6523,
+        -2.9371
+      ],
+      "relevance_score": 0.72
+    },
+    {
+      "arxiv_id": "2504.10059",
+      "title": "Toxicity Detection with Contextual Embeddings",
+      "authors": [
+        "Rosa Martin",
+        "Liam Jackson",
+        "Rosa Anderson",
+        "Liam White",
+        "Iris Martinez"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -3.5935,
+        -0.8899
+      ],
+      "relevance_score": 0.692
+    },
+    {
+      "arxiv_id": "2504.10008",
+      "title": "Tool-Augmented Language Models for Scientific Discovery",
+      "authors": [
+        "Liam Davis",
+        "Eve Martin",
+        "Paul Williams",
+        "Bob Brown",
+        "Eve Garcia"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        3.9742,
+        1.6252
+      ],
+      "relevance_score": 0.839
+    },
+    {
+      "arxiv_id": "2504.10028",
+      "title": "Vision-Language Models for Zero-Shot Recognition",
+      "authors": [
+        "Quinn Harris",
+        "Iris Johnson",
+        "Carol Jackson",
+        "Iris Johnson"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -4.1773,
+        2.6409
+      ],
+      "relevance_score": 0.733
+    },
+    {
+      "arxiv_id": "2504.10078",
+      "title": "Multiple Testing with False Discovery Rate Control",
+      "authors": [
+        "Paul Johnson",
+        "Eve Martin",
+        "Sam Anderson"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -0.5167,
+        -6.1897
+      ],
+      "relevance_score": 0.95
+    },
+    {
+      "arxiv_id": "2504.10041",
+      "title": "Parameter-Efficient Fine-Tuning of Foundation Models",
+      "authors": [
+        "Bob Davis",
+        "Paul Robinson"
+      ],
+      "abstract": "This paper presents advances in machine learning methodology with broad applicability. We propose theoretical insights that shed light on the behavior of modern deep learning systems, supported by empirical validation on established benchmarks. Our findings have implications for the design and training of neural network architectures.",
+      "category": "cs.LG",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        2.1375,
+        -3.1446
+      ],
+      "relevance_score": 0.782
+    },
+    {
+      "arxiv_id": "2504.10071",
+      "title": "Conformal Prediction for Distribution-Free Inference",
+      "authors": [
+        "Jack Thomas",
+        "Rosa Johnson",
+        "Olivia Williams",
+        "Karen Wilson",
+        "Karen Brown"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        1.2285,
+        0.5934
+      ],
+      "relevance_score": 0.946
+    },
+    {
+      "arxiv_id": "2504.10079",
+      "title": "Optimal Transport for Statistical Divergences",
+      "authors": [
+        "Alice Jones",
+        "Noah Jones",
+        "Carol Harris",
+        "Iris Anderson",
+        "Tara Thomas"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -2.478,
+        -4.4181
+      ],
+      "relevance_score": 0.941
+    },
+    {
+      "arxiv_id": "2504.10003",
+      "title": "Reinforcement Learning from Human Feedback: Advances and Limitations",
+      "authors": [
+        "Bob White",
+        "Rosa Brown",
+        "Mia Williams",
+        "Rosa Martinez"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        6.0698,
+        4.4395
+      ],
+      "relevance_score": 0.954
+    },
+    {
+      "arxiv_id": "2504.10060",
+      "title": "Variational Autoencoders with Structured Priors",
+      "authors": [
+        "Grace Miller",
+        "Paul Wilson",
+        "Sam Martin"
+      ],
+      "abstract": "We develop principled statistical methods for machine learning with strong theoretical guarantees. Our framework provides rigorous bounds on generalization error and uncertainty quantification. The proposed methods are validated on synthetic and real-world datasets, demonstrating both theoretical elegance and practical effectiveness.",
+      "category": "stat.ML",
+      "published": "2025-04-09",
+      "embedding_2d": [
+        0.2969,
+        0.3864
+      ],
+      "relevance_score": 0.713
+    },
+    {
+      "arxiv_id": "2504.10029",
+      "title": "Panoptic Segmentation with Transformers",
+      "authors": [
+        "Olivia Thompson",
+        "Noah Thompson",
+        "Alice Brown"
+      ],
+      "abstract": "We introduce a new method for computer vision tasks that leverages the power of modern neural architectures. Our approach achieves superior performance on visual recognition benchmarks while being computationally efficient. We demonstrate the generalizability of our method across diverse visual domains and downstream tasks.",
+      "category": "cs.CV",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -1.5277,
+        6.1601
+      ],
+      "relevance_score": 0.978
+    },
+    {
+      "arxiv_id": "2504.10086",
+      "title": "Minimax Regret in Online Statistical Learning",
+      "authors": [
+        "Grace Robinson",
+        "Iris Jones",
+        "David Johnson"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-11",
+      "embedding_2d": [
+        -0.7085,
+        -2.6788
+      ],
+      "relevance_score": 0.915
+    },
+    {
+      "arxiv_id": "2504.10013",
+      "title": "In-Context Learning via Implicit Bayesian Inference",
+      "authors": [
+        "Iris Martin",
+        "Tara Jackson",
+        "Grace Thompson"
+      ],
+      "abstract": "We present a novel approach to artificial intelligence that addresses fundamental challenges in reasoning and generalization. Our method builds upon recent advances in large-scale pretraining and demonstrates significant improvements on standard benchmarks. Through extensive experiments, we show that our approach achieves state-of-the-art results while maintaining interpretability.",
+      "category": "cs.AI",
+      "published": "2025-04-12",
+      "embedding_2d": [
+        5.0215,
+        4.066
+      ],
+      "relevance_score": 0.885
+    },
+    {
+      "arxiv_id": "2504.10047",
+      "title": "Cross-Lingual Transfer Learning at Scale",
+      "authors": [
+        "Rosa Thompson",
+        "Tara Davis",
+        "Paul Davis",
+        "Iris Jackson",
+        "Paul Smith"
+      ],
+      "abstract": "We address key challenges in natural language processing through a novel model design and training approach. Our experiments on standard NLP benchmarks demonstrate consistent improvements over competitive baselines. We analyze the linguistic capabilities of our model and show its effectiveness on cross-domain transfer tasks.",
+      "category": "cs.NLP",
+      "published": "2025-04-10",
+      "embedding_2d": [
+        -4.2981,
+        -0.7542
+      ],
+      "relevance_score": 0.734
+    },
+    {
+      "arxiv_id": "2504.10081",
+      "title": "Spectral Methods for Matrix Completion and Recovery",
+      "authors": [
+        "Olivia Garcia",
+        "Jack Smith"
+      ],
+      "abstract": "We establish new theoretical results in mathematical statistics with applications to modern high-dimensional problems. Our analysis provides sharp bounds and optimal rates of convergence under mild assumptions. These results advance the theoretical foundations of statistical estimation and testing in contemporary settings.",
+      "category": "math.ST",
+      "published": "2025-04-13",
+      "embedding_2d": [
+        -0.8679,
+        -7.0239
+      ],
+      "relevance_score": 0.73
+    }
+  ]
+}
