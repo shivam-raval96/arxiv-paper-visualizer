@@ -42,8 +42,77 @@
         <input type="text" id="author-input" placeholder="Filter by author..." />
       </div>
       <button id="reset-view-btn" class="icon-btn" title="Reset View">⊕</button>
+      <button id="settings-btn" class="icon-btn" title="Settings">⚙</button>
     </div>
   </header>
+
+  <!-- Settings Modal -->
+  <div id="settings-overlay" class="hidden"></div>
+  <div id="settings-modal" class="hidden" role="dialog" aria-modal="true" aria-label="Settings">
+    <div id="settings-header">
+      <h2>Settings</h2>
+      <button id="settings-close" class="close-btn" aria-label="Close">×</button>
+    </div>
+
+    <div id="settings-body">
+
+      <!-- OpenAI -->
+      <section class="settings-section">
+        <h3 class="settings-section-title">OpenAI API</h3>
+        <p class="settings-desc">Used to regenerate cluster labels from paper titles. Not saved between sessions.</p>
+        <div class="settings-row">
+          <label for="openai-key-input">API Key</label>
+          <div class="settings-input-group">
+            <input type="password" id="openai-key-input" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+            <button id="openai-key-toggle" class="icon-btn small" title="Show/hide key">👁</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span></span>
+          <button id="relabel-btn" class="action-btn primary small">Regenerate Cluster Labels</button>
+        </div>
+        <div id="relabel-status" class="settings-status hidden"></div>
+      </section>
+
+      <!-- Visual -->
+      <section class="settings-section">
+        <h3 class="settings-section-title">Visual</h3>
+
+        <div class="settings-row">
+          <label for="point-size-input">Point size</label>
+          <div class="settings-slider-group">
+            <input type="range" id="point-size-input" min="2" max="12" step="1" value="5" />
+            <span id="point-size-val">5</span>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <label for="point-opacity-input">Opacity</label>
+          <div class="settings-slider-group">
+            <input type="range" id="point-opacity-input" min="20" max="100" step="5" value="100" />
+            <span id="point-opacity-val">100%</span>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <label for="show-labels-toggle">Cluster labels</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="show-labels-toggle" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <label for="dark-mode-toggle">Dark mode</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="dark-mode-toggle" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </section>
+
+    </div>
+  </div>
 
   <!-- Main Layout -->
   <div id="main-layout">
@@ -144,6 +213,7 @@
   <script src="js/search.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/interactions.js"></script>
+  <script src="js/settings.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

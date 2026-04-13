@@ -15,6 +15,7 @@ from pathlib import Path
 import fetch_arxiv
 import embed_papers
 import reduce_dims
+import label_clusters
 
 logging.basicConfig(
     level=logging.INFO,
@@ -59,12 +60,20 @@ def run_pipeline(days: int, categories: list[str], output_path: Path) -> None:
     ])
 
     # ── Step 3: Reduce ───────────────────────────────────────────────────────
-    log.info("━━━ Step 3/3: Reducing to 2D ━━━")
+    log.info("━━━ Step 3/4: Reducing to 2D ━━━")
     _backup_existing(output_path)
     reduce_dims.main([
         "--input",  str(embedded_path),
         "--output", str(output_path),
     ])
+
+    # ── Step 4: Cluster + label (requires OPENAI_API_KEY) ───────────────────
+    import os
+    if os.environ.get("OPENAI_API_KEY"):
+        log.info("━━━ Step 4/4: Clustering and labeling with OpenAI ━━━")
+        label_clusters.main(["--input", str(output_path)])
+    else:
+        log.warning("OPENAI_API_KEY not set — skipping cluster labeling (step 4/4)")
 
     log.info("━━━ Pipeline complete: %s ━━━", output_path)
 

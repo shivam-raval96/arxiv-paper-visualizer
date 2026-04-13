@@ -20,8 +20,8 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# allenai-specter is designed for scientific papers; all-MiniLM-L6-v2 is faster.
-DEFAULT_MODEL = "allenai-specter"
+# allenai/specter2_base is designed for scientific papers; all-MiniLM-L6-v2 is faster.
+DEFAULT_MODEL = "allenai/specter2_base"
 FALLBACK_MODEL = "all-MiniLM-L6-v2"
 BATCH_SIZE = 32
 

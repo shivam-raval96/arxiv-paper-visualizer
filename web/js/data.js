@@ -24,7 +24,8 @@ const Data = (() => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         _process(json.papers || []);
-        console.log(`Loaded ${APP.allPapers.length} papers from ${url}`);
+        APP.clusters = json.clusters || [];
+        console.log(`Loaded ${APP.allPapers.length} papers, ${APP.clusters.length} clusters from ${url}`);
         return;
       } catch (err) {
         lastError = err;

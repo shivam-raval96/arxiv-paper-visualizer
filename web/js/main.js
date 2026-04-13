@@ -36,6 +36,9 @@ const APP = {
   lassoPoints: [],
   isDrawingLasso: false,
 
+  // Cluster metadata (from papers.json)
+  clusters: [],
+
   // IndexedDB reference
   db: null
 };
@@ -64,6 +67,7 @@ async function init() {
 
     // 7. Bind UI event listeners
     UI.initEventListeners();
+    Settings.init();
 
     // 8. Initial render
     applyFiltersAndRender();

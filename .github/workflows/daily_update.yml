@@ -36,6 +36,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          # Install CPU-only PyTorch first to avoid pulling in CUDA (~4 GB)
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -r backend/requirements.txt
 
       - name: Run pipeline
@@ -43,6 +45,7 @@ jobs:
         env:
           DAYS: ${{ github.event.inputs.days || '1' }}
           CATEGORIES: ${{ github.event.inputs.categories || 'cs.AI,cs.CV,cs.LG,cs.NLP,stat.ML,math.ST' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python main.py --days "$DAYS" --categories "$CATEGORIES" --output ../web/data/papers.json
 

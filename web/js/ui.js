@@ -135,10 +135,19 @@ const UI = (() => {
   function showTooltip(paper, sx, sy) {
     const tt = document.getElementById('tooltip');
     tt.classList.remove('hidden');
+    const abstract = paper.abstract
+      ? _escape(paper.abstract.slice(0, 160)) + (paper.abstract.length > 160 ? '…' : '')
+      : '';
+    const authors = (paper.authors || []).slice(0, 3).map(_escape).join(', ');
+
     tt.innerHTML = `
       <div class="tooltip-title">${_escape(paper.title)}</div>
-      <div class="tooltip-authors">${(paper.authors || []).slice(0, 3).map(_escape).join(', ')}</div>
-      <span class="tooltip-cat">${_escape(paper.category)}</span>
+      <div class="tooltip-authors">${authors}</div>
+      <div class="tooltip-meta">
+        <span class="tooltip-cat">${_escape(paper.category)}</span>
+        ${paper.published ? `<span class="tooltip-date">${_escape(paper.published)}</span>` : ''}
+      </div>
+      ${abstract ? `<div class="tooltip-abstract">${abstract}</div>` : ''}
     `;
 
     const container = document.getElementById('canvas-container');

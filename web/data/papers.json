@@ -16,7 +16,8 @@
         1.8484,
         -5.1177
       ],
-      "relevance_score": 0.884
+      "relevance_score": 0.884,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10016",
@@ -33,7 +34,8 @@
         -3.8544,
         5.4276
       ],
-      "relevance_score": 0.923
+      "relevance_score": 0.923,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10089",
@@ -52,7 +54,8 @@
         -0.702,
         -3.0703
       ],
-      "relevance_score": 0.834
+      "relevance_score": 0.834,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10024",
@@ -70,7 +73,8 @@
         -3.1941,
         3.1495
       ],
-      "relevance_score": 0.783
+      "relevance_score": 0.783,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10054",
@@ -86,7 +90,8 @@
         -3.6658,
         -4.2007
       ],
-      "relevance_score": 0.739
+      "relevance_score": 0.739,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10011",
@@ -102,7 +107,8 @@
         5.699,
         5.7357
       ],
-      "relevance_score": 0.972
+      "relevance_score": 0.972,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10032",
@@ -119,7 +125,8 @@
         2.9911,
         -4.8834
       ],
-      "relevance_score": 0.913
+      "relevance_score": 0.913,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10048",
@@ -136,7 +143,8 @@
         -3.5699,
         -3.6943
       ],
-      "relevance_score": 0.826
+      "relevance_score": 0.826,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10084",
@@ -155,7 +163,8 @@
         -1.3349,
         -5.6848
       ],
-      "relevance_score": 0.695
+      "relevance_score": 0.695,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10040",
@@ -172,7 +181,8 @@
         2.8945,
         -7.1726
       ],
-      "relevance_score": 0.869
+      "relevance_score": 0.869,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10077",
@@ -190,7 +200,8 @@
         -0.8978,
         -6.261
       ],
-      "relevance_score": 0.882
+      "relevance_score": 0.882,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10018",
@@ -207,7 +218,8 @@
         -4.696,
         3.3385
       ],
-      "relevance_score": 0.62
+      "relevance_score": 0.62,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10062",
@@ -224,7 +236,8 @@
         1.5178,
         1.863
       ],
-      "relevance_score": 0.776
+      "relevance_score": 0.776,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10074",
@@ -240,7 +253,8 @@
         0.8466,
         0.9644
       ],
-      "relevance_score": 0.766
+      "relevance_score": 0.766,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10066",
@@ -259,7 +273,8 @@
         -0.2184,
         1.2566
       ],
-      "relevance_score": 0.97
+      "relevance_score": 0.97,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10070",
@@ -278,7 +293,8 @@
         0.5664,
         0.6959
       ],
-      "relevance_score": 0.868
+      "relevance_score": 0.868,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10007",
@@ -296,7 +312,8 @@
         5.438,
         2.1267
       ],
-      "relevance_score": 0.816
+      "relevance_score": 0.816,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10010",
@@ -314,7 +331,8 @@
         6.0799,
         3.0424
       ],
-      "relevance_score": 0.75
+      "relevance_score": 0.75,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10001",
@@ -330,7 +348,8 @@
         4.302,
         4.5126
       ],
-      "relevance_score": 0.78
+      "relevance_score": 0.78,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10000",
@@ -348,7 +367,8 @@
         3.8127,
         2.7752
       ],
-      "relevance_score": 0.612
+      "relevance_score": 0.612,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10019",
@@ -364,7 +384,8 @@
         -1.5279,
         3.4889
       ],
-      "relevance_score": 0.685
+      "relevance_score": 0.685,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10035",
@@ -383,7 +404,8 @@
         1.6612,
         -2.1691
       ],
-      "relevance_score": 0.774
+      "relevance_score": 0.774,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10020",
@@ -402,7 +424,8 @@
         -4.3673,
         3.7632
       ],
-      "relevance_score": 0.687
+      "relevance_score": 0.687,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10065",
@@ -418,7 +441,8 @@
         -0.7919,
         0.271
       ],
-      "relevance_score": 0.696
+      "relevance_score": 0.696,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10021",
@@ -434,7 +458,8 @@
         -2.0207,
         4.2619
       ],
-      "relevance_score": 0.801
+      "relevance_score": 0.801,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10058",
@@ -453,7 +478,8 @@
         -2.479,
         -2.6763
       ],
-      "relevance_score": 0.877
+      "relevance_score": 0.877,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10067",
@@ -470,7 +496,8 @@
         0.9287,
         -0.2697
       ],
-      "relevance_score": 0.629
+      "relevance_score": 0.629,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10053",
@@ -486,7 +513,8 @@
         -2.4213,
         -1.5386
       ],
-      "relevance_score": 0.63
+      "relevance_score": 0.63,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10027",
@@ -503,7 +531,8 @@
         -5.5915,
         0.87
       ],
-      "relevance_score": 0.842
+      "relevance_score": 0.842,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10033",
@@ -520,7 +549,8 @@
         0.3547,
         -2.9805
       ],
-      "relevance_score": 0.68
+      "relevance_score": 0.68,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10055",
@@ -538,7 +568,8 @@
         -4.1264,
         -1.9559
       ],
-      "relevance_score": 0.67
+      "relevance_score": 0.67,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10045",
@@ -555,7 +586,8 @@
         -3.6873,
         -1.0325
       ],
-      "relevance_score": 0.763
+      "relevance_score": 0.763,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10025",
@@ -571,7 +603,8 @@
         0.3293,
         3.458
       ],
-      "relevance_score": 0.973
+      "relevance_score": 0.973,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10083",
@@ -588,7 +621,8 @@
         -0.8346,
         -2.133
       ],
-      "relevance_score": 0.96
+      "relevance_score": 0.96,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10022",
@@ -604,7 +638,8 @@
         -3.5423,
         2.8921
       ],
-      "relevance_score": 0.762
+      "relevance_score": 0.762,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10057",
@@ -623,7 +658,8 @@
         -3.5789,
         -3.5252
       ],
-      "relevance_score": 0.604
+      "relevance_score": 0.604,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10069",
@@ -641,7 +677,8 @@
         -1.7267,
         -0.0762
       ],
-      "relevance_score": 0.83
+      "relevance_score": 0.83,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10068",
@@ -659,7 +696,8 @@
         1.0618,
         2.4627
       ],
-      "relevance_score": 0.775
+      "relevance_score": 0.775,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10043",
@@ -678,7 +716,8 @@
         2.0127,
         -1.4752
       ],
-      "relevance_score": 0.778
+      "relevance_score": 0.778,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10015",
@@ -694,7 +733,8 @@
         -3.8857,
         4.4098
       ],
-      "relevance_score": 0.628
+      "relevance_score": 0.628,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10050",
@@ -712,7 +752,8 @@
         -4.3978,
         -0.2191
       ],
-      "relevance_score": 0.86
+      "relevance_score": 0.86,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10082",
@@ -731,7 +772,8 @@
         0.1495,
         -4.577
       ],
-      "relevance_score": 0.848
+      "relevance_score": 0.848,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10087",
@@ -748,7 +790,8 @@
         0.2115,
         -4.7422
       ],
-      "relevance_score": 0.915
+      "relevance_score": 0.915,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10061",
@@ -765,7 +808,8 @@
         1.1893,
         2.0043
       ],
-      "relevance_score": 0.618
+      "relevance_score": 0.618,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10002",
@@ -782,7 +826,8 @@
         3.5379,
         5.5815
       ],
-      "relevance_score": 0.637
+      "relevance_score": 0.637,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10064",
@@ -801,7 +846,8 @@
         0.5189,
         3.1613
       ],
-      "relevance_score": 0.722
+      "relevance_score": 0.722,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10051",
@@ -817,7 +863,8 @@
         -2.6318,
         -4.352
       ],
-      "relevance_score": 0.695
+      "relevance_score": 0.695,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10039",
@@ -835,7 +882,8 @@
         1.9646,
         -4.011
       ],
-      "relevance_score": 0.804
+      "relevance_score": 0.804,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10031",
@@ -851,7 +899,8 @@
         1.0037,
         -1.4008
       ],
-      "relevance_score": 0.912
+      "relevance_score": 0.912,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10006",
@@ -868,7 +917,8 @@
         4.6574,
         4.0866
       ],
-      "relevance_score": 0.626
+      "relevance_score": 0.626,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10080",
@@ -887,7 +937,8 @@
         0.5439,
         -7.0606
       ],
-      "relevance_score": 0.991
+      "relevance_score": 0.991,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10056",
@@ -906,7 +957,8 @@
         -4.8673,
         -2.7567
       ],
-      "relevance_score": 0.828
+      "relevance_score": 0.828,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10009",
@@ -925,7 +977,8 @@
         2.689,
         4.1592
       ],
-      "relevance_score": 0.663
+      "relevance_score": 0.663,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10046",
@@ -942,7 +995,8 @@
         -4.2998,
         -2.8566
       ],
-      "relevance_score": 0.602
+      "relevance_score": 0.602,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10076",
@@ -960,7 +1014,8 @@
         -3.4068,
         -5.1171
       ],
-      "relevance_score": 0.733
+      "relevance_score": 0.733,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10037",
@@ -977,7 +1032,8 @@
         4.9631,
         -3.9685
       ],
-      "relevance_score": 0.888
+      "relevance_score": 0.888,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10026",
@@ -995,7 +1051,8 @@
         -2.0414,
         1.6807
       ],
-      "relevance_score": 0.72
+      "relevance_score": 0.72,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10034",
@@ -1012,7 +1069,8 @@
         3.0511,
         -4.5912
       ],
-      "relevance_score": 0.987
+      "relevance_score": 0.987,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10044",
@@ -1031,7 +1089,8 @@
         3.3966,
         -1.8248
       ],
-      "relevance_score": 0.709
+      "relevance_score": 0.709,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10088",
@@ -1049,7 +1108,8 @@
         -0.1146,
         -5.8693
       ],
-      "relevance_score": 0.902
+      "relevance_score": 0.902,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10042",
@@ -1068,7 +1128,8 @@
         3.2848,
         -5.1165
       ],
-      "relevance_score": 0.62
+      "relevance_score": 0.62,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10023",
@@ -1084,7 +1145,8 @@
         -2.4242,
         2.8943
       ],
-      "relevance_score": 0.809
+      "relevance_score": 0.809,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10085",
@@ -1102,7 +1164,8 @@
         -2.5295,
         -5.7424
       ],
-      "relevance_score": 0.91
+      "relevance_score": 0.91,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10049",
@@ -1119,7 +1182,8 @@
         -1.1617,
         -2.1839
       ],
-      "relevance_score": 0.782
+      "relevance_score": 0.782,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10072",
@@ -1138,7 +1202,8 @@
         0.5283,
         1.4444
       ],
-      "relevance_score": 0.82
+      "relevance_score": 0.82,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10030",
@@ -1154,7 +1219,8 @@
         1.7325,
         -4.6885
       ],
-      "relevance_score": 0.651
+      "relevance_score": 0.651,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10012",
@@ -1172,7 +1238,8 @@
         5.7754,
         1.3058
       ],
-      "relevance_score": 0.906
+      "relevance_score": 0.906,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10073",
@@ -1191,7 +1258,8 @@
         1.7542,
         0.8873
       ],
-      "relevance_score": 0.69
+      "relevance_score": 0.69,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10063",
@@ -1210,7 +1278,8 @@
         0.6692,
         1.8868
       ],
-      "relevance_score": 0.634
+      "relevance_score": 0.634,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10075",
@@ -1229,7 +1298,8 @@
         -2.4608,
         -4.8387
       ],
-      "relevance_score": 0.974
+      "relevance_score": 0.974,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10004",
@@ -1245,7 +1315,8 @@
         3.4518,
         3.649
       ],
-      "relevance_score": 0.947
+      "relevance_score": 0.947,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10005",
@@ -1263,7 +1334,8 @@
         2.9576,
         3.9773
       ],
-      "relevance_score": 0.892
+      "relevance_score": 0.892,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10017",
@@ -1282,7 +1354,8 @@
         -3.7853,
         4.0464
       ],
-      "relevance_score": 0.677
+      "relevance_score": 0.677,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10014",
@@ -1300,7 +1373,8 @@
         2.4376,
         4.1504
       ],
-      "relevance_score": 0.835
+      "relevance_score": 0.835,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10052",
@@ -1317,7 +1391,8 @@
         -3.632,
         -2.394
       ],
-      "relevance_score": 0.911
+      "relevance_score": 0.911,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10038",
@@ -1336,7 +1411,8 @@
         1.6523,
         -2.9371
       ],
-      "relevance_score": 0.72
+      "relevance_score": 0.72,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10059",
@@ -1355,7 +1431,8 @@
         -3.5935,
         -0.8899
       ],
-      "relevance_score": 0.692
+      "relevance_score": 0.692,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10008",
@@ -1374,7 +1451,8 @@
         3.9742,
         1.6252
       ],
-      "relevance_score": 0.839
+      "relevance_score": 0.839,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10028",
@@ -1392,7 +1470,8 @@
         -4.1773,
         2.6409
       ],
-      "relevance_score": 0.733
+      "relevance_score": 0.733,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10078",
@@ -1409,7 +1488,8 @@
         -0.5167,
         -6.1897
       ],
-      "relevance_score": 0.95
+      "relevance_score": 0.95,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10041",
@@ -1425,7 +1505,8 @@
         2.1375,
         -3.1446
       ],
-      "relevance_score": 0.782
+      "relevance_score": 0.782,
+      "cluster_id": 5
     },
     {
       "arxiv_id": "2504.10071",
@@ -1444,7 +1525,8 @@
         1.2285,
         0.5934
       ],
-      "relevance_score": 0.946
+      "relevance_score": 0.946,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10079",
@@ -1463,7 +1545,8 @@
         -2.478,
         -4.4181
       ],
-      "relevance_score": 0.941
+      "relevance_score": 0.941,
+      "cluster_id": 2
     },
     {
       "arxiv_id": "2504.10003",
@@ -1481,7 +1564,8 @@
         6.0698,
         4.4395
       ],
-      "relevance_score": 0.954
+      "relevance_score": 0.954,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10060",
@@ -1498,7 +1582,8 @@
         0.2969,
         0.3864
       ],
-      "relevance_score": 0.713
+      "relevance_score": 0.713,
+      "cluster_id": 1
     },
     {
       "arxiv_id": "2504.10029",
@@ -1515,7 +1600,8 @@
         -1.5277,
         6.1601
       ],
-      "relevance_score": 0.978
+      "relevance_score": 0.978,
+      "cluster_id": 3
     },
     {
       "arxiv_id": "2504.10086",
@@ -1532,7 +1618,8 @@
         -0.7085,
         -2.6788
       ],
-      "relevance_score": 0.915
+      "relevance_score": 0.915,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10013",
@@ -1549,7 +1636,8 @@
         5.0215,
         4.066
       ],
-      "relevance_score": 0.885
+      "relevance_score": 0.885,
+      "cluster_id": 4
     },
     {
       "arxiv_id": "2504.10047",
@@ -1568,7 +1656,8 @@
         -4.2981,
         -0.7542
       ],
-      "relevance_score": 0.734
+      "relevance_score": 0.734,
+      "cluster_id": 0
     },
     {
       "arxiv_id": "2504.10081",
@@ -1584,7 +1673,58 @@
         -0.8679,
         -7.0239
       ],
-      "relevance_score": 0.73
+      "relevance_score": 0.73,
+      "cluster_id": 2
+    }
+  ],
+  "clusters": [
+    {
+      "id": 0,
+      "label": "Language Models",
+      "centroid_2d": [
+        -3.1205,
+        -2.0921
+      ]
+    },
+    {
+      "id": 1,
+      "label": "Statistical Learning",
+      "centroid_2d": [
+        0.7143,
+        1.2291
+      ]
+    },
+    {
+      "id": 2,
+      "label": "Math & Statistics",
+      "centroid_2d": [
+        -1.2168,
+        -5.3534
+      ]
+    },
+    {
+      "id": 3,
+      "label": "Computer Vision",
+      "centroid_2d": [
+        -3.3311,
+        3.5017
+      ]
+    },
+    {
+      "id": 4,
+      "label": "AI & Reasoning",
+      "centroid_2d": [
+        4.3936,
+        3.6822
+      ]
+    },
+    {
+      "id": 5,
+      "label": "Machine Learning",
+      "centroid_2d": [
+        2.4247,
+        -3.8629
+      ]
     }
   ]
 }

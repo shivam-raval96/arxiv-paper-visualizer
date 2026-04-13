@@ -15,9 +15,9 @@ const Canvas = (() => {
   };
   const DEFAULT_COLOR = '#8890b0';
 
-  const POINT_RADIUS = 5;
-  const POINT_RADIUS_HOVER = 7;
-  const POINT_RADIUS_SELECTED = 7;
+  // Base radii — actual size comes from Settings.prefs.pointSize at render time
+  const POINT_RADIUS_HOVER_EXTRA = 2;
+  const POINT_RADIUS_SELECTED_EXTRA = 2;
 
   // ── Module state ─────────────────────────────────────────────────────────────
   let canvas, ctx;
@@ -134,13 +134,9 @@ const Canvas = (() => {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Background
-    ctx.fillStyle = getComputedStyle(document.documentElement)
-      .getPropertyValue('--bg-primary').trim() || '#0f1117';
+    // Background — white normally, dark in dark mode
+    ctx.fillStyle = document.documentElement.classList.contains('dark-mode') ? '#0f1117' : '#ffffff';
     ctx.fillRect(0, 0, width, height);
-
-    // Grid
-    _drawGrid();
 
     // Points (save/restore for zoom transform)
     ctx.save();
@@ -148,39 +144,70 @@ const Canvas = (() => {
     ctx.scale(t.k, t.k);
     _drawPoints();
     ctx.restore();
+
+    // Cluster labels drawn in screen space (on top, after transform restore)
+    if (!Settings || Settings.prefs.showLabels) _drawClusterLabels();
   }
 
-  function _drawGrid() {
-    if (!xScale || !yScale) return;
-    const t = APP.transform;
+  function _drawClusterLabels() {
+    const clusters = APP.clusters;
+    if (!clusters || !clusters.length || !xScale || !yScale) return;
 
     ctx.save();
-    ctx.strokeStyle = 'rgba(46, 50, 80, 0.6)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([2, 6]);
+    ctx.font = '600 13px -apple-system, BlinkMacSystemFont, "Inter", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
-    // X gridlines
-    const xTicks = xScale.ticks(6);
-    for (const tick of xTicks) {
-      const sx = xScale(tick) * t.k + t.x;
+    for (const cluster of clusters) {
+      const [sx, sy] = _clusterToScreen(cluster.centroid_2d);
+
+      // Don't render if centroid is off-screen
+      if (sx < -80 || sx > width + 80 || sy < -30 || sy > height + 30) continue;
+
+      const label = cluster.label;
+      const tw = ctx.measureText(label).width;
+      const ph = 8, pv = 5;
+      const rx = sx - tw / 2 - ph;
+      const ry = sy - 10 - pv;
+      const rw = tw + ph * 2;
+      const rh = 20 + pv * 2;
+
+      // Pill background
       ctx.beginPath();
-      ctx.moveTo(sx, 0);
-      ctx.lineTo(sx, height);
+      _roundRect(ctx, rx, ry, rw, rh, 10);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.10)';
+      ctx.lineWidth = 1;
       ctx.stroke();
+
+      // Label text
+      ctx.fillStyle = '#1a1d2e';
+      ctx.fillText(label, sx, sy);
     }
 
-    // Y gridlines
-    const yTicks = yScale.ticks(6);
-    for (const tick of yTicks) {
-      const sy = yScale(tick) * t.k + t.y;
-      ctx.beginPath();
-      ctx.moveTo(0, sy);
-      ctx.lineTo(width, sy);
-      ctx.stroke();
-    }
-
-    ctx.setLineDash([]);
     ctx.restore();
+  }
+
+  function _clusterToScreen(centroid_2d) {
+    const t = APP.transform;
+    const bx = xScale(centroid_2d[0]);
+    const by = yScale(centroid_2d[1]);
+    return [bx * t.k + t.x, by * t.k + t.y];
+  }
+
+  /** Draw a rounded rectangle path (polyfill for older Safari). */
+  function _roundRect(ctx, x, y, w, h, r) {
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
   }
 
   function _drawPoints() {
@@ -188,6 +215,8 @@ const Canvas = (() => {
 
     const isSearchActive = APP.searchQuery.length > 0;
     const papers = APP.filteredPapers;
+    const baseR   = (Settings?.prefs.pointSize)  ?? 5;
+    const opacity = (Settings?.prefs.pointOpacity) ?? 1.0;
 
     for (const paper of papers) {
       const bx = xScale(paper.embedding_2d[0]);
@@ -202,11 +231,11 @@ const Canvas = (() => {
       const color = CATEGORY_COLORS[paper.category] || DEFAULT_COLOR;
 
       // Fade non-matching points during search
-      const alpha = isSearchActive && !isMatch ? 0.12 : 1.0;
+      const alpha = (isSearchActive && !isMatch ? 0.10 : opacity);
 
-      const radius = isHovered || isActive ? POINT_RADIUS_HOVER
-                   : isSelected            ? POINT_RADIUS_SELECTED
-                   : POINT_RADIUS;
+      const radius = isHovered || isActive ? baseR + POINT_RADIUS_HOVER_EXTRA
+                   : isSelected            ? baseR + POINT_RADIUS_SELECTED_EXTRA
+                   : baseR;
 
       ctx.globalAlpha = alpha;
 
