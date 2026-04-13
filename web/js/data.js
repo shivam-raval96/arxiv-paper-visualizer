@@ -1,70 +1,88 @@
 /**
- * data.js — Data loading and management
+ * data.js — Data loading: manifest, per-month files, state management
  */
 
 const Data = (() => {
 
-  // Try local first (works when running from file:// or same origin),
-  // then fall back to GitHub raw CDN.
-  const DATA_URLS = [
-    './data/papers.json',
-    'https://raw.githubusercontent.com/shivam-raval96/arxiv-paper-visualizer/main/web/data/papers.json'
+  const BASE_URLS = [
+    './data/',
+    'https://raw.githubusercontent.com/shivam-raval96/arxiv-paper-visualizer/main/web/data/'
   ];
 
-  /**
-   * Load papers from the first available URL.
-   * Populates APP.allPapers.
-   */
-  async function load() {
-    let lastError;
+  let _baseUrl = BASE_URLS[0];
 
-    for (const url of DATA_URLS) {
+  // ── Manifest ──────────────────────────────────────────────────────────────────
+
+  /**
+   * Load manifest.json to discover available months.
+   * Populates APP.manifest and builds month tabs.
+   */
+  async function loadManifest() {
+    for (const base of BASE_URLS) {
       try {
-        const res = await fetch(url);
+        const res = await fetch(base + 'manifest.json');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
-        _process(json.papers || []);
-        APP.clusters = json.clusters || [];
-        console.log(`Loaded ${APP.allPapers.length} papers, ${APP.clusters.length} clusters from ${url}`);
+        APP.manifest = json.months || [];
+        _baseUrl = base;
+        console.log(`Loaded manifest from ${base}: ${APP.manifest.length} months`);
         return;
-      } catch (err) {
-        lastError = err;
-        console.warn(`Failed to load from ${url}:`, err.message);
+      } catch (e) {
+        console.warn(`Manifest not found at ${base}:`, e.message);
       }
     }
+    // Fallback: single papers.json
+    APP.manifest = [{ key: 'default', label: 'Latest', file: 'papers.json', count: 0 }];
+  }
 
-    throw new Error(`Could not load papers: ${lastError?.message}`);
+  // ── Per-month paper loading ───────────────────────────────────────────────────
+
+  /**
+   * Load a specific month's papers file.
+   * Updates APP.allPapers, APP.clusters, APP.currentMonth.
+   */
+  async function loadMonth(monthKey) {
+    const entry = APP.manifest.find(m => m.key === monthKey) || APP.manifest[0];
+    if (!entry) throw new Error('No manifest entry for ' + monthKey);
+
+    const res = await fetch(_baseUrl + entry.file);
+    if (!res.ok) throw new Error(`HTTP ${res.status} loading ${entry.file}`);
+    const json = await res.json();
+
+    _process(json.papers || []);
+    APP.clusters     = json.clusters || [];
+    APP.currentMonth = monthKey;
+    console.log(`Loaded ${APP.allPapers.length} papers for ${entry.label}`);
   }
 
   /**
-   * Validate, deduplicate, and store papers in APP.allPapers.
-   * Skips papers with invalid embedding_2d.
+   * Initial load — uses manifest's first (newest) month.
    */
+  async function load() {
+    await loadManifest();
+    const first = APP.manifest[0];
+    if (first) await loadMonth(first.key);
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────────
+
   function _process(papers) {
     const seen = new Set();
     APP.allPapers = papers.filter(p => {
       if (!p.arxiv_id || seen.has(p.arxiv_id)) return false;
-      if (!Array.isArray(p.embedding_2d) || p.embedding_2d.length < 2) return false;
-      if (!isFinite(p.embedding_2d[0]) || !isFinite(p.embedding_2d[1])) return false;
+      if (!Array.isArray(p.embedding_2d) || !isFinite(p.embedding_2d[0])) return false;
       seen.add(p.arxiv_id);
       return true;
     });
   }
 
-  /**
-   * Return all unique categories present in APP.allPapers.
-   */
   function getCategories() {
     return [...new Set(APP.allPapers.map(p => p.category))].sort();
   }
 
-  /**
-   * Return the extent [min, max] of embedding_2d values across a given dimension.
-   * @param {0|1} dim
-   */
   function getEmbeddingExtent(dim) {
     return d3.extent(APP.allPapers, p => p.embedding_2d[dim]);
   }
 
-  return { load, getCategories, getEmbeddingExtent };
+  return { load, loadMonth, loadManifest, getCategories, getEmbeddingExtent };
 })();

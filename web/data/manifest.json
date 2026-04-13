@@ -1,0 +1,34 @@
+{
+  "months": [
+    {
+      "key": "2026-04",
+      "label": "Apr 2026",
+      "file": "papers_2026-04.json",
+      "count": 300
+    },
+    {
+      "key": "2026-03",
+      "label": "Mar 2026",
+      "file": "papers_2026-03.json",
+      "count": 400
+    },
+    {
+      "key": "2026-02",
+      "label": "Feb 2026",
+      "file": "papers_2026-02.json",
+      "count": 400
+    },
+    {
+      "key": "2026-01",
+      "label": "Jan 2026",
+      "file": "papers_2026-01.json",
+      "count": 400
+    },
+    {
+      "key": "2025-12",
+      "label": "Dec 2025",
+      "file": "papers_2025-12.json",
+      "count": 400
+    }
+  ]
+}

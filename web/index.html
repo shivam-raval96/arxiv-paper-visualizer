@@ -11,11 +11,13 @@
   <!-- Header Controls -->
   <header id="header">
     <div id="header-left">
-      <h1 id="app-title">arXiv Paper Visualizer</h1>
+      <h1 id="app-title">arXiv Paper Map</h1>
+      <!-- Month tabs (populated from manifest.json) -->
+      <div id="month-tabs"></div>
       <div id="view-toggle">
-        <button class="view-btn active" data-view="daily">Daily</button>
+        <button class="view-btn active" data-view="daily">All</button>
         <button class="view-btn" data-view="saved">Saved <span id="saved-count-badge">0</span></button>
-        <button class="view-btn" data-view="search">Search Results</button>
+        <button class="view-btn" data-view="search">Search</button>
       </div>
     </div>
     <div id="header-right">
@@ -150,6 +152,24 @@
       <div id="loading-overlay">
         <div id="loading-spinner"></div>
         <div id="loading-text">Loading papers...</div>
+      </div>
+
+      <!-- Month loading indicator (shown during tab switch) -->
+      <div id="month-loading" class="hidden">
+        <div id="loading-spinner"></div>
+        <span id="month-loading-text">Switching month…</span>
+      </div>
+
+      <!-- Insights panel (bottom-left, collapsible) -->
+      <div id="insights-panel">
+        <div id="insights-header">
+          <span id="insights-title">Month Insights</span>
+          <button id="insights-toggle" class="icon-btn" title="Toggle insights">▾</button>
+        </div>
+        <div id="insights-body">
+          <div id="insights-stats"></div>
+          <div id="insights-clusters"></div>
+        </div>
       </div>
     </div>
 

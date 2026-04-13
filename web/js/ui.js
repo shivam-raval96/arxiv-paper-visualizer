@@ -418,6 +418,14 @@ const UI = (() => {
       e.target.value = ''; // reset file input
     });
 
+    // Insights panel collapse toggle
+    document.getElementById('insights-toggle')?.addEventListener('click', () => {
+      const body = document.getElementById('insights-body');
+      const btn  = document.getElementById('insights-toggle');
+      const hidden = body.classList.toggle('collapsed');
+      btn.textContent = hidden ? '▸' : '▾';
+    });
+
     document.getElementById('clear-saved-btn').addEventListener('click', async () => {
       if (!confirm('Clear all saved papers?')) return;
       await Storage.clearAll(APP.db);
@@ -427,6 +435,83 @@ const UI = (() => {
       if (APP.activePaper) _updateDetailSaveBtn(APP.activePaper);
       if (APP.currentView === 'saved') applyFiltersAndRender();
       else Canvas.render();
+    });
+  }
+
+  // ── Month Tabs ────────────────────────────────────────────────────────────────
+
+  function buildMonthTabs() {
+    const container = document.getElementById('month-tabs');
+    if (!container) return;
+    container.innerHTML = '';
+    for (const m of APP.manifest) {
+      const btn = document.createElement('button');
+      btn.className = 'month-tab' + (m.key === APP.currentMonth ? ' active' : '');
+      btn.textContent = m.label;
+      btn.title = `${m.count} papers`;
+      btn.addEventListener('click', () => switchMonth(m.key));
+      container.appendChild(btn);
+    }
+  }
+
+  // ── Insights Panel ────────────────────────────────────────────────────────────
+
+  function updateInsights() {
+    const entry = APP.manifest.find(m => m.key === APP.currentMonth);
+    const label = entry?.label || APP.currentMonth || '';
+
+    document.getElementById('insights-title').textContent = `${label} — ${APP.allPapers.length} papers`;
+
+    // Category breakdown
+    const catCounts = {};
+    for (const p of APP.allPapers) {
+      catCounts[p.category] = (catCounts[p.category] || 0) + 1;
+    }
+    const colors = Canvas.getCategoryColors();
+    const statsEl = document.getElementById('insights-stats');
+    const sorted = Object.entries(catCounts).sort((a,b) => b[1]-a[1]);
+    statsEl.innerHTML = sorted.map(([cat, n]) => {
+      const pct = Math.round(n / APP.allPapers.length * 100);
+      const color = colors[cat] || '#8890b0';
+      return `<div class="insight-cat-row">
+        <span class="insight-dot" style="background:${color}"></span>
+        <span class="insight-cat-name">${_escape(cat)}</span>
+        <div class="insight-bar-wrap">
+          <div class="insight-bar" style="width:${pct}%;background:${color}20;border-left:3px solid ${color}"></div>
+        </div>
+        <span class="insight-cat-count">${n}</span>
+      </div>`;
+    }).join('');
+
+    // Top clusters
+    const clustersEl = document.getElementById('insights-clusters');
+    if (!APP.clusters.length) { clustersEl.innerHTML = ''; return; }
+    const clusterCounts = {};
+    for (const p of APP.allPapers) {
+      if (p.cluster_id != null) clusterCounts[p.cluster_id] = (clusterCounts[p.cluster_id]||0)+1;
+    }
+    clustersEl.innerHTML = '<div class="insight-section-title">Clusters</div>' +
+      APP.clusters.map(c => {
+        const n = clusterCounts[c.id] || 0;
+        const pct = Math.round(n / APP.allPapers.length * 100);
+        return `<div class="insight-cluster-row" data-cluster="${c.id}" title="Click to highlight">
+          <span class="insight-cluster-label">${_escape(c.label)}</span>
+          <div class="insight-bar-wrap">
+            <div class="insight-bar" style="width:${pct}%;background:rgba(79,142,247,0.15);border-left:3px solid #4f8ef7"></div>
+          </div>
+          <span class="insight-cat-count">${n}</span>
+        </div>`;
+      }).join('');
+
+    // Click cluster row → filter to that cluster
+    clustersEl.querySelectorAll('.insight-cluster-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const cid = parseInt(row.dataset.cluster);
+        const ids = new Set(APP.allPapers.filter(p => p.cluster_id === cid).map(p => p.arxiv_id));
+        APP.selectedPapers = ids;
+        Canvas.render();
+        updateSelectionInfo();
+      });
     });
   }
 
@@ -459,6 +544,8 @@ const UI = (() => {
     hideTooltip,
     toggleLassoMode,
     updateCategoryFilterBtn,
-    savePaper
+    savePaper,
+    buildMonthTabs,
+    updateInsights
   };
 })();

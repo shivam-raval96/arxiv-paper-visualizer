@@ -39,6 +39,10 @@ const APP = {
   // Cluster metadata (from papers.json)
   clusters: [],
 
+  // Month navigation
+  manifest: [],       // [{key, label, file, count}]
+  currentMonth: null, // 'YYYY-MM'
+
   // IndexedDB reference
   db: null
 };
@@ -69,14 +73,20 @@ async function init() {
     UI.initEventListeners();
     Settings.init();
 
-    // 8. Initial render
+    // 8. Build month tabs
+    UI.buildMonthTabs();
+
+    // 9. Initial render
     applyFiltersAndRender();
 
-    // 9. Update saved UI
+    // 10. Update saved UI
     UI.updateSavedSidebar();
     UI.updateSavedBadge();
 
-    // 10. Hide loading overlay
+    // 11. Render insights
+    UI.updateInsights();
+
+    // 12. Hide loading overlay
     document.getElementById('loading-overlay').style.display = 'none';
 
   } catch (err) {
@@ -103,6 +113,42 @@ function applyFiltersAndRender() {
  */
 function render() {
   Canvas.render();
+}
+
+// ── Month switching ───────────────────────────────────────────────────────────
+
+async function switchMonth(key) {
+  if (key === APP.currentMonth) return;
+
+  const indicator = document.getElementById('month-loading');
+  indicator.classList.remove('hidden');
+
+  try {
+    await Data.loadMonth(key);
+
+    // Reset transient state
+    APP.selectedPapers.clear();
+    APP.hoveredPaper  = null;
+    APP.activePaper   = null;
+    APP.searchQuery   = '';
+    APP.searchResults.clear();
+    APP.currentView   = 'daily';
+
+    // Reset view toggle UI
+    document.querySelectorAll('.view-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.view === 'daily');
+    });
+
+    Canvas.rebuildScales();
+    applyFiltersAndRender();
+    UI.updateInsights();
+    UI.closeDetailPanel();
+    UI.buildMonthTabs(); // re-render to update active state
+  } catch (err) {
+    console.error('Failed to switch month:', err);
+  } finally {
+    indicator.classList.add('hidden');
+  }
 }
 
 // ── Keyboard Shortcuts ────────────────────────────────────────────────────────

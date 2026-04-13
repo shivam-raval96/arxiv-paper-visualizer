@@ -415,6 +415,7 @@ a:hover {
   position: absolute;
   bottom: 16px;
   left: 16px;
+  display: none; /* category info now lives in insights panel */
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -968,6 +969,192 @@ a:hover {
     border-left: none;
     box-shadow: var(--shadow);
   }
+}
+
+/* ===========================
+   Month Tabs
+   =========================== */
+#month-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--bg-primary);
+  border-radius: var(--radius);
+  padding: 3px;
+}
+
+.month-tab {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background var(--transition), color var(--transition);
+  cursor: pointer;
+}
+
+.month-tab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.month-tab.active {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+/* ===========================
+   Month loading indicator
+   =========================== */
+#month-loading {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 20;
+  box-shadow: var(--shadow);
+}
+
+#month-loading #loading-spinner {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
+/* ===========================
+   Insights Panel
+   =========================== */
+#insights-panel {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 240px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  z-index: 10;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+
+html.dark-mode #insights-panel {
+  background: rgba(26,29,46,0.94);
+}
+
+#insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  cursor: default;
+}
+
+#insights-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+#insights-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+#insights-body {
+  padding: 10px 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#insights-body.collapsed {
+  display: none;
+}
+
+.insight-cat-row,
+.insight-cluster-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+  font-size: 11px;
+}
+
+.insight-cluster-row {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 2px 0;
+  transition: background var(--transition);
+}
+
+.insight-cluster-row:hover {
+  background: var(--bg-hover);
+}
+
+.insight-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.insight-cat-name,
+.insight-cluster-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-secondary);
+  min-width: 0;
+  flex: 1;
+}
+
+.insight-bar-wrap {
+  width: 52px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--bg-hover);
+}
+
+.insight-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.insight-cat-count {
+  font-size: 10px;
+  color: var(--text-muted);
+  min-width: 22px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.insight-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  margin: 8px 0 5px;
 }
 
 /* ===========================
