@@ -1,28 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 /* ===========================
    CSS Custom Properties
    =========================== */
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f5f7fa;
-  --bg-card: #ffffff;
-  --bg-hover: #eef0f8;
-  --border: #e2e5f0;
-  --border-light: #c8cedf;
-  --text-primary: #1a1d2e;
-  --text-secondary: #4a5070;
-  --text-muted: #8890b0;
-  --accent-blue: #4f8ef7;
-  --accent-blue-hover: #6ba0f9;
-  --accent-green: #4caf7d;
-  --accent-red: #e05c5c;
-  --accent-orange: #f5a623;
+  --bg-deep:      #EEF2F7;
+  --bg-primary:   #FFFFFF;
+  --bg-secondary: #F8FAFC;
+  --bg-card:      #FFFFFF;
+  --bg-hover:     #F1F5F9;
+  --border:       #E2E8F0;
+  --border-light: #CBD5E1;
+  --text-primary:   #0F172A;
+  --text-secondary: #475569;
+  --text-muted:     #94A3B8;
+  --accent-blue:       #4F46E5;
+  --accent-blue-hover: #4338CA;
+  --accent-dim:        #EEF2FF;
+  --accent-green:  #22C55E;
+  --accent-red:    #EF4444;
+  --accent-orange: #F59E0B;
   --header-height: 56px;
   --bottom-bar-height: 56px;
   --detail-panel-width: 360px;
   --saved-sidebar-width: 320px;
-  --radius: 6px;
-  --radius-sm: 4px;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --radius:    8px;
+  --radius-sm: 6px;
+  --shadow:    0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.10);
   --transition: 0.15s ease;
 
   /* Category colors */
@@ -46,10 +52,12 @@
 html, body {
   height: 100%;
   overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
-  font-size: 14px;
-  background: var(--bg-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 13px;
+  background: var(--bg-deep);
   color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button {
@@ -77,12 +85,13 @@ a:hover {
    =========================== */
 #header {
   height: var(--header-height);
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 20px;
   gap: 16px;
   z-index: 100;
   flex-shrink: 0;
@@ -97,18 +106,19 @@ a:hover {
 
 #app-title {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
 }
 
 #view-toggle {
   display: flex;
   gap: 2px;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border-radius: var(--radius);
   padding: 3px;
+  border: 1px solid var(--border);
 }
 
 .view-btn {
@@ -117,10 +127,11 @@ a:hover {
   color: var(--text-secondary);
   padding: 5px 12px;
   border-radius: var(--radius-sm);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   transition: background var(--transition), color var(--transition);
   white-space: nowrap;
+  font-family: inherit;
 }
 
 .view-btn:hover {
@@ -185,22 +196,27 @@ a:hover {
 .filter-btn {
   background: var(--bg-primary);
   border: 1px solid var(--border);
-  color: var(--text-primary);
-  padding: 6px 12px;
+  color: var(--text-secondary);
+  padding: 5px 12px;
   border-radius: var(--radius-sm);
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
   display: flex;
   align-items: center;
   gap: 4px;
-  transition: border-color var(--transition);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
 }
 
 .filter-btn:hover {
-  border-color: var(--border-light);
+  background: var(--accent-dim);
+  border-color: rgba(79, 70, 229, 0.30);
+  color: var(--accent-blue-hover);
 }
 
 .filter-btn.active {
-  border-color: var(--accent-blue);
+  background: var(--accent-dim);
+  border-color: rgba(79, 70, 229, 0.30);
   color: var(--accent-blue);
 }
 
@@ -218,7 +234,7 @@ a:hover {
   padding: 10px;
   z-index: 200;
   min-width: 160px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-lg);
 }
 
 .dropdown label {
@@ -283,7 +299,7 @@ a:hover {
 }
 
 .icon-btn {
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
   color: var(--text-secondary);
   width: 32px;
@@ -293,12 +309,14 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+  font-family: inherit;
 }
 
 .icon-btn:hover {
-  border-color: var(--border-light);
-  color: var(--text-primary);
+  background: var(--accent-dim);
+  border-color: rgba(79, 70, 229, 0.30);
+  color: var(--accent-blue);
 }
 
 /* ===========================
@@ -317,7 +335,7 @@ a:hover {
   position: relative;
   flex: 1;
   overflow: hidden;
-  background: var(--bg-primary);
+  background: var(--bg-deep);
 }
 
 #main-canvas {
@@ -353,23 +371,25 @@ a:hover {
 }
 
 .tool-btn {
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  padding: 7px 12px;
-  border-radius: var(--radius);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  box-shadow: var(--shadow);
-  transition: all var(--transition);
+  font-family: inherit;
+  box-shadow: var(--shadow-md);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
 }
 
 .tool-btn:hover {
-  border-color: var(--border-light);
-  color: var(--text-primary);
+  background: var(--accent-dim);
+  border-color: rgba(79, 70, 229, 0.30);
+  color: var(--accent-blue-hover);
 }
 
 .tool-btn.active {
@@ -382,11 +402,11 @@ a:hover {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   padding: 4px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-md);
 }
 
 .lasso-mode-btn {
@@ -463,9 +483,9 @@ a:hover {
 /* Tooltip */
 #tooltip {
   position: absolute;
-  background: #ffffff;
+  background: var(--bg-primary);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   max-width: 300px;
   font-size: 12px;
@@ -473,7 +493,7 @@ a:hover {
   color: var(--text-primary);
   pointer-events: auto;  /* allow clicking the link */
   z-index: 50;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  box-shadow: var(--shadow-lg);
 }
 
 #tooltip .tooltip-title {
@@ -539,7 +559,7 @@ a:hover {
 #loading-overlay {
   position: absolute;
   inset: 0;
-  background: var(--bg-primary);
+  background: var(--bg-deep);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -570,7 +590,7 @@ a:hover {
    Panels (Detail + Sidebar)
    =========================== */
 .panel {
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   overflow-y: auto;
   flex-shrink: 0;
   display: flex;
@@ -600,7 +620,7 @@ a:hover {
   bottom: var(--bottom-bar-height);
   z-index: 30;
   border-left: 1px solid var(--border);
-  box-shadow: -4px 0 20px rgba(0,0,0,0.08);
+  box-shadow: -2px 0 16px rgba(0, 0, 0, 0.06);
   /* Slide in from right */
   transform: translateX(100%);
   transition: transform 0.2s ease;
@@ -610,8 +630,8 @@ a:hover {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: var(--bg-hover);
-  border: none;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   color: var(--text-secondary);
   width: 28px;
   height: 28px;
@@ -621,13 +641,15 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
   z-index: 1;
+  font-family: inherit;
 }
 
 .close-btn:hover {
-  background: var(--border);
-  color: var(--text-primary);
+  background: var(--accent-dim);
+  border-color: rgba(79, 70, 229, 0.30);
+  color: var(--accent-blue);
 }
 
 #detail-content {
@@ -642,9 +664,10 @@ a:hover {
   padding: 3px 10px;
   border-radius: 12px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.5px;
-  background: var(--bg-hover);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   color: var(--text-secondary);
   align-self: flex-start;
 }
@@ -668,11 +691,11 @@ a:hover {
 }
 
 #detail-abstract-container h3 {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.07em;
   margin-bottom: 8px;
 }
 
@@ -693,6 +716,7 @@ a:hover {
 /* Saved Sidebar */
 #saved-sidebar {
   width: var(--saved-sidebar-width);
+  background: var(--bg-primary);
 }
 
 #saved-header {
@@ -756,19 +780,19 @@ a:hover {
 }
 
 .saved-item {
-  background: var(--bg-card);
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   margin-bottom: 6px;
   cursor: pointer;
-  transition: all var(--transition);
+  transition: background var(--transition), border-color var(--transition);
   position: relative;
 }
 
 .saved-item:hover {
-  border-color: var(--border-light);
-  background: var(--bg-hover);
+  border-color: rgba(79, 70, 229, 0.30);
+  background: var(--accent-dim);
 }
 
 .saved-item-title {
@@ -833,15 +857,17 @@ a:hover {
 .action-btn {
   border: none;
   border-radius: var(--radius-sm);
-  padding: 8px 14px;
-  font-size: 13px;
+  padding: 7px 14px;
+  font-size: 12px;
   font-weight: 500;
+  font-family: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: all var(--transition);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .action-btn.primary {
@@ -854,13 +880,15 @@ a:hover {
 }
 
 .action-btn.secondary {
-  background: var(--bg-hover);
-  color: var(--text-primary);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   border: 1px solid var(--border);
 }
 
 .action-btn.secondary:hover {
-  border-color: var(--border-light);
+  background: var(--accent-dim);
+  border-color: rgba(79, 70, 229, 0.30);
+  color: var(--accent-blue-hover);
 }
 
 .action-btn.danger {
@@ -876,7 +904,7 @@ a:hover {
 
 .action-btn.small {
   padding: 5px 10px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .action-btn.active {
@@ -889,13 +917,15 @@ a:hover {
    =========================== */
 #bottom-bar {
   height: var(--bottom-bar-height);
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border-top: 1px solid var(--border);
+  box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.04);
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 20px;
   gap: 16px;
   flex-shrink: 0;
+  z-index: 100;
 }
 
 #search-container {
@@ -1010,9 +1040,10 @@ a:hover {
 #month-tabs {
   display: flex;
   gap: 2px;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border-radius: var(--radius);
   padding: 3px;
+  border: 1px solid var(--border);
 }
 
 .month-tab {
@@ -1024,6 +1055,7 @@ a:hover {
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
+  font-family: inherit;
   transition: background var(--transition), color var(--transition);
   cursor: pointer;
 }
@@ -1034,8 +1066,8 @@ a:hover {
 }
 
 .month-tab.active {
-  background: var(--text-primary);
-  color: var(--bg-primary);
+  background: var(--accent-blue);
+  color: #fff;
 }
 
 /* ===========================
@@ -1046,7 +1078,7 @@ a:hover {
   top: 12px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 6px 16px;
@@ -1056,7 +1088,7 @@ a:hover {
   align-items: center;
   gap: 8px;
   z-index: 20;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-md);
 }
 
 #month-loading #loading-spinner {
@@ -1073,17 +1105,17 @@ a:hover {
   bottom: 16px;
   right: 16px;
   width: 240px;
-  background: rgba(255,255,255,0.94);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   z-index: 10;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-lg);
   backdrop-filter: blur(8px);
   overflow: hidden;
 }
 
 html.dark-mode #insights-panel {
-  background: rgba(26,29,46,0.94);
+  background: rgba(15, 17, 23, 0.95);
 }
 
 #insights-header {
@@ -1209,10 +1241,10 @@ html.dark-mode #insights-panel {
   width: 420px;
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 64px);
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
   z-index: 401;
   display: flex;
   flex-direction: column;
@@ -1252,7 +1284,7 @@ html.dark-mode #insights-panel {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.07em;
   color: var(--text-muted);
   margin-bottom: 12px;
 }
@@ -1405,31 +1437,35 @@ html.dark-mode #insights-panel {
    =========================== */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-primary: #0f1117;
-    --bg-secondary: #1a1d2e;
-    --bg-card: #1e2235;
-    --bg-hover: #252840;
-    --border: #2e3250;
-    --border-light: #3d4170;
-    --text-primary: #e8ecf4;
-    --text-secondary: #8890b0;
-    --text-muted: #555e7a;
+    --bg-deep:      #080A0F;
+    --bg-primary:   #0F1117;
+    --bg-secondary: #161922;
+    --bg-card:      #1C2030;
+    --bg-hover:     #232840;
+    --border:       #2A2F4A;
+    --border-light: #363D60;
+    --accent-dim:   rgba(79, 70, 229, 0.12);
+    --text-primary:   #E2E8F0;
+    --text-secondary: #8892B0;
+    --text-muted:     #4A5568;
   }
 }
 
 /* Dark mode via JS toggle (overrides system preference) */
 html.dark-mode {
-  --bg-primary: #0f1117;
-  --bg-secondary: #1a1d2e;
-  --bg-card: #1e2235;
-  --bg-hover: #252840;
-  --border: #2e3250;
-  --border-light: #3d4170;
-  --text-primary: #e8ecf4;
-  --text-secondary: #8890b0;
-  --text-muted: #555e7a;
+  --bg-deep:      #080A0F;
+  --bg-primary:   #0F1117;
+  --bg-secondary: #161922;
+  --bg-card:      #1C2030;
+  --bg-hover:     #232840;
+  --border:       #2A2F4A;
+  --border-light: #363D60;
+  --accent-dim:   rgba(79, 70, 229, 0.12);
+  --text-primary:   #E2E8F0;
+  --text-secondary: #8892B0;
+  --text-muted:     #4A5568;
 }
 
 html.dark-mode #tooltip {
-  background: #1e2235;
+  background: var(--bg-card);
 }
