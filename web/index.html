@@ -76,6 +76,24 @@
         <div id="relabel-status" class="settings-status hidden"></div>
       </section>
 
+      <!-- Shared Papers -->
+      <section class="settings-section">
+        <h3 class="settings-section-title">Shared Papers</h3>
+        <p class="settings-desc">Papers you save are shared with everyone who opens this site. Reading is always public. Saving requires a GitHub Personal Access Token with <strong>contents: write</strong> access to this repository.</p>
+        <div class="settings-row">
+          <label for="gh-token-input">GitHub Token</label>
+          <div class="settings-input-group">
+            <input type="password" id="gh-token-input" placeholder="ghp_..." autocomplete="off" spellcheck="false" />
+            <button id="gh-token-toggle" class="icon-btn small" title="Show/hide token">👁</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span></span>
+          <button id="gh-token-save-btn" class="action-btn primary small">Save Token</button>
+        </div>
+        <div id="gh-token-status" class="settings-status hidden"></div>
+      </section>
+
       <!-- Visual -->
       <section class="settings-section">
         <h3 class="settings-section-title">Visual</h3>
@@ -197,6 +215,9 @@
     <aside id="saved-sidebar" class="panel hidden">
       <div id="saved-header">
         <h2>Saved Papers <span id="saved-sidebar-count">0</span></h2>
+        <div id="shared-sync-bar">
+          <span id="shared-sync-text">Loading shared list…</span>
+        </div>
         <div id="saved-controls">
           <input type="text" id="saved-search-input" placeholder="Search saved..." />
           <div id="saved-actions">
@@ -227,6 +248,7 @@
 
   <!-- Scripts (order matters for dependencies) -->
   <script src="js/storage.js"></script>
+  <script src="js/shared.js"></script>
   <script src="js/data.js"></script>
   <script src="js/canvas.js"></script>
   <script src="js/lasso.js"></script>

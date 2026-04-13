@@ -720,9 +720,56 @@ a:hover {
 }
 
 #saved-header {
-  padding: 16px;
+  padding: 16px 16px 0;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+}
+
+/* Shared sync status bar */
+#shared-sync-bar {
+  padding: 6px 0 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#shared-sync-bar::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--text-muted);
+}
+
+.shared-sync-bar--ok {
+  color: var(--accent-green) !important;
+}
+.shared-sync-bar--ok::before {
+  background: var(--accent-green) !important;
+}
+
+.shared-sync-bar--syncing {
+  color: var(--accent-blue) !important;
+}
+.shared-sync-bar--syncing::before {
+  background: var(--accent-blue) !important;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.shared-sync-bar--error {
+  color: var(--accent-red) !important;
+}
+.shared-sync-bar--error::before {
+  background: var(--accent-red) !important;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
 }
 
 #saved-header h2 {

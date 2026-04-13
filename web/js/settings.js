@@ -86,6 +86,26 @@ const Settings = (() => {
 
     // Relabel button
     document.getElementById('relabel-btn').addEventListener('click', _relabel);
+
+    // GitHub token show/hide toggle
+    document.getElementById('gh-token-toggle').addEventListener('click', () => {
+      const inp = document.getElementById('gh-token-input');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    });
+
+    // Restore saved token into input field
+    const savedToken = Shared.loadTokenFromStorage();
+    if (savedToken) {
+      document.getElementById('gh-token-input').value = savedToken;
+    }
+
+    // Save token button
+    document.getElementById('gh-token-save-btn').addEventListener('click', () => {
+      const token = document.getElementById('gh-token-input').value.trim();
+      Shared.setToken(token);
+      _setGhStatus(token ? 'success' : 'error', token ? 'Token saved.' : 'Token cleared.');
+      UI.updateSharedSyncBar();
+    });
   }
 
   // ── Open / Close ──────────────────────────────────────────────────────────────
@@ -180,6 +200,14 @@ const Settings = (() => {
     el.textContent = msg;
     el.classList.remove('hidden');
     if (type === 'success') setTimeout(() => el.classList.add('hidden'), 4000);
+  }
+
+  function _setGhStatus(type, msg) {
+    const el = document.getElementById('gh-token-status');
+    el.className = `settings-status settings-status-${type}`;
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 3000);
   }
 
   // ── Public ────────────────────────────────────────────────────────────────────

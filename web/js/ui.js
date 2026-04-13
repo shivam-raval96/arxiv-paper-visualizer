@@ -205,11 +205,13 @@ const UI = (() => {
     } else {
       await Storage.save(APP.db, paper);
       APP.savedPapers.set(paper.arxiv_id, { ...paper, savedAt: Date.now() });
+      _updateDetailSaveBtn(paper);
+      updateSavedSidebar();
+      updateSavedBadge();
+      Canvas.render();
+      // Push to shared list in background
+      _syncShared('add', paper);
     }
-    _updateDetailSaveBtn(paper);
-    updateSavedSidebar();
-    updateSavedBadge();
-    Canvas.render();
   }
 
   async function _unsavePaper(id) {
@@ -222,6 +224,65 @@ const UI = (() => {
     updateSavedBadge();
     if (APP.currentView === 'saved') applyFiltersAndRender();
     else Canvas.render();
+    // Remove from shared list in background
+    _syncShared('remove', id);
+  }
+
+  // ── Shared sync ───────────────────────────────────────────────────────────────
+
+  async function _syncShared(action, paperOrId) {
+    if (!Shared.getToken()) return; // no token → local-only
+    _setSharedSyncBar('syncing');
+    try {
+      if (action === 'add') {
+        await Shared.addPaper(paperOrId);
+      } else {
+        await Shared.removePaper(paperOrId);
+      }
+      _setSharedSyncBar('ok');
+    } catch (err) {
+      console.warn('Shared sync failed:', err.message);
+      _setSharedSyncBar('error', err.message);
+    }
+  }
+
+  function updateSharedSyncBar(count, errMsg) {
+    const bar  = document.getElementById('shared-sync-bar');
+    const text = document.getElementById('shared-sync-text');
+    if (!bar || !text) return;
+
+    if (errMsg) {
+      bar.className = 'shared-sync-bar shared-sync-bar--error';
+      text.textContent = 'Could not load shared list';
+      return;
+    }
+
+    const hasToken = !!Shared.getToken();
+    if (count === null || count === undefined) {
+      bar.className = 'shared-sync-bar';
+      text.textContent = hasToken ? 'Shared list ready' : 'Read-only — add a GitHub token in Settings to save for everyone';
+      return;
+    }
+    bar.className = 'shared-sync-bar shared-sync-bar--ok';
+    text.textContent = hasToken
+      ? `${count} shared paper${count !== 1 ? 's' : ''} — saves sync for all visitors`
+      : `${count} shared paper${count !== 1 ? 's' : ''} — add a GitHub token in Settings to contribute`;
+  }
+
+  function _setSharedSyncBar(state, msg) {
+    const bar  = document.getElementById('shared-sync-bar');
+    const text = document.getElementById('shared-sync-text');
+    if (!bar || !text) return;
+    if (state === 'syncing') {
+      bar.className = 'shared-sync-bar shared-sync-bar--syncing';
+      text.textContent = 'Syncing…';
+    } else if (state === 'ok') {
+      bar.className = 'shared-sync-bar shared-sync-bar--ok';
+      text.textContent = `Synced — ${APP.savedPapers.size} shared paper${APP.savedPapers.size !== 1 ? 's' : ''}`;
+    } else {
+      bar.className = 'shared-sync-bar shared-sync-bar--error';
+      text.textContent = msg || 'Sync failed';
+    }
   }
 
   // ── Event Listeners ───────────────────────────────────────────────────────────
@@ -547,6 +608,7 @@ const UI = (() => {
     updateCategoryFilterBtn,
     savePaper,
     buildMonthTabs,
-    updateInsights
+    updateInsights,
+    updateSharedSyncBar,
   };
 })();

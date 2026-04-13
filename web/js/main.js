@@ -57,36 +57,51 @@ async function init() {
     const saved = await Storage.getAll(APP.db);
     saved.forEach(p => APP.savedPapers.set(p.arxiv_id, p));
 
-    // 3. Load papers.json
+    // 3. Load shared saved papers (public read, no token needed)
+    Shared.loadTokenFromStorage();
+    try {
+      const sharedPapers = await Shared.fetchShared();
+      for (const p of sharedPapers) {
+        if (!APP.savedPapers.has(p.arxiv_id)) {
+          APP.savedPapers.set(p.arxiv_id, { ...p, isShared: true });
+        }
+      }
+      UI.updateSharedSyncBar(sharedPapers.length);
+    } catch (e) {
+      console.warn('Could not load shared papers:', e.message);
+      UI.updateSharedSyncBar(null, e.message);
+    }
+
+    // 4. Load papers.json
     await Data.load();
 
-    // 4. Initialize canvas
+    // 5. Initialize canvas
     Canvas.init();
 
-    // 5. Set up interactions (zoom, hover, click)
+    // 6. Set up interactions (zoom, hover, click)
     Interactions.init();
 
-    // 6. Set up lasso
+    // 7. Set up lasso
     Lasso.init();
 
-    // 7. Bind UI event listeners
+    // 8. Bind UI event listeners
     UI.initEventListeners();
     Settings.init();
 
-    // 8. Build month tabs
+    // 9. Build month tabs
     UI.buildMonthTabs();
 
-    // 9. Initial render
+    // 10. Initial render
     applyFiltersAndRender();
 
-    // 10. Update saved UI
+    // 11. Update saved UI
     UI.updateSavedSidebar();
     UI.updateSavedBadge();
 
-    // 11. Render insights
+    // 12. Render insights
     UI.updateInsights();
 
-    // 12. Hide loading overlay
+    // 13. Hide loading overlay
     document.getElementById('loading-overlay').style.display = 'none';
 
   } catch (err) {
