@@ -71,7 +71,9 @@ const Interactions = (() => {
         UI.showTooltip(paper, sx, sy);
         e.currentTarget.style.cursor = 'pointer';
       } else {
-        UI.hideTooltip();
+        // Don't hide if cursor is over the tooltip itself (so the link is clickable)
+        const tt = document.getElementById('tooltip');
+        if (!tt.matches(':hover')) UI.hideTooltip();
         e.currentTarget.style.cursor = 'grab';
       }
     });

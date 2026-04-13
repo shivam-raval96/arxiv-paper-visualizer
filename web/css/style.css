@@ -471,7 +471,7 @@ a:hover {
   font-size: 12px;
   line-height: 1.45;
   color: var(--text-primary);
-  pointer-events: none;
+  pointer-events: auto;  /* allow clicking the link */
   z-index: 50;
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
@@ -520,6 +520,21 @@ a:hover {
   margin-top: 2px;
 }
 
+#tooltip .tooltip-link {
+  display: block;
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-family: monospace;
+}
+
+#tooltip .tooltip-link:hover {
+  text-decoration: underline;
+}
+
 /* Loading */
 #loading-overlay {
   position: absolute;
@@ -556,21 +571,39 @@ a:hover {
    =========================== */
 .panel {
   background: var(--bg-secondary);
-  border-left: 1px solid var(--border);
   overflow-y: auto;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
 }
 
-.panel.hidden {
+/* Saved sidebar uses display:none; detail panel uses transform slide */
+#saved-sidebar.hidden {
   display: none;
 }
 
-/* Detail Panel */
+#detail-panel.hidden {
+  transform: translateX(100%);
+  pointer-events: none;
+}
+
+#detail-panel:not(.hidden) {
+  transform: translateX(0);
+}
+
+/* Detail Panel — floats over the canvas, never compresses it */
 #detail-panel {
   width: var(--detail-panel-width);
-  position: relative;
+  position: fixed;
+  top: var(--header-height);
+  right: 0;
+  bottom: var(--bottom-bar-height);
+  z-index: 30;
+  border-left: 1px solid var(--border);
+  box-shadow: -4px 0 20px rgba(0,0,0,0.08);
+  /* Slide in from right */
+  transform: translateX(100%);
+  transition: transform 0.2s ease;
 }
 
 .close-btn {
