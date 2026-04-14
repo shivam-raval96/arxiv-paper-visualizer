@@ -77,8 +77,14 @@ def save_output(
             stripped["relevance_score"] = 1.0
         results.append(stripped)
 
+    # Use the most recent paper publication date as the snapshot date so that
+    # the dated snapshot filename reflects when the papers were published, not
+    # when the pipeline happened to run.
+    pub_dates = [p.get("published", "") for p in results if p.get("published")]
+    snap_date = max(pub_dates)[:10] if pub_dates else datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
     payload = {
-        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "date": snap_date,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "papers": results,
     }
