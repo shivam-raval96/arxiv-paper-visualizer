@@ -6,6 +6,7 @@ Usage:
 """
 
 import argparse
+import json
 import logging
 import shutil
 import sys
@@ -76,6 +77,50 @@ def run_pipeline(days: int, categories: list[str], output_path: Path) -> None:
         log.warning("OPENAI_API_KEY not set — skipping cluster labeling (step 4/4)")
 
     log.info("━━━ Pipeline complete: %s ━━━", output_path)
+
+    # ── Step 5: Save dated snapshot + update manifest ────────────────────────
+    _save_dated_snapshot(output_path)
+
+
+def _save_dated_snapshot(output_path: Path) -> None:
+    """
+    After the pipeline writes papers.json, save a permanent dated copy
+    (papers_YYYY-MM-DD.json) and update manifest.json with a 'yesterday'
+    entry pointing to it.  The dated file is never overwritten — it stays
+    in the repo as the permanent record for that run date.
+    """
+    data      = json.loads(output_path.read_text())
+    date_str  = data.get("date", datetime.now(timezone.utc).strftime("%Y-%m-%d"))
+    count     = len(data.get("papers", []))
+
+    # --- dated copy ---
+    dated_filename = f"papers_{date_str}.json"
+    dated_path     = output_path.parent / dated_filename
+    shutil.copy2(output_path, dated_path)
+    log.info("Saved dated snapshot: %s (%d papers)", dated_path, count)
+
+    # --- manifest update ---
+    manifest_path = output_path.parent / "manifest.json"
+    manifest      = json.loads(manifest_path.read_text()) if manifest_path.exists() else {"months": []}
+
+    from datetime import date as _date
+    try:
+        d     = _date.fromisoformat(date_str)
+        label = f"{d.strftime('%b')} {d.day}"   # e.g. "Apr 14"  (no leading zero, cross-platform)
+    except ValueError:
+        label = date_str
+
+    manifest["yesterday"] = {
+        "key":     date_str,
+        "label":   label,
+        "file":    dated_filename,
+        "count":   count,
+        "date":    date_str,
+        "isDaily": True,
+    }
+
+    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
+    log.info("Updated manifest: yesterday → %s", dated_filename)
 
 
 def main():

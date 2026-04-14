@@ -508,9 +508,12 @@ const UI = (() => {
     container.innerHTML = '';
     for (const m of APP.manifest) {
       const btn = document.createElement('button');
-      btn.className = 'month-tab' + (m.key === APP.currentMonth ? ' active' : '');
+      const isActive = m.key === APP.currentMonth;
+      btn.className = 'month-tab'
+        + (isActive   ? ' active'      : '')
+        + (m.isDaily  ? ' month-tab--daily' : '');
       btn.textContent = m.label;
-      btn.title = `${m.count} papers`;
+      btn.title = `${m.count} papers · ${m.isDaily ? 'Daily snapshot' : 'Monthly archive'}`;
       btn.addEventListener('click', () => switchMonth(m.key));
       container.appendChild(btn);
     }

@@ -23,9 +23,15 @@ const Data = (() => {
         const res = await fetch(base + 'manifest.json');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
-        APP.manifest = json.months || [];
+
+        // Build tab list: daily snapshot first (if present), then monthly tabs
+        const tabs = [];
+        if (json.yesterday) tabs.push({ ...json.yesterday, isDaily: true });
+        tabs.push(...(json.months || []));
+        APP.manifest = tabs;
+
         _baseUrl = base;
-        console.log(`Loaded manifest from ${base}: ${APP.manifest.length} months`);
+        console.log(`Loaded manifest from ${base}: ${APP.manifest.length} tabs`);
         return;
       } catch (e) {
         console.warn(`Manifest not found at ${base}:`, e.message);

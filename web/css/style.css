@@ -1117,6 +1117,29 @@ a:hover {
   color: #fff;
 }
 
+/* Daily snapshot tab — green dot indicator */
+.month-tab--daily {
+  padding-left: 20px;
+  position: relative;
+}
+
+.month-tab--daily::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  flex-shrink: 0;
+}
+
+.month-tab--daily.active::before {
+  background: #fff;
+}
+
 /* ===========================
    Month loading indicator
    =========================== */

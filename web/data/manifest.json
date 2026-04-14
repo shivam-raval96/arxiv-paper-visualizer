@@ -1,4 +1,12 @@
 {
+  "yesterday": {
+    "key": "2026-04-10",
+    "label": "Apr 10",
+    "file": "papers_2026-04-10.json",
+    "count": 300,
+    "date": "2026-04-10",
+    "isDaily": true
+  },
   "months": [
     {
       "key": "2026-04",
