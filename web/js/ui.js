@@ -8,6 +8,9 @@ const UI = (() => {
 
   function showDetailPanel(paper) {
     const panel = document.getElementById('detail-panel');
+    // Show detail, hide saved sidebar and empty state
+    document.getElementById('saved-sidebar').classList.add('hidden');
+    document.getElementById('right-panel-empty').classList.add('hidden');
     panel.classList.remove('hidden');
 
     // Category badge
@@ -35,6 +38,10 @@ const UI = (() => {
   function closeDetailPanel() {
     document.getElementById('detail-panel').classList.add('hidden');
     APP.activePaper = null;
+    // Show empty state when not in saved view
+    if (APP.currentView !== 'saved') {
+      document.getElementById('right-panel-empty').classList.remove('hidden');
+    }
   }
 
   function _updateDetailSaveBtn(paper) {
@@ -296,13 +303,24 @@ const UI = (() => {
 
         APP.currentView = btn.dataset.view;
 
-        // Show/hide sidebar based on view
+        // Manage right panel visibility based on view
         const sidebar = document.getElementById('saved-sidebar');
+        const detailPanel = document.getElementById('detail-panel');
+        const emptyState = document.getElementById('right-panel-empty');
         if (APP.currentView === 'saved') {
+          detailPanel.classList.add('hidden');
+          emptyState.classList.add('hidden');
           sidebar.classList.remove('hidden');
           updateSavedSidebar();
         } else {
           sidebar.classList.add('hidden');
+          if (APP.activePaper) {
+            emptyState.classList.add('hidden');
+            detailPanel.classList.remove('hidden');
+          } else {
+            detailPanel.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+          }
         }
 
         applyFiltersAndRender();
@@ -388,6 +406,11 @@ const UI = (() => {
           b.classList.toggle('active', b.dataset.view === 'search');
         });
         document.getElementById('saved-sidebar').classList.add('hidden');
+        // Restore empty state if no paper is active
+        if (!APP.activePaper) {
+          document.getElementById('right-panel-empty').classList.remove('hidden');
+          document.getElementById('detail-panel').classList.add('hidden');
+        }
       }
       applyFiltersAndRender();
     }
@@ -406,6 +429,12 @@ const UI = (() => {
       document.querySelectorAll('.view-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.view === 'daily');
       });
+      // Restore right panel state
+      document.getElementById('saved-sidebar').classList.add('hidden');
+      if (!APP.activePaper) {
+        document.getElementById('right-panel-empty').classList.remove('hidden');
+        document.getElementById('detail-panel').classList.add('hidden');
+      }
       applyFiltersAndRender();
     });
 
@@ -498,6 +527,46 @@ const UI = (() => {
       if (APP.currentView === 'saved') applyFiltersAndRender();
       else Canvas.render();
     });
+
+    // ── Resize handles ────────────────────────────────────────────────────────
+    const leftPanel   = document.getElementById('left-panel');
+    const rightPanel  = document.getElementById('right-panel');
+    const resizeLeft  = document.getElementById('resize-left');
+    const resizeRight = document.getElementById('resize-right');
+
+    if (resizeLeft && leftPanel) {
+      resizeLeft.addEventListener('mousedown', e => {
+        e.preventDefault();
+        const startX = e.clientX;
+        const startW = leftPanel.offsetWidth;
+        const onMove = e => {
+          leftPanel.style.width = Math.max(160, Math.min(480, startW + e.clientX - startX)) + 'px';
+        };
+        const onUp = () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        };
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    }
+
+    if (resizeRight && rightPanel) {
+      resizeRight.addEventListener('mousedown', e => {
+        e.preventDefault();
+        const startX = e.clientX;
+        const startW = rightPanel.offsetWidth;
+        const onMove = e => {
+          rightPanel.style.width = Math.max(260, Math.min(580, startW - (e.clientX - startX))) + 'px';
+        };
+        const onUp = () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        };
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    }
   }
 
   // ── Month Tabs ────────────────────────────────────────────────────────────────
