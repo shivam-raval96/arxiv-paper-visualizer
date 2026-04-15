@@ -70,11 +70,12 @@ def run_pipeline(days: int, categories: list[str], output_path: Path) -> None:
 
     # ── Step 4: Cluster + label (requires OPENAI_API_KEY) ───────────────────
     import os
-    if os.environ.get("OPENAI_API_KEY"):
-        log.info("━━━ Step 4/4: Clustering and labeling with OpenAI ━━━")
-        label_clusters.main(["--input", str(output_path)])
-    else:
-        log.warning("OPENAI_API_KEY not set — skipping cluster labeling (step 4/4)")
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        log.error("OPENAI_API_KEY not set — aborting pipeline (cluster labels required)")
+        sys.exit(1)
+    log.info("━━━ Step 4/4: Clustering and labeling with OpenAI ━━━")
+    label_clusters.main(["--input", str(output_path)])
 
     log.info("━━━ Pipeline complete: %s ━━━", output_path)
 
