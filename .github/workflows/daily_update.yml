@@ -47,6 +47,10 @@ jobs:
           CATEGORIES: ${{ github.event.inputs.categories || 'cs.AI,cs.CV,cs.LG,cs.NLP,stat.ML,math.ST' }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::OPENAI_API_KEY secret is not set — cluster labels will be missing. Add it in repo Settings → Secrets."
+            exit 1
+          fi
           python main.py --days "$DAYS" --categories "$CATEGORIES" --output ../web/data/papers.json
 
       - name: Check if data changed
