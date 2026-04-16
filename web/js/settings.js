@@ -13,6 +13,7 @@ const Settings = (() => {
     pointOpacity: 1.0,
     showLabels:   true,
     darkMode:     false,
+    warmBg:       true,   // warm parchment canvas background by default
   };
 
   // Session-only OpenAI key (never written to storage)
@@ -63,6 +64,12 @@ const Settings = (() => {
     // Show labels
     document.getElementById('show-labels-toggle').addEventListener('change', e => {
       prefs.showLabels = e.target.checked;
+      Canvas.render();
+    });
+
+    // Warm background
+    document.getElementById('warm-bg-toggle').addEventListener('change', e => {
+      prefs.warmBg = e.target.checked;
       Canvas.render();
     });
 

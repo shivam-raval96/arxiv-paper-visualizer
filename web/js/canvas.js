@@ -142,8 +142,10 @@ const Canvas = (() => {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Background — white normally, dark in dark mode
-    ctx.fillStyle = document.documentElement.classList.contains('dark-mode') ? '#0f1117' : '#ffffff';
+    // Background
+    const isDark = document.documentElement.classList.contains('dark-mode');
+    ctx.fillStyle = isDark ? '#0f1117'
+                 : (Settings?.prefs.warmBg ? '#FAF8F5' : '#ffffff');
     ctx.fillRect(0, 0, width, height);
 
     // Points (save/restore for zoom transform)
