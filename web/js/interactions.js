@@ -71,9 +71,7 @@ const Interactions = (() => {
         UI.showTooltip(paper, sx, sy);
         e.currentTarget.style.cursor = 'pointer';
       } else {
-        // Don't hide if cursor is over the tooltip itself (so the link is clickable)
-        const tt = document.getElementById('tooltip');
-        if (!tt.matches(':hover')) UI.hideTooltip();
+        UI.hideTooltip();
         e.currentTarget.style.cursor = 'grab';
       }
     });
@@ -101,11 +99,7 @@ const Interactions = (() => {
     Canvas.render();
   }
 
-  function _onMouseLeave(e) {
-    // If the pointer moved onto the tooltip div, keep it visible so
-    // the user can click the arXiv link inside it.
-    const tt = document.getElementById('tooltip');
-    if (tt && (e.relatedTarget === tt || tt.contains(e.relatedTarget))) return;
+  function _onMouseLeave() {
     APP.hoveredPaper = null;
     UI.hideTooltip();
     Canvas.render();

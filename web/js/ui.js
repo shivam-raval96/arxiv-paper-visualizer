@@ -144,18 +144,10 @@ const UI = (() => {
     tt.classList.remove('hidden');
     const authors = (paper.authors || []).slice(0, 3).map(_escape).join(', ')
                   + ((paper.authors || []).length > 3 ? ' et al.' : '');
-    const arxivUrl = `https://arxiv.org/abs/${paper.arxiv_id}`;
 
     tt.innerHTML = `
       <div class="tooltip-title">${_escape(paper.title)}</div>
-      <div class="tooltip-authors">${authors}</div>
-      <div class="tooltip-meta">
-        <span class="tooltip-cat">${_escape(paper.category)}</span>
-        ${paper.published ? `<span class="tooltip-date">${_escape(paper.published)}</span>` : ''}
-      </div>
-      <a class="tooltip-link" href="${arxivUrl}" target="_blank" rel="noopener">
-        arxiv.org/${_escape(paper.arxiv_id)} ↗
-      </a>
+      ${authors ? `<div class="tooltip-authors">${authors}</div>` : ''}
     `;
 
     const container = document.getElementById('canvas-container');

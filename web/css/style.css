@@ -712,12 +712,12 @@ a:hover {
   background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  max-width: 300px;
+  padding: 8px 12px;
+  max-width: 280px;
   font-size: 12px;
   line-height: 1.45;
   color: var(--text-primary);
-  pointer-events: auto;  /* allow clicking the link */
+  pointer-events: none;
   z-index: 50;
   box-shadow: var(--shadow-lg);
 }
@@ -725,60 +725,13 @@ a:hover {
 #tooltip .tooltip-title {
   font-weight: 600;
   font-size: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   line-height: 1.4;
 }
 
 #tooltip .tooltip-authors {
   color: var(--text-secondary);
   font-size: 11px;
-  margin-bottom: 5px;
-}
-
-#tooltip .tooltip-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-}
-
-#tooltip .tooltip-cat {
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 10px;
-  font-size: 10px;
-  font-weight: 700;
-  background: var(--bg-hover);
-  color: var(--text-secondary);
-}
-
-#tooltip .tooltip-date {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-#tooltip .tooltip-abstract {
-  font-size: 11px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  border-top: 1px solid var(--border);
-  padding-top: 6px;
-  margin-top: 2px;
-}
-
-#tooltip .tooltip-link {
-  display: block;
-  margin-top: 7px;
-  padding-top: 7px;
-  border-top: 1px solid var(--border);
-  font-size: 11px;
-  color: var(--accent-blue);
-  text-decoration: none;
-  font-family: monospace;
-}
-
-#tooltip .tooltip-link:hover {
-  text-decoration: underline;
 }
 
 /* Loading */
