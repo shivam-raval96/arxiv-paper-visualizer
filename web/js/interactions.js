@@ -55,11 +55,16 @@ const Interactions = (() => {
     if (APP.mode === 'lasso') return;
     if (_hoverThrottle) return;
 
+    // Capture everything from the event synchronously — e.currentTarget
+    // becomes null once the browser finishes dispatching the event, so
+    // reading it inside requestAnimationFrame throws silently.
+    const canvasEl = e.currentTarget;
+    const rect     = canvasEl.getBoundingClientRect();
+    const sx       = e.clientX - rect.left;
+    const sy       = e.clientY - rect.top;
+
     _hoverThrottle = requestAnimationFrame(() => {
       _hoverThrottle = null;
-      const rect  = e.currentTarget.getBoundingClientRect();
-      const sx    = e.clientX - rect.left;
-      const sy    = e.clientY - rect.top;
       const paper = Canvas.hitTest(sx, sy, 12);
 
       if (paper !== APP.hoveredPaper) {
@@ -69,10 +74,10 @@ const Interactions = (() => {
 
       if (paper) {
         UI.showTooltip(paper, sx, sy);
-        e.currentTarget.style.cursor = 'pointer';
+        canvasEl.style.cursor = 'pointer';
       } else {
         UI.hideTooltip();
-        e.currentTarget.style.cursor = 'grab';
+        canvasEl.style.cursor = 'grab';
       }
     });
   }
