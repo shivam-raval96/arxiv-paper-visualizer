@@ -285,20 +285,20 @@ const Canvas = (() => {
       ctx.stroke();
     }
 
-    // Active: white halo so black dot pops against any background
-    if (isActive) {
-      ctx.beginPath();
-      ctx.arc(bx, by, radius + 3, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
-    }
-
-    // Main dot — black for active, category color otherwise
+    // Main dot — category color always
     ctx.beginPath();
     ctx.arc(bx, by, radius, 0, Math.PI * 2);
-    ctx.fillStyle = isActive ? '#1a1a1a' : color;
+    ctx.fillStyle = color;
     ctx.fill();
+
+    // Active: black border
+    if (isActive) {
+      ctx.beginPath();
+      ctx.arc(bx, by, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = '#1a1a1a';
+      ctx.lineWidth = 2 / APP.transform.k; // stay 2px wide regardless of zoom
+      ctx.stroke();
+    }
 
     // Hover: subtle white inner ring
     if (isHovered && !isActive) {
