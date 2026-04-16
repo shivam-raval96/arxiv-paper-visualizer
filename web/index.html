@@ -147,8 +147,18 @@
     <!-- ── Three-column body ── -->
     <div class="app__body">
 
-      <!-- Left panel: Insights -->
+      <!-- Left panel: Selection + Insights -->
       <aside class="app__left-panel" id="left-panel">
+
+        <!-- Selection panel — shown when papers are lasso-selected -->
+        <div id="selection-panel" class="sel-panel hidden">
+          <div class="sel-panel__header">
+            <span id="selection-panel-count" class="sel-panel__count">0 selected</span>
+            <button id="clear-selection-btn" class="sel-panel__clear" title="Clear selection">✕ Clear</button>
+          </div>
+          <div id="selection-list" class="sel-panel__list"></div>
+        </div>
+
         <div id="insights-panel">
           <div id="insights-header">
             <span id="insights-title">Month Insights</span>

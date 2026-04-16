@@ -117,6 +117,49 @@ const UI = (() => {
     document.getElementById('saved-count-badge').textContent = APP.savedPapers.size;
   }
 
+  // ── Selection Panel (left panel) ─────────────────────────────────────────────
+
+  function updateSelectionPanel() {
+    const panel     = document.getElementById('selection-panel');
+    const countEl   = document.getElementById('selection-panel-count');
+    const list      = document.getElementById('selection-list');
+    const selCount  = APP.selectedPapers.size;
+
+    if (selCount === 0) {
+      panel.classList.add('hidden');
+      return;
+    }
+
+    panel.classList.remove('hidden');
+    countEl.textContent = `${selCount} selected`;
+
+    // Look up paper objects for each selected id
+    const papers = [...APP.selectedPapers]
+      .map(id => APP.allPapers.find(p => p.arxiv_id === id))
+      .filter(Boolean);
+
+    list.innerHTML = '';
+    for (const paper of papers) {
+      const item = document.createElement('div');
+      item.className = 'sel-item' + (APP.activePaper?.arxiv_id === paper.arxiv_id ? ' active' : '');
+      const authors = (paper.authors || []).slice(0, 2).join(', ')
+                    + ((paper.authors || []).length > 2 ? ' et al.' : '');
+      item.innerHTML = `
+        <div class="sel-item__title">${_escape(paper.title)}</div>
+        ${authors ? `<div class="sel-item__authors">${_escape(authors)}</div>` : ''}
+      `;
+      item.addEventListener('click', () => {
+        APP.activePaper = paper;
+        showDetailPanel(paper);
+        Canvas.render();
+        // Highlight the clicked item
+        list.querySelectorAll('.sel-item').forEach(el => el.classList.remove('active'));
+        item.classList.add('active');
+      });
+      list.appendChild(item);
+    }
+  }
+
   // ── Selection Info Bar ────────────────────────────────────────────────────────
 
   function updateSelectionInfo() {
@@ -470,6 +513,14 @@ const UI = (() => {
       APP.selectedPapers.clear();
       Canvas.render();
       updateSelectionInfo();
+      updateSelectionPanel();
+    });
+
+    document.getElementById('clear-selection-btn').addEventListener('click', () => {
+      APP.selectedPapers.clear();
+      Canvas.render();
+      updateSelectionInfo();
+      updateSelectionPanel();
     });
 
     // Saved sidebar controls
@@ -666,6 +717,7 @@ const UI = (() => {
     updateSavedSidebar,
     updateSavedBadge,
     updateSelectionInfo,
+    updateSelectionPanel,
     showTooltip,
     hideTooltip,
     toggleLassoMode,
