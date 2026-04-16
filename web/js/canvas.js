@@ -5,15 +5,16 @@
 const Canvas = (() => {
 
   // ── Category color palette ──────────────────────────────────────────────────
+  // Tableau-inspired categorical palette — distinct, muted, colorblind-friendly
   const CATEGORY_COLORS = {
-    'cs.AI':    '#f56c6c',
-    'cs.CV':    '#67c3f3',
-    'cs.LG':    '#a5d86e',
-    'cs.NLP':   '#f5a623',
-    'stat.ML':  '#c77dff',
-    'math.ST':  '#4ecdc4',
+    'cs.AI':   '#E15759',   // muted red
+    'cs.CV':   '#4E79A7',   // steel blue
+    'cs.LG':   '#59A14F',   // sage green
+    'cs.NLP':  '#F28E2B',   // warm orange
+    'stat.ML': '#B07AA1',   // dusty purple
+    'math.ST': '#76B7B2',   // teal
   };
-  const DEFAULT_COLOR = '#8890b0';
+  const DEFAULT_COLOR = '#9BA3B8';   // neutral blue-grey
 
   // Extra radii on top of Settings.prefs.pointSize
   const POINT_RADIUS_HOVER_EXTRA    = 3;   // hover: slightly enlarged
@@ -221,7 +222,7 @@ const Canvas = (() => {
 
     const isSearchActive = APP.searchQuery.length > 0;
     const papers  = APP.filteredPapers;
-    const baseR   = (Settings?.prefs.pointSize)   ?? 5;
+    const baseR   = (Settings?.prefs.pointSize)   ?? 3;
     const opacity = (Settings?.prefs.pointOpacity) ?? 1.0;
     const hoverId  = APP.hoveredPaper?.arxiv_id;
     const activeId = APP.activePaper?.arxiv_id;

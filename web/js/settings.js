@@ -9,7 +9,7 @@ const Settings = (() => {
 
   // Live visual settings — canvas.js reads these
   const prefs = {
-    pointSize:    5,
+    pointSize:    3,
     pointOpacity: 1.0,
     showLabels:   true,
     darkMode:     false,

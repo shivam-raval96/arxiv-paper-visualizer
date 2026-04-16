@@ -30,13 +30,13 @@
   --transition: 0.15s ease;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
-  /* Category colors */
-  --cat-cs-ai:    #f56c6c;
-  --cat-cs-cv:    #67c3f3;
-  --cat-cs-lg:    #a5d86e;
-  --cat-cs-nlp:   #f5a623;
-  --cat-stat-ml:  #c77dff;
-  --cat-math-st:  #4ecdc4;
+  /* Category colors — Tableau-inspired palette */
+  --cat-cs-ai:    #E15759;
+  --cat-cs-cv:    #4E79A7;
+  --cat-cs-lg:    #59A14F;
+  --cat-cs-nlp:   #F28E2B;
+  --cat-stat-ml:  #B07AA1;
+  --cat-math-st:  #76B7B2;
 }
 
 /* ===========================
