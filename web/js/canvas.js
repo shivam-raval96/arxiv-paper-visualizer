@@ -15,9 +15,10 @@ const Canvas = (() => {
   };
   const DEFAULT_COLOR = '#8890b0';
 
-  // Base radii — actual size comes from Settings.prefs.pointSize at render time
-  const POINT_RADIUS_HOVER_EXTRA = 2;
-  const POINT_RADIUS_SELECTED_EXTRA = 2;
+  // Extra radii on top of Settings.prefs.pointSize
+  const POINT_RADIUS_HOVER_EXTRA    = 3;   // hover: slightly enlarged
+  const POINT_RADIUS_ACTIVE_EXTRA   = 5;   // clicked: larger + black fill
+  const POINT_RADIUS_SELECTED_EXTRA = 2;   // lasso-selected ring
 
   // ── Module state ─────────────────────────────────────────────────────────────
   let canvas, ctx;
@@ -219,66 +220,94 @@ const Canvas = (() => {
     if (!xScale || !yScale) return;
 
     const isSearchActive = APP.searchQuery.length > 0;
-    const papers = APP.filteredPapers;
-    const baseR   = (Settings?.prefs.pointSize)  ?? 5;
+    const papers  = APP.filteredPapers;
+    const baseR   = (Settings?.prefs.pointSize)   ?? 5;
     const opacity = (Settings?.prefs.pointOpacity) ?? 1.0;
+    const hoverId  = APP.hoveredPaper?.arxiv_id;
+    const activeId = APP.activePaper?.arxiv_id;
 
+    // Pass 1 — all normal points (skip hover/active so they render on top)
     for (const paper of papers) {
-      const bx = xScale(paper.embedding_2d[0]);
-      const by = yScale(paper.embedding_2d[1]);
+      if (paper.arxiv_id === hoverId || paper.arxiv_id === activeId) continue;
+      _drawDot(paper, baseR, opacity, isSearchActive);
+    }
 
-      const isSelected = APP.selectedPapers.has(paper.arxiv_id);
-      const isHovered  = APP.hoveredPaper?.arxiv_id === paper.arxiv_id;
-      const isActive   = APP.activePaper?.arxiv_id === paper.arxiv_id;
-      const isSaved    = APP.savedPapers.has(paper.arxiv_id);
-      const isMatch    = !isSearchActive || APP.searchResults.has(paper.arxiv_id);
+    // Pass 2 — hovered point (on top, but below active)
+    if (hoverId && hoverId !== activeId) {
+      const p = papers.find(p => p.arxiv_id === hoverId);
+      if (p) _drawDot(p, baseR, opacity, isSearchActive);
+    }
 
-      const color = CATEGORY_COLORS[paper.category] || DEFAULT_COLOR;
-
-      // Fade non-matching points during search
-      const alpha = (isSearchActive && !isMatch ? 0.10 : opacity);
-
-      const radius = isHovered || isActive ? baseR + POINT_RADIUS_HOVER_EXTRA
-                   : isSelected            ? baseR + POINT_RADIUS_SELECTED_EXTRA
-                   : baseR;
-
-      ctx.globalAlpha = alpha;
-
-      // Outer selection ring
-      if (isSelected || isActive) {
-        ctx.beginPath();
-        ctx.arc(bx, by, radius + 3.5, 0, Math.PI * 2);
-        ctx.strokeStyle = isActive ? '#fff' : color;
-        ctx.lineWidth = isActive ? 2 : 1.5;
-        ctx.stroke();
-      }
-
-      // Saved indicator (inner dot)
-      if (isSaved) {
-        ctx.beginPath();
-        ctx.arc(bx, by, radius + 5, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(245, 166, 35, 0.7)';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      }
-
-      // Main dot
-      ctx.beginPath();
-      ctx.arc(bx, by, radius, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-
-      // Hover glow
-      if (isHovered || isActive) {
-        ctx.beginPath();
-        ctx.arc(bx, by, radius + 1, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
+    // Pass 3 — active/clicked point (topmost)
+    if (activeId) {
+      const p = papers.find(p => p.arxiv_id === activeId);
+      if (p) _drawDot(p, baseR, opacity, isSearchActive);
     }
 
     ctx.globalAlpha = 1.0;
+  }
+
+  function _drawDot(paper, baseR, opacity, isSearchActive) {
+    const bx = xScale(paper.embedding_2d[0]);
+    const by = yScale(paper.embedding_2d[1]);
+
+    const isSelected = APP.selectedPapers.has(paper.arxiv_id);
+    const isHovered  = APP.hoveredPaper?.arxiv_id === paper.arxiv_id;
+    const isActive   = APP.activePaper?.arxiv_id  === paper.arxiv_id;
+    const isSaved    = APP.savedPapers.has(paper.arxiv_id);
+    const isMatch    = !isSearchActive || APP.searchResults.has(paper.arxiv_id);
+
+    const color = CATEGORY_COLORS[paper.category] || DEFAULT_COLOR;
+    const alpha = isSearchActive && !isMatch ? 0.10 : opacity;
+
+    const radius = isActive   ? baseR + POINT_RADIUS_ACTIVE_EXTRA
+                 : isHovered  ? baseR + POINT_RADIUS_HOVER_EXTRA
+                 : isSelected ? baseR + POINT_RADIUS_SELECTED_EXTRA
+                 : baseR;
+
+    ctx.globalAlpha = alpha;
+
+    // Saved indicator ring (outermost)
+    if (isSaved) {
+      ctx.beginPath();
+      ctx.arc(bx, by, radius + 5, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(245, 166, 35, 0.7)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Lasso-selection ring
+    if (isSelected && !isActive) {
+      ctx.beginPath();
+      ctx.arc(bx, by, radius + 3, 0, Math.PI * 2);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Active: white halo so black dot pops against any background
+    if (isActive) {
+      ctx.beginPath();
+      ctx.arc(bx, by, radius + 3, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
+
+    // Main dot — black for active, category color otherwise
+    ctx.beginPath();
+    ctx.arc(bx, by, radius, 0, Math.PI * 2);
+    ctx.fillStyle = isActive ? '#1a1a1a' : color;
+    ctx.fill();
+
+    // Hover: subtle white inner ring
+    if (isHovered && !isActive) {
+      ctx.beginPath();
+      ctx.arc(bx, by, radius + 1, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
   }
 
   // ── Legend ────────────────────────────────────────────────────────────────────
