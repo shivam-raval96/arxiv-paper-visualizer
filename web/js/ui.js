@@ -27,6 +27,10 @@ const UI = (() => {
     document.getElementById('detail-abstract').textContent =
       paper.abstract || 'No abstract available.';
 
+    // Annotation
+    const annotationEl = document.getElementById('detail-annotation');
+    if (annotationEl) annotationEl.value = _loadAnnotation(paper.arxiv_id);
+
     // arXiv link
     const link = document.getElementById('detail-arxiv-link');
     link.href = `https://arxiv.org/abs/${paper.arxiv_id}`;
@@ -132,6 +136,10 @@ const UI = (() => {
 
     panel.classList.remove('hidden');
     countEl.textContent = `${selCount} selected`;
+
+    // Show/hide compare button depending on whether group A is set
+    const compareBtn = document.getElementById('sel-compare-btn');
+    if (compareBtn) compareBtn.classList.toggle('hidden', !APP.compareGroupA);
 
     // Look up paper objects for each selected id
     const papers = [...APP.selectedPapers]
@@ -552,6 +560,74 @@ const UI = (() => {
       e.target.value = ''; // reset file input
     });
 
+    // ── Cluster panel ─────────────────────────────────────────────────────────
+    document.getElementById('cluster-panel-close')?.addEventListener('click', closeClusterPanel);
+    document.getElementById('cluster-overlay')?.addEventListener('click', closeClusterPanel);
+    document.getElementById('cluster-summary-btn')?.addEventListener('click', _generateClusterSummary);
+
+    document.getElementById('compare-set-a-btn')?.addEventListener('click', () => {
+      if (!_activeCluster) return;
+      const papers = APP.allPapers.filter(p => p.cluster_id === _activeCluster.id);
+      APP.compareGroupA = { papers, label: _activeCluster.label };
+      const aLabel = document.getElementById('compare-a-label');
+      aLabel.textContent = 'Group A set ✓';
+      aLabel.classList.remove('hidden');
+      document.getElementById('compare-run-btn').classList.remove('hidden');
+      // Also update sel-panel compare button
+      document.getElementById('sel-compare-btn')?.classList.remove('hidden');
+    });
+
+    document.getElementById('compare-run-btn')?.addEventListener('click', () => {
+      if (!_activeCluster || !APP.compareGroupA) return;
+      const papers = APP.allPapers.filter(p => p.cluster_id === _activeCluster.id);
+      closeClusterPanel();
+      showComparePanel({ papers, label: _activeCluster.label });
+    });
+
+    document.getElementById('compare-panel-close')?.addEventListener('click', closeComparePanel);
+    document.getElementById('compare-overlay')?.addEventListener('click', closeComparePanel);
+
+    // ── Selection panel analysis ──────────────────────────────────────────────
+    document.getElementById('sel-analyze-btn')?.addEventListener('click', () => {
+      const kwEl = document.getElementById('sel-keywords');
+      if (kwEl.classList.contains('hidden')) {
+        const papers = [...APP.selectedPapers]
+          .map(id => APP.allPapers.find(p => p.arxiv_id === id))
+          .filter(Boolean);
+        const kws = _extractKeywords(papers, 14);
+        kwEl.innerHTML = kws.map(w => `<span class="keyword-pill">${_escape(w)}</span>`).join('');
+        kwEl.classList.remove('hidden');
+      } else {
+        kwEl.classList.add('hidden');
+      }
+    });
+
+    document.getElementById('sel-set-a-btn')?.addEventListener('click', () => {
+      const papers = [...APP.selectedPapers]
+        .map(id => APP.allPapers.find(p => p.arxiv_id === id))
+        .filter(Boolean);
+      APP.compareGroupA = { papers, label: `${papers.length} selected papers` };
+      document.getElementById('sel-compare-btn')?.classList.remove('hidden');
+      document.getElementById('compare-run-btn')?.classList.remove('hidden');
+    });
+
+    document.getElementById('sel-compare-btn')?.addEventListener('click', () => {
+      if (!APP.compareGroupA) return;
+      const papers = [...APP.selectedPapers]
+        .map(id => APP.allPapers.find(p => p.arxiv_id === id))
+        .filter(Boolean);
+      showComparePanel({ papers, label: `${papers.length} selected papers` });
+    });
+
+    // ── Annotation auto-save ──────────────────────────────────────────────────
+    const annotationEl = document.getElementById('detail-annotation');
+    if (annotationEl) {
+      const _annotDebounce = _debounce((text) => {
+        if (APP.activePaper) _saveAnnotation(APP.activePaper.arxiv_id, text);
+      }, 600);
+      annotationEl.addEventListener('input', e => _annotDebounce(e.target.value));
+    }
+
     // Insights panel collapse toggle
     document.getElementById('insights-toggle')?.addEventListener('click', () => {
       const body = document.getElementById('insights-body');
@@ -692,6 +768,183 @@ const UI = (() => {
     });
   }
 
+  // ── Cluster Summary Panel ─────────────────────────────────────────────────────
+
+  let _activeCluster = null; // cluster currently shown in panel
+
+  function showClusterPanel(cluster) {
+    _activeCluster = cluster;
+    const papers = APP.allPapers.filter(p => p.cluster_id === cluster.id);
+
+    // Header
+    document.getElementById('cluster-panel-name').textContent = cluster.label;
+    document.getElementById('cluster-panel-meta').textContent =
+      `${papers.length} paper${papers.length !== 1 ? 's' : ''} · Cluster ${cluster.id}`;
+
+    // Keywords
+    const kws = _extractKeywords(papers, 16);
+    const kwEl = document.getElementById('cluster-keywords');
+    kwEl.innerHTML = kws.map(w =>
+      `<span class="keyword-pill">${_escape(w)}</span>`
+    ).join('');
+
+    // AI summary reset
+    const summaryEl = document.getElementById('cluster-summary-text');
+    summaryEl.textContent = 'Add your OpenAI key in Settings, then click Generate.';
+    summaryEl.className = 'cluster-summary-text';
+
+    // Top 5 most recent papers
+    const recent = [...papers]
+      .filter(p => p.published)
+      .sort((a, b) => b.published.localeCompare(a.published))
+      .slice(0, 5);
+    const listEl = document.getElementById('cluster-papers-list');
+    listEl.innerHTML = recent.map(p => `
+      <div class="cluster-paper-item" data-id="${_escape(p.arxiv_id)}">
+        <div class="cluster-paper-item__title">${_escape(p.title)}</div>
+        <div class="cluster-paper-item__meta">${_escape((p.authors || []).slice(0,2).join(', '))}${(p.authors||[]).length>2?' et al.':''} · ${p.published || ''}</div>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('.cluster-paper-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const paper = APP.allPapers.find(p => p.arxiv_id === item.dataset.id);
+        if (paper) { APP.activePaper = paper; showDetailPanel(paper); Canvas.render(); }
+      });
+    });
+
+    // Compare buttons state
+    const runBtn = document.getElementById('compare-run-btn');
+    const aLabel = document.getElementById('compare-a-label');
+    if (APP.compareGroupA) {
+      runBtn.classList.remove('hidden');
+      aLabel.classList.remove('hidden');
+      aLabel.textContent = `vs. "${APP.compareGroupA.label}"`;
+    } else {
+      runBtn.classList.add('hidden');
+      aLabel.classList.add('hidden');
+    }
+
+    // Show modal
+    document.getElementById('cluster-overlay').classList.remove('hidden');
+    document.getElementById('cluster-panel').classList.remove('hidden');
+  }
+
+  function closeClusterPanel() {
+    document.getElementById('cluster-overlay').classList.add('hidden');
+    document.getElementById('cluster-panel').classList.add('hidden');
+    _activeCluster = null;
+  }
+
+  async function _generateClusterSummary() {
+    if (!_activeCluster) return;
+    const key = Settings.getOpenAIKey();
+    if (!key) {
+      document.getElementById('cluster-summary-text').textContent =
+        'No OpenAI key found. Add it in Settings first.';
+      return;
+    }
+    const papers = APP.allPapers.filter(p => p.cluster_id === _activeCluster.id);
+    const titles = papers.map(p => p.title).slice(0, 25);
+    const summaryEl = document.getElementById('cluster-summary-text');
+    summaryEl.textContent = 'Generating…';
+    summaryEl.className = 'cluster-summary-text loading';
+
+    try {
+      const prompt =
+        'You are a research analyst. Given these arXiv paper titles from a semantic cluster, ' +
+        'write ONE concise sentence (max 30 words) describing what this research cluster is about. ' +
+        'No preamble, no bullet points.\n\n' +
+        titles.map(t => `- ${t}`).join('\n');
+
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 60, temperature: 0.3,
+        }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      summaryEl.textContent = data.choices[0].message.content.trim();
+      summaryEl.className = 'cluster-summary-text';
+    } catch (err) {
+      summaryEl.textContent = `Error: ${err.message}`;
+      summaryEl.className = 'cluster-summary-text';
+    }
+  }
+
+  // ── Group Comparison ──────────────────────────────────────────────────────────
+
+  function showComparePanel(groupB) {
+    const A = APP.compareGroupA;
+    if (!A) return;
+
+    const kwA = _extractKeywords(A.papers, 18);
+    const kwB = _extractKeywords(groupB.papers, 18);
+
+    document.getElementById('compare-a-heading').textContent = A.label;
+    document.getElementById('compare-b-heading').textContent = groupB.label;
+    document.getElementById('compare-a-count').textContent = `${A.papers.length} papers`;
+    document.getElementById('compare-b-count').textContent = `${groupB.papers.length} papers`;
+
+    const setA = new Set(kwA);
+    const setB = new Set(kwB);
+
+    const renderKws = (words, otherSet, elId) => {
+      document.getElementById(elId).innerHTML = words.map(w => {
+        const unique = !otherSet.has(w);
+        return `<span class="keyword-pill${unique ? ' keyword-pill--unique' : ''}">${_escape(w)}</span>`;
+      }).join('');
+    };
+    renderKws(kwA, setB, 'compare-keywords-a');
+    renderKws(kwB, setA, 'compare-keywords-b');
+
+    document.getElementById('compare-overlay').classList.remove('hidden');
+    document.getElementById('compare-panel').classList.remove('hidden');
+  }
+
+  function closeComparePanel() {
+    document.getElementById('compare-overlay').classList.add('hidden');
+    document.getElementById('compare-panel').classList.add('hidden');
+  }
+
+  // ── Keyword extraction (TF-weighted, stopwords filtered) ──────────────────────
+
+  function _extractKeywords(papers, topN = 15) {
+    const STOP = new Set(
+      'the a an of in for and or to with is are this that on from as by at it be was were can we our their been have has which also not its into more than through these such paper papers propose show demonstrate present based using used method approach model models results data task tasks training trained new each between two while both use one first performance existing recent state art large problem abstract introduction we propose furthermore however moreover thus therefore since although despite both where when model models network networks learn learning deep neural image images text'.split(' ')
+    );
+    const freq = {};
+    for (const p of papers) {
+      const text = `${p.title} ${p.abstract || ''}`.toLowerCase();
+      const words = text.match(/\b[a-z]{4,}\b/g) || [];
+      for (const w of words) {
+        if (!STOP.has(w)) freq[w] = (freq[w] || 0) + 1;
+      }
+    }
+    return Object.entries(freq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, topN)
+      .map(([w]) => w);
+  }
+
+  // ── Annotations (localStorage) ────────────────────────────────────────────────
+
+  function _loadAnnotation(arxivId) {
+    return localStorage.getItem(`paper-note-${arxivId}`) || '';
+  }
+
+  function _saveAnnotation(arxivId, text) {
+    if (text.trim()) {
+      localStorage.setItem(`paper-note-${arxivId}`, text);
+    } else {
+      localStorage.removeItem(`paper-note-${arxivId}`);
+    }
+  }
+
   // ── Utilities ─────────────────────────────────────────────────────────────────
 
   function _debounce(fn, delay) {
@@ -726,5 +979,9 @@ const UI = (() => {
     buildMonthTabs,
     updateInsights,
     updateSharedSyncBar,
+    showClusterPanel,
+    closeClusterPanel,
+    showComparePanel,
+    closeComparePanel,
   };
 })();

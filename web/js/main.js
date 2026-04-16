@@ -36,6 +36,9 @@ const APP = {
   lassoPoints: [],
   isDrawingLasso: false,
 
+  // Comparison groups (Set of arxiv_ids + label)
+  compareGroupA: null, // { papers: [...], label: string }
+
   // Cluster metadata (from papers.json)
   clusters: [],
 
@@ -87,6 +90,7 @@ async function init() {
     // 8. Bind UI event listeners
     UI.initEventListeners();
     Settings.init();
+    Reader.init();
 
     // 9. Build month tabs
     UI.buildMonthTabs();
@@ -188,6 +192,29 @@ document.addEventListener('keydown', e => {
       UI.toggleLassoMode();
     }
     return;
+  }
+
+  // R: toggle reading mode
+  if (e.key === 'r' || e.key === 'R') {
+    const active = document.activeElement;
+    const isTyping = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
+    if (!isTyping) {
+      if (Reader.isOpen()) {
+        Reader.close();
+      } else {
+        const papers = APP.selectedPapers.size > 0
+          ? [...APP.selectedPapers].map(id => APP.allPapers.find(p => p.arxiv_id === id)).filter(Boolean)
+          : APP.filteredPapers.slice();
+        Reader.open(papers);
+      }
+    }
+    return;
+  }
+
+  // Arrow keys: navigate reader when open
+  if (Reader.isOpen()) {
+    if (e.key === 'ArrowLeft')  { Reader.prev(); return; }
+    if (e.key === 'ArrowRight') { Reader.next(); return; }
   }
 });
 

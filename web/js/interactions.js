@@ -87,9 +87,17 @@ const Interactions = (() => {
     // Only handle left clicks that weren't a drag
     if (e.button !== 0) return;
 
-    const rect  = e.currentTarget.getBoundingClientRect();
-    const sx    = e.clientX - rect.left;
-    const sy    = e.clientY - rect.top;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const sx   = e.clientX - rect.left;
+    const sy   = e.clientY - rect.top;
+
+    // Check cluster label pill first (they sit on top of dots)
+    const cluster = Canvas.hitTestCluster(sx, sy);
+    if (cluster) {
+      UI.showClusterPanel(cluster);
+      return;
+    }
+
     const paper = Canvas.hitTest(sx, sy, 12);
 
     if (paper) {

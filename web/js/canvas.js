@@ -26,6 +26,7 @@ const Canvas = (() => {
   let width, height;
   let xScale, yScale;
   let _rafId = null;   // requestAnimationFrame handle
+  let _clusterLabelBoxes = []; // [{rx,ry,rw,rh,cluster}] screen-space hit areas
 
   // ── Initialization ────────────────────────────────────────────────────────────
   function init() {
@@ -154,9 +155,13 @@ const Canvas = (() => {
 
     // Cluster labels drawn in screen space (on top, after transform restore)
     if (!Settings || Settings.prefs.showLabels) _drawClusterLabels();
+
+    // Semantic zoom: paper titles at high zoom
+    _drawSemanticLabels();
   }
 
   function _drawClusterLabels() {
+    _clusterLabelBoxes = []; // reset hit areas each frame
     const clusters = APP.clusters;
     if (!clusters || !clusters.length || !xScale || !yScale) return;
 
@@ -179,18 +184,70 @@ const Canvas = (() => {
       const rw = tw + ph * 2;
       const rh = 20 + pv * 2;
 
+      // Store hit box for click detection
+      _clusterLabelBoxes.push({ rx, ry, rw, rh, cluster });
+
       // Pill background
       ctx.beginPath();
       _roundRect(ctx, rx, ry, rw, rh, 10);
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.90)';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.10)';
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.12)';
       ctx.lineWidth = 1;
       ctx.stroke();
 
       // Label text
       ctx.fillStyle = '#1a1d2e';
       ctx.fillText(label, sx, sy);
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Returns the cluster whose label pill contains (sx, sy), or null.
+   */
+  function hitTestCluster(sx, sy) {
+    for (const box of _clusterLabelBoxes) {
+      if (sx >= box.rx && sx <= box.rx + box.rw &&
+          sy >= box.ry && sy <= box.ry + box.rh) {
+        return box.cluster;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * At high zoom (k ≥ 3.5) draw truncated paper titles near each dot.
+   */
+  function _drawSemanticLabels() {
+    if (!APP.transform || APP.transform.k < 3.5) return;
+    if (!xScale || !yScale) return;
+
+    const papers = APP.filteredPapers;
+    const baseR  = (Settings?.prefs.pointSize ?? 3) + 2;
+    const fs     = Math.round(Math.max(9, Math.min(11, 9 * APP.transform.k / 4)));
+
+    ctx.save();
+    ctx.font = `500 ${fs}px Inter, -apple-system, sans-serif`;
+    ctx.textAlign    = 'left';
+    ctx.textBaseline = 'middle';
+
+    for (const paper of papers) {
+      const [sx, sy] = paperToScreen(paper);
+      if (sx < -20 || sx > width + 200 || sy < 0 || sy > height) continue;
+
+      const label = paper.title.length > 50 ? paper.title.slice(0, 50) + '…' : paper.title;
+      const tw = ctx.measureText(label).width;
+      const lx = sx + baseR + 4;
+      const ly = sy;
+
+      // Subtle white backing for readability
+      ctx.fillStyle = 'rgba(255,255,255,0.72)';
+      ctx.fillRect(lx - 2, ly - 7, tw + 4, 14);
+
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.80)';
+      ctx.fillText(label, lx, ly);
     }
 
     ctx.restore();
@@ -351,6 +408,7 @@ const Canvas = (() => {
     paperToScreen,
     screenToCanvas,
     getCategoryColors: () => CATEGORY_COLORS,
-    rebuildScales: _buildScales
+    rebuildScales: _buildScales,
+    hitTestCluster
   };
 })();

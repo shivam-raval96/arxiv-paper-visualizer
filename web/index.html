@@ -96,6 +96,87 @@
       </div>
     </div>
 
+    <!-- ── Cluster Summary Panel ── -->
+    <div id="cluster-overlay" class="hidden"></div>
+    <div id="cluster-panel" class="cluster-panel hidden" role="dialog" aria-modal="true" aria-label="Cluster Summary">
+      <div class="cluster-panel__header">
+        <div>
+          <div id="cluster-panel-name" class="cluster-panel__name"></div>
+          <div id="cluster-panel-meta" class="cluster-panel__meta"></div>
+        </div>
+        <button id="cluster-panel-close" class="close-btn" aria-label="Close">×</button>
+      </div>
+      <div class="cluster-panel__body">
+        <div class="cluster-section">
+          <div class="cluster-section__title">Keywords</div>
+          <div id="cluster-keywords" class="cluster-keywords"></div>
+        </div>
+        <div class="cluster-section">
+          <div class="cluster-section__title-row">
+            <span class="cluster-section__title" style="margin-bottom:0">AI Summary</span>
+            <button id="cluster-summary-btn" class="action-btn secondary small">Generate</button>
+          </div>
+          <p id="cluster-summary-text" class="cluster-summary-text">Add your OpenAI key in Settings, then click Generate.</p>
+        </div>
+        <div class="cluster-section">
+          <div class="cluster-section__title">Recent Papers</div>
+          <div id="cluster-papers-list"></div>
+        </div>
+      </div>
+      <div class="cluster-panel__footer">
+        <button id="compare-set-a-btn" class="action-btn secondary small">Set as Group A</button>
+        <span id="compare-a-label" class="compare-a-label hidden"></span>
+        <button id="compare-run-btn" class="action-btn primary small hidden">Compare with Group A →</button>
+      </div>
+    </div>
+
+    <!-- ── Group Comparison Panel ── -->
+    <div id="compare-overlay" class="hidden"></div>
+    <div id="compare-panel" class="cluster-panel hidden" role="dialog" aria-label="Comparison">
+      <div class="cluster-panel__header">
+        <div class="cluster-panel__name">Group Comparison</div>
+        <button id="compare-panel-close" class="close-btn" aria-label="Close">×</button>
+      </div>
+      <div id="compare-panel-body" class="cluster-panel__body compare-panel__body">
+        <div class="compare-col">
+          <div id="compare-a-heading" class="compare-col__heading">Group A</div>
+          <div id="compare-a-count" class="compare-col__count"></div>
+          <div id="compare-keywords-a" class="cluster-keywords"></div>
+        </div>
+        <div class="compare-divider"></div>
+        <div class="compare-col">
+          <div id="compare-b-heading" class="compare-col__heading">Group B</div>
+          <div id="compare-b-count" class="compare-col__count"></div>
+          <div id="compare-keywords-b" class="cluster-keywords"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Reading Mode Overlay ── -->
+    <div id="reader-overlay" class="reader-overlay hidden">
+      <div class="reader-header">
+        <button id="reader-prev" class="reader-nav-btn">← Prev</button>
+        <span id="reader-progress" class="reader-progress"></span>
+        <button id="reader-next" class="reader-nav-btn">Next →</button>
+        <span class="reader-hint">Arrow keys to navigate · swipe on mobile</span>
+        <button id="reader-close" class="reader-close-btn">✕ Exit (R)</button>
+      </div>
+      <div class="reader-body">
+        <div id="reader-card" class="reader-card">
+          <div id="reader-card-badge"></div>
+          <h2 id="reader-card-title" class="reader-card__title"></h2>
+          <div id="reader-card-authors" class="reader-card__authors"></div>
+          <div id="reader-card-date" class="reader-card__date"></div>
+          <hr class="reader-card__hr" />
+          <p id="reader-card-abstract" class="reader-card__abstract"></p>
+          <div class="reader-card__actions">
+            <button id="reader-save-btn" class="action-btn primary small">Save Paper</button>
+            <a id="reader-arxiv-link" href="#" target="_blank" rel="noopener" class="action-btn secondary small">Open on arXiv</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── Toolbar ── -->
     <header class="app__toolbar">
       <h1 class="app__title">arXiv Paper Map</h1>
@@ -156,6 +237,12 @@
             <span id="selection-panel-count" class="sel-panel__count">0 selected</span>
             <button id="clear-selection-btn" class="sel-panel__clear" title="Clear selection">✕ Clear</button>
           </div>
+          <div class="sel-panel__actions">
+            <button id="sel-analyze-btn" class="action-btn secondary small">Analyze</button>
+            <button id="sel-set-a-btn" class="action-btn secondary small">Set Group A</button>
+            <button id="sel-compare-btn" class="action-btn primary small hidden">Compare ↔</button>
+          </div>
+          <div id="sel-keywords" class="sel-keywords hidden"></div>
           <div id="selection-list" class="sel-panel__list"></div>
         </div>
 
@@ -248,6 +335,10 @@
               <h3>Abstract</h3>
               <p id="detail-abstract"></p>
             </div>
+            <div id="detail-annotation-container">
+              <h3>My Note</h3>
+              <textarea id="detail-annotation" placeholder="Add a private note about this paper…" rows="3"></textarea>
+            </div>
             <div id="detail-actions">
               <button id="detail-save-btn" class="action-btn primary">Save Paper</button>
               <a id="detail-arxiv-link" href="#" target="_blank" rel="noopener" class="action-btn secondary">Open on arXiv</a>
@@ -304,6 +395,7 @@
   <script src="js/ui.js"></script>
   <script src="js/interactions.js"></script>
   <script src="js/settings.js"></script>
+  <script src="js/reader.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
