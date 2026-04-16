@@ -176,7 +176,7 @@ html, body {
   min-width: 0;
   position: relative;
   overflow: hidden;
-  background: var(--bg-deep);
+  background: #FAF8F5;
 }
 
 /* Right panel */
@@ -438,7 +438,7 @@ a:hover {
   position: relative;
   flex: 1;
   overflow: hidden;
-  background: var(--bg-deep);
+  background: #FAF8F5;
 }
 
 #main-canvas {
@@ -785,7 +785,7 @@ a:hover {
 #loading-overlay {
   position: absolute;
   inset: 0;
-  background: var(--bg-deep);
+  background: #FAF8F5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1643,26 +1643,7 @@ html.dark-mode #insights-panel {
   color: var(--accent-red);
 }
 
-/* ===========================
-   Dark Mode Override (system preference)
-   =========================== */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-deep:      #080A0F;
-    --bg-primary:   #0F1117;
-    --bg-secondary: #161922;
-    --bg-card:      #1C2030;
-    --bg-hover:     #232840;
-    --border:       #2A2F4A;
-    --border-light: #363D60;
-    --accent-dim:   rgba(79, 70, 229, 0.12);
-    --text-primary:   #E2E8F0;
-    --text-secondary: #8892B0;
-    --text-muted:     #4A5568;
-  }
-}
-
-/* Dark mode via JS toggle (overrides system preference) */
+/* Dark mode via JS toggle only (no auto system-preference override) */
 html.dark-mode {
   --bg-deep:      #080A0F;
   --bg-primary:   #0F1117;
