@@ -220,38 +220,124 @@ const Canvas = (() => {
   }
 
   /**
-   * At high zoom (k ≥ 3.5) draw truncated paper titles near each dot.
+   * Semantic zoom: as zoom increases, text cards fade in and gain detail.
+   *
+   * k 2.0 → 3.0  title fades in beside dot
+   * k 3.0 → 5.0  dots shrink, title fully visible
+   * k > 4.5       first author line appears
+   * k > 7.0       abstract snippet appears
    */
   function _drawSemanticLabels() {
-    if (!APP.transform || APP.transform.k < 3.5) return;
-    if (!xScale || !yScale) return;
+    const k = APP.transform?.k ?? 1;
+    if (k < 2.0 || !xScale || !yScale) return;
 
-    const papers = APP.filteredPapers;
-    const baseR  = (Settings?.prefs.pointSize ?? 3) + 2;
-    const fs     = Math.round(Math.max(9, Math.min(11, 9 * APP.transform.k / 4)));
+    // Card alpha: 0 at k=2, 1 at k=3.5
+    const alpha = Math.min(1, (k - 2.0) / 1.5);
+    if (alpha <= 0) return;
+
+    const papers       = APP.filteredPapers;
+    const basePtSize   = Settings?.prefs.pointSize ?? 3;
+    const dotScale     = k > 3 ? Math.max(0.15, 1 - (k - 3) / 4) : 1;
+    const scaledR      = basePtSize * dotScale; // matches _drawPoints
+    const showAuthors  = k > 4.5;
+    const showAbstract = k > 7.0;
+
+    const TITLE_FS  = 11;
+    const SMALL_FS  = 9;
+    const LINE_H    = 13;
 
     ctx.save();
-    ctx.font = `500 ${fs}px Inter, -apple-system, sans-serif`;
     ctx.textAlign    = 'left';
-    ctx.textBaseline = 'middle';
+    ctx.textBaseline = 'top';
 
     for (const paper of papers) {
       const [sx, sy] = paperToScreen(paper);
-      if (sx < -20 || sx > width + 200 || sy < 0 || sy > height) continue;
+      // Generous off-screen cull (card can be wide)
+      if (sx < -320 || sx > width + 20 || sy < -80 || sy > height + 20) continue;
 
-      const label = paper.title.length > 50 ? paper.title.slice(0, 50) + '…' : paper.title;
-      const tw = ctx.measureText(label).width;
-      const lx = sx + baseR + 4;
-      const ly = sy;
+      const catColor = CATEGORY_COLORS[paper.category] || DEFAULT_COLOR;
+      const lx   = sx + scaledR + 6;
+      const maxW = Math.max(90, Math.min(260, width - lx - 10));
 
-      // Subtle white backing for readability
-      ctx.fillStyle = 'rgba(255,255,255,0.72)';
-      ctx.fillRect(lx - 2, ly - 7, tw + 4, 14);
+      // ── Title ──────────────────────────────────────────────────────────────
+      ctx.font = `600 ${TITLE_FS}px Inter, -apple-system, sans-serif`;
+      let title = paper.title;
+      if (ctx.measureText(title).width > maxW) {
+        while (title.length > 4 && ctx.measureText(title + '…').width > maxW)
+          title = title.slice(0, -1);
+        title = title.trimEnd() + '…';
+      }
+      const titleW = ctx.measureText(title).width;
 
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.80)';
-      ctx.fillText(label, lx, ly);
+      // ── Author line ────────────────────────────────────────────────────────
+      let authorLine = '';
+      let authorW    = 0;
+      if (showAuthors && paper.authors?.length) {
+        ctx.font = `400 ${SMALL_FS}px Inter, -apple-system, sans-serif`;
+        authorLine = (paper.authors[0] || '') +
+          (paper.authors.length > 1 ? ' et al.' : '');
+        if (ctx.measureText(authorLine).width > maxW)
+          authorLine = authorLine.slice(0, 28) + '…';
+        authorW = ctx.measureText(authorLine).width;
+      }
+
+      // ── Abstract snippet ───────────────────────────────────────────────────
+      let abstractSnip = '';
+      let abstractW    = 0;
+      if (showAbstract && paper.abstract) {
+        ctx.font = `400 ${SMALL_FS}px Inter, -apple-system, sans-serif`;
+        abstractSnip = paper.abstract.replace(/\s+/g, ' ');
+        while (abstractSnip.length > 8 && ctx.measureText(abstractSnip + '…').width > maxW)
+          abstractSnip = abstractSnip.slice(0, -1);
+        abstractSnip = abstractSnip.trimEnd() + '…';
+        abstractW = ctx.measureText(abstractSnip).width;
+      }
+
+      // ── Card geometry ──────────────────────────────────────────────────────
+      const innerW = Math.max(titleW, authorW, abstractW);
+      const boxW   = innerW + 14;
+      let   boxH   = TITLE_FS + 10;
+      if (authorLine)   boxH += LINE_H;
+      if (abstractSnip) boxH += LINE_H + 2;
+      const boxY = sy - boxH / 2;
+
+      ctx.globalAlpha = alpha;
+
+      // Card background
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.93)';
+      ctx.beginPath();
+      _roundRect(ctx, lx, boxY, boxW, boxH, 4);
+      ctx.fill();
+
+      // Left category color stripe
+      ctx.fillStyle = catColor;
+      ctx.fillRect(lx, boxY + 3, 2.5, boxH - 6);
+
+      // Title text
+      ctx.font      = `600 ${TITLE_FS}px Inter, -apple-system, sans-serif`;
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+      const textX   = lx + 8;
+      let   textY   = boxY + 4;
+      ctx.fillText(title, textX, textY);
+      textY += TITLE_FS + 2;
+
+      // Author line
+      if (authorLine) {
+        ctx.font      = `400 ${SMALL_FS}px Inter, -apple-system, sans-serif`;
+        ctx.fillStyle = 'rgba(71, 85, 105, 0.85)';
+        ctx.fillText(authorLine, textX, textY);
+        textY += LINE_H;
+      }
+
+      // Abstract snippet
+      if (abstractSnip) {
+        ctx.font      = `400 ${SMALL_FS}px Inter, -apple-system, sans-serif`;
+        ctx.fillStyle = 'rgba(100, 116, 139, 0.80)';
+        ctx.fillText(abstractSnip, textX, textY + 2);
+      }
     }
 
+    ctx.globalAlpha = 1;
     ctx.restore();
   }
 
@@ -281,10 +367,14 @@ const Canvas = (() => {
 
     const isSearchActive = APP.searchQuery.length > 0;
     const papers  = APP.filteredPapers;
-    const baseR   = (Settings?.prefs.pointSize)   ?? 3;
     const opacity = (Settings?.prefs.pointOpacity) ?? 1.0;
     const hoverId  = APP.hoveredPaper?.arxiv_id;
     const activeId = APP.activePaper?.arxiv_id;
+
+    // Semantic zoom: dots shrink as zoom increases so text cards take over
+    const k = APP.transform.k;
+    const dotScale = k > 3 ? Math.max(0.15, 1 - (k - 3) / 4) : 1;
+    const baseR = ((Settings?.prefs.pointSize) ?? 3) * dotScale;
 
     // Pass 1 — all normal points (skip hover/active so they render on top)
     for (const paper of papers) {
