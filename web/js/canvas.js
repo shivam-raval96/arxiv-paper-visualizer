@@ -371,10 +371,11 @@ const Canvas = (() => {
     const hoverId  = APP.hoveredPaper?.arxiv_id;
     const activeId = APP.activePaper?.arxiv_id;
 
-    // Semantic zoom: dots shrink as zoom increases so text cards take over
+    // Divide by k so dots stay at a constant screen-pixel size regardless of zoom.
+    // Semantic zoom: additionally shrink dots (k > 3) so text cards take over visually.
     const k = APP.transform.k;
     const dotScale = k > 3 ? Math.max(0.15, 1 - (k - 3) / 4) : 1;
-    const baseR = ((Settings?.prefs.pointSize) ?? 3) * dotScale;
+    const baseR = ((Settings?.prefs.pointSize) ?? 3) * dotScale / k;
 
     // Pass 1 — all normal points (skip hover/active so they render on top)
     for (const paper of papers) {
@@ -400,6 +401,7 @@ const Canvas = (() => {
   function _drawDot(paper, baseR, opacity, isSearchActive) {
     const bx = xScale(paper.embedding_2d[0]);
     const by = yScale(paper.embedding_2d[1]);
+    const k  = APP.transform.k;
 
     const isSelected = APP.selectedPapers.has(paper.arxiv_id);
     const isHovered  = APP.hoveredPaper?.arxiv_id === paper.arxiv_id;
@@ -410,9 +412,10 @@ const Canvas = (() => {
     const color = CATEGORY_COLORS[paper.category] || DEFAULT_COLOR;
     const alpha = isSearchActive && !isMatch ? 0.10 : opacity;
 
-    const radius = isActive   ? baseR + POINT_RADIUS_ACTIVE_EXTRA
-                 : isHovered  ? baseR + POINT_RADIUS_HOVER_EXTRA
-                 : isSelected ? baseR + POINT_RADIUS_SELECTED_EXTRA
+    // All extra radii divided by k so they stay constant in screen pixels
+    const radius = isActive   ? baseR + POINT_RADIUS_ACTIVE_EXTRA   / k
+                 : isHovered  ? baseR + POINT_RADIUS_HOVER_EXTRA    / k
+                 : isSelected ? baseR + POINT_RADIUS_SELECTED_EXTRA / k
                  : baseR;
 
     ctx.globalAlpha = alpha;
@@ -420,18 +423,18 @@ const Canvas = (() => {
     // Saved indicator ring (outermost)
     if (isSaved) {
       ctx.beginPath();
-      ctx.arc(bx, by, radius + 5, 0, Math.PI * 2);
+      ctx.arc(bx, by, radius + 5 / k, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(245, 166, 35, 0.7)';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.5 / k;
       ctx.stroke();
     }
 
     // Lasso-selection ring
     if (isSelected && !isActive) {
       ctx.beginPath();
-      ctx.arc(bx, by, radius + 3, 0, Math.PI * 2);
+      ctx.arc(bx, by, radius + 3 / k, 0, Math.PI * 2);
       ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.5 / k;
       ctx.stroke();
     }
 
@@ -446,16 +449,16 @@ const Canvas = (() => {
       ctx.beginPath();
       ctx.arc(bx, by, radius, 0, Math.PI * 2);
       ctx.strokeStyle = '#1a1a1a';
-      ctx.lineWidth = 2 / APP.transform.k; // stay 2px wide regardless of zoom
+      ctx.lineWidth = 2 / k;
       ctx.stroke();
     }
 
     // Hover: subtle white inner ring
     if (isHovered && !isActive) {
       ctx.beginPath();
-      ctx.arc(bx, by, radius + 1, 0, Math.PI * 2);
+      ctx.arc(bx, by, radius + 1 / k, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.5 / k;
       ctx.stroke();
     }
   }
