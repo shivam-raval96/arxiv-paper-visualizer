@@ -220,88 +220,88 @@ const Canvas = (() => {
   }
 
   /**
-   * Semantic zoom: as zoom increases, text cards fade in and gain detail.
+   * Semantic zoom: text cards fade in and gain detail as zoom increases.
    *
-   * k 2.0 → 3.0  title fades in beside dot
-   * k 3.0 → 5.0  dots shrink, title fully visible
-   * k > 4.5       first author line appears
-   * k > 7.0       abstract snippet appears
+   * k 2.0–3.5  title fades in beside dot
+   * k > 4.5    author line added
+   * k > 7.0    abstract snippet added
+   *
+   * Perf: uses char-count truncation (no measureText per paper),
+   * caps at 120 labels sorted by distance from viewport center.
    */
   function _drawSemanticLabels() {
     const k = APP.transform?.k ?? 1;
     if (k < 2.0 || !xScale || !yScale) return;
 
-    // Card alpha: 0 at k=2, 1 at k=3.5
     const alpha = Math.min(1, (k - 2.0) / 1.5);
     if (alpha <= 0) return;
 
     const papers       = APP.filteredPapers;
     const basePtSize   = Settings?.prefs.pointSize ?? 3;
     const dotScale     = k > 3 ? Math.max(0.15, 1 - (k - 3) / 4) : 1;
-    const scaledR      = basePtSize * dotScale; // matches _drawPoints
+    const scaledR      = basePtSize * dotScale;
     const showAuthors  = k > 4.5;
     const showAbstract = k > 7.0;
 
-    const TITLE_FS  = 11;
-    const SMALL_FS  = 9;
-    const LINE_H    = 13;
+    const TITLE_FS     = 11;
+    const SMALL_FS     = 9;
+    const LINE_H       = 13;
+    // Avg px per char — avoids ctx.measureText in hot loop
+    const TITLE_CPW    = 6.0;   // Inter 600 11px
+    const SMALL_CPW    = 4.8;   // Inter 400 9px
+
+    // ── Collect on-screen papers, cap at 120 nearest center ──────────────────
+    const cx = width / 2, cy = height / 2;
+    const visible = [];
+    for (const paper of papers) {
+      const [sx, sy] = paperToScreen(paper);
+      if (sx < -320 || sx > width + 20 || sy < -80 || sy > height + 20) continue;
+      visible.push({ paper, sx, sy, d2: (sx - cx) ** 2 + (sy - cy) ** 2 });
+    }
+    if (visible.length > 120) {
+      visible.sort((a, b) => a.d2 - b.d2);
+      visible.length = 120;
+    }
 
     ctx.save();
     ctx.textAlign    = 'left';
     ctx.textBaseline = 'top';
+    ctx.globalAlpha  = alpha;
 
-    for (const paper of papers) {
-      const [sx, sy] = paperToScreen(paper);
-      // Generous off-screen cull (card can be wide)
-      if (sx < -320 || sx > width + 20 || sy < -80 || sy > height + 20) continue;
-
+    for (const { paper, sx, sy } of visible) {
       const catColor = CATEGORY_COLORS[paper.category] || DEFAULT_COLOR;
       const lx   = sx + scaledR + 6;
       const maxW = Math.max(90, Math.min(260, width - lx - 10));
 
-      // ── Title ──────────────────────────────────────────────────────────────
-      ctx.font = `600 ${TITLE_FS}px Inter, -apple-system, sans-serif`;
-      let title = paper.title;
-      if (ctx.measureText(title).width > maxW) {
-        while (title.length > 4 && ctx.measureText(title + '…').width > maxW)
-          title = title.slice(0, -1);
-        title = title.trimEnd() + '…';
-      }
-      const titleW = ctx.measureText(title).width;
+      // ── Char-count truncation (no measureText) ────────────────────────────
+      const maxTitleCh = Math.floor(maxW / TITLE_CPW);
+      const title = paper.title.length > maxTitleCh
+        ? paper.title.slice(0, maxTitleCh - 1).trimEnd() + '…'
+        : paper.title;
+      const titleW = title.length * TITLE_CPW;
 
-      // ── Author line ────────────────────────────────────────────────────────
-      let authorLine = '';
-      let authorW    = 0;
+      let authorLine = '', authorW = 0;
       if (showAuthors && paper.authors?.length) {
-        ctx.font = `400 ${SMALL_FS}px Inter, -apple-system, sans-serif`;
-        authorLine = (paper.authors[0] || '') +
-          (paper.authors.length > 1 ? ' et al.' : '');
-        if (ctx.measureText(authorLine).width > maxW)
-          authorLine = authorLine.slice(0, 28) + '…';
-        authorW = ctx.measureText(authorLine).width;
+        const maxCh = Math.floor(maxW / SMALL_CPW);
+        authorLine = (paper.authors[0] || '') + (paper.authors.length > 1 ? ' et al.' : '');
+        if (authorLine.length > maxCh) authorLine = authorLine.slice(0, maxCh - 1) + '…';
+        authorW = authorLine.length * SMALL_CPW;
       }
 
-      // ── Abstract snippet ───────────────────────────────────────────────────
-      let abstractSnip = '';
-      let abstractW    = 0;
+      let abstractSnip = '', abstractW = 0;
       if (showAbstract && paper.abstract) {
-        ctx.font = `400 ${SMALL_FS}px Inter, -apple-system, sans-serif`;
+        const maxCh = Math.floor(maxW / SMALL_CPW);
         abstractSnip = paper.abstract.replace(/\s+/g, ' ');
-        while (abstractSnip.length > 8 && ctx.measureText(abstractSnip + '…').width > maxW)
-          abstractSnip = abstractSnip.slice(0, -1);
-        abstractSnip = abstractSnip.trimEnd() + '…';
-        abstractW = ctx.measureText(abstractSnip).width;
+        if (abstractSnip.length > maxCh) abstractSnip = abstractSnip.slice(0, maxCh - 1).trimEnd() + '…';
+        abstractW = abstractSnip.length * SMALL_CPW;
       }
 
       // ── Card geometry ──────────────────────────────────────────────────────
-      const innerW = Math.max(titleW, authorW, abstractW);
-      const boxW   = innerW + 14;
-      let   boxH   = TITLE_FS + 10;
+      const boxW = Math.max(titleW, authorW, abstractW) + 14;
+      let   boxH = TITLE_FS + 10;
       if (authorLine)   boxH += LINE_H;
       if (abstractSnip) boxH += LINE_H + 2;
       const boxY = sy - boxH / 2;
-
-      ctx.globalAlpha = alpha;
 
       // Card background
       ctx.fillStyle = 'rgba(255, 255, 255, 0.93)';
@@ -313,19 +313,18 @@ const Canvas = (() => {
       ctx.fillStyle = catColor;
       ctx.fillRect(lx, boxY + 3, 2.5, boxH - 6);
 
-      // Title text
+      // Title
       ctx.font      = `600 ${TITLE_FS}px Inter, -apple-system, sans-serif`;
       ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
-      const textX   = lx + 8;
-      let   textY   = boxY + 4;
-      ctx.fillText(title, textX, textY);
+      let textY     = boxY + 4;
+      ctx.fillText(title, lx + 8, textY);
       textY += TITLE_FS + 2;
 
-      // Author line
+      // Author
       if (authorLine) {
         ctx.font      = `400 ${SMALL_FS}px Inter, -apple-system, sans-serif`;
         ctx.fillStyle = 'rgba(71, 85, 105, 0.85)';
-        ctx.fillText(authorLine, textX, textY);
+        ctx.fillText(authorLine, lx + 8, textY);
         textY += LINE_H;
       }
 
@@ -333,7 +332,7 @@ const Canvas = (() => {
       if (abstractSnip) {
         ctx.font      = `400 ${SMALL_FS}px Inter, -apple-system, sans-serif`;
         ctx.fillStyle = 'rgba(100, 116, 139, 0.80)';
-        ctx.fillText(abstractSnip, textX, textY + 2);
+        ctx.fillText(abstractSnip, lx + 8, textY + 2);
       }
     }
 
