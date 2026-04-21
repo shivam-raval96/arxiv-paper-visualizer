@@ -8,13 +8,17 @@ on:
   workflow_dispatch:
     inputs:
       days:
-        description: "Days of papers to fetch"
+        description: "Days of papers to fetch (daily mode)"
         required: false
         default: "1"
       categories:
         description: "Comma-separated arXiv categories"
         required: false
         default: "cs.AI,cs.CV,cs.LG,cs.NLP,stat.ML,math.ST"
+      month:
+        description: "Rebuild full month YYYY-MM (skips daily fetch if set)"
+        required: false
+        default: ""
 
 jobs:
   update-papers:
@@ -40,7 +44,8 @@ jobs:
           pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -r backend/requirements.txt
 
-      - name: Run pipeline
+      - name: Run daily pipeline
+        if: ${{ !inputs.month }}
         working-directory: backend
         env:
           DAYS: ${{ github.event.inputs.days || '1' }}
@@ -48,29 +53,43 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           if [ -z "$OPENAI_API_KEY" ]; then
-            echo "::error::OPENAI_API_KEY secret is not set — cluster labels will be missing. Add it in repo Settings → Secrets."
+            echo "::error::OPENAI_API_KEY secret is not set"
             exit 1
           fi
           python main.py --days "$DAYS" --categories "$CATEGORIES" --output ../web/data/papers.json
 
+      - name: Rebuild current-month dataset
+        working-directory: backend
+        env:
+          MONTH: ${{ github.event.inputs.month || '' }}
+          CATEGORIES: ${{ github.event.inputs.categories || 'cs.AI,cs.CV,cs.LG,cs.NLP,stat.ML,math.ST' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::OPENAI_API_KEY secret is not set"
+            exit 1
+          fi
+          TARGET_MONTH="${MONTH:-$(date -u '+%Y-%m')}"
+          python main.py --month "$TARGET_MONTH" --categories "$CATEGORIES" \
+            --output "../web/data/papers_${TARGET_MONTH}.json"
+
       - name: Check if data changed
         id: check-changes
         run: |
-          git diff --quiet web/data/papers.json && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
+          git diff --quiet web/data/ && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push updated papers
         if: steps.check-changes.outputs.changed == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Stage papers.json, the new dated snapshot, and the updated manifest
           git add web/data/papers.json web/data/papers_*.json web/data/manifest.json
           git commit -m "chore: update papers [$(date -u '+%Y-%m-%d')]"
           git push
 
       - name: No changes — skip commit
         if: steps.check-changes.outputs.changed == 'false'
-        run: echo "papers.json unchanged, skipping commit."
+        run: echo "No data changes, skipping commit."
 
       - name: Report results
         if: always()
@@ -78,6 +97,11 @@ jobs:
           if [ -f web/data/papers.json ]; then
             COUNT=$(python3 -c "import json; d=json.load(open('web/data/papers.json')); print(len(d['papers']))")
             echo "✅ papers.json contains $COUNT papers"
-          else
-            echo "❌ papers.json not found"
+          fi
+          TARGET_MONTH="${{ github.event.inputs.month || '' }}"
+          TARGET_MONTH="${TARGET_MONTH:-$(date -u '+%Y-%m')}"
+          MONTHLY="web/data/papers_${TARGET_MONTH}.json"
+          if [ -f "$MONTHLY" ]; then
+            COUNT=$(python3 -c "import json; d=json.load(open('$MONTHLY')); print(len(d['papers']))")
+            echo "✅ $MONTHLY contains $COUNT papers"
           fi
