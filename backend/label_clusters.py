@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from sklearn.cluster import KMeans
+from sklearn.cluster import HDBSCAN, KMeans
 from openai import OpenAI
 
 logging.basicConfig(
@@ -33,13 +33,56 @@ def load_papers(path: Path) -> dict:
     return data
 
 
-def cluster(papers: list[dict], n_clusters: int) -> tuple[np.ndarray, np.ndarray]:
-    """Run k-means on embedding_2d. Returns (labels, centroids)."""
+def cluster(papers: list[dict], n_clusters: int | None = None) -> tuple[np.ndarray, np.ndarray]:
+    """Cluster papers on embedding_2d coords.
+
+    Uses HDBSCAN to auto-discover fine-grained clusters.  min_cluster_size
+    scales with corpus size so larger datasets produce more clusters.
+    Falls back to k-means if HDBSCAN yields fewer than 5 clusters.
+
+    Returns (labels, centroids) where labels are 0-indexed int32.
+    """
     coords = np.array([p["embedding_2d"] for p in papers], dtype=np.float32)
-    km = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
-    labels = km.fit_predict(coords)
-    log.info("Clustered %d papers into %d clusters", len(papers), n_clusters)
-    return labels, km.cluster_centers_
+    n = len(coords)
+
+    # Scale min_cluster_size so we get ~n/150 clusters for large corpora
+    min_size = max(10, n // 150)
+    log.info("HDBSCAN min_cluster_size=%d for %d papers", min_size, n)
+
+    hdb = HDBSCAN(min_cluster_size=min_size, min_samples=5, cluster_selection_epsilon=0.0)
+    raw = hdb.fit_predict(coords)
+
+    valid_ids = sorted(set(raw) - {-1})
+    n_found = len(valid_ids)
+    n_noise = int((raw == -1).sum())
+    log.info("HDBSCAN found %d clusters, %d noise points", n_found, n_noise)
+
+    if n_found < 5:
+        # Fallback: k-means with auto-scaled k
+        k = n_clusters or max(DEFAULT_N_CLUSTERS, min(40, n // 50))
+        log.info("Falling back to k-means with k=%d", k)
+        km = KMeans(n_clusters=k, random_state=42, n_init=10)
+        labels = km.fit_predict(coords).astype(np.int32)
+        log.info("K-means: %d clusters", k)
+        return labels, km.cluster_centers_
+
+    # Compute per-cluster centroids
+    centroids = np.array([coords[raw == cid].mean(axis=0) for cid in valid_ids])
+
+    # Remap cluster ids to 0-based contiguous integers
+    id_map = {old: new for new, old in enumerate(valid_ids)}
+    labels = np.array([id_map.get(l, -1) for l in raw], dtype=np.int32)
+
+    # Assign noise points to nearest cluster centroid
+    noise_mask = labels == -1
+    if noise_mask.any():
+        noise_coords = coords[noise_mask]
+        dists = np.linalg.norm(noise_coords[:, np.newaxis] - centroids[np.newaxis, :], axis=2)
+        labels[noise_mask] = dists.argmin(axis=1).astype(np.int32)
+        log.info("Assigned %d noise points to nearest cluster", noise_mask.sum())
+
+    log.info("Final: %d clusters for %d papers", n_found, n)
+    return labels, centroids
 
 
 def generate_labels(cluster_titles: dict[int, list[str]], client: OpenAI) -> dict[int, str]:
@@ -89,8 +132,10 @@ def main(args=None):
         log.error("Only %d papers have embedding_2d; need at least %d", len(valid), opts.n_clusters)
         sys.exit(1)
 
-    # Cluster
-    labels, centroids = cluster(valid, opts.n_clusters)
+    # Cluster (n_clusters=None means HDBSCAN auto-detect; only used for k-means fallback)
+    n_clusters_arg = opts.n_clusters if opts.n_clusters != DEFAULT_N_CLUSTERS else None
+    labels, centroids = cluster(valid, n_clusters_arg)
+    n_found = len(centroids)
 
     # Collect titles per cluster
     cluster_titles: dict[int, list[str]] = {}
@@ -114,7 +159,7 @@ def main(args=None):
             "label": label_map[cid],
             "centroid_2d": [round(float(centroids[cid][0]), 4), round(float(centroids[cid][1]), 4)],
         }
-        for cid in range(opts.n_clusters)
+        for cid in range(n_found)
     ]
 
     # Annotate papers with cluster_id

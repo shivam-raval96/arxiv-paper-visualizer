@@ -10,7 +10,7 @@ const Canvas = (() => {
     'cs.AI':   '#E15759',   // muted red
     'cs.CV':   '#4E79A7',   // steel blue
     'cs.LG':   '#59A14F',   // sage green
-    'cs.NLP':  '#F28E2B',   // warm orange
+    'cs.CL':   '#F28E2B',   // warm orange  (Computation & Language / NLP)
     'stat.ML': '#B07AA1',   // dusty purple
     'math.ST': '#76B7B2',   // teal
   };
@@ -172,26 +172,47 @@ const Canvas = (() => {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
+    const ph = 8, pv = 5;
+
+    // ── Build candidate list ─────────────────────────────────────────────────
+    const candidates = [];
     for (const cluster of clusters) {
       const [sx, sy] = _clusterToScreen(cluster.centroid_2d);
-
-      // Don't render if centroid is off-screen
       if (sx < -80 || sx > width + 80 || sy < -30 || sy > height + 30) continue;
 
-      const label = cluster.label;
-      const tw = ctx.measureText(label).width;
-      const ph = 8, pv = 5;
-      const rx = sx - tw / 2 - ph;
-      const ry = sy - 10 - pv;
-      const rw = tw + ph * 2;
-      const rh = 20 + pv * 2;
+      const tw = ctx.measureText(cluster.label).width;
+      candidates.push({
+        sx, sy,
+        rx: sx - tw / 2 - ph,
+        ry: sy - 10 - pv,
+        rw: tw + ph * 2,
+        rh: 20 + pv * 2,
+        cluster,
+        // Cluster size for priority: larger clusters drawn first, never suppressed
+        size: (APP.allPapers || []).filter(p => p.cluster_id === cluster.id).length,
+      });
+    }
 
-      // Store hit box for click detection
-      _clusterLabelBoxes.push({ rx, ry, rw, rh, cluster });
+    // Sort largest clusters first so they win overlap conflicts
+    candidates.sort((a, b) => b.size - a.size);
+
+    // ── Greedy overlap suppression ───────────────────────────────────────────
+    const MARGIN = 8; // px gap required between pills
+    const placed = [];
+    for (const c of candidates) {
+      const overlaps = placed.some(p =>
+        c.rx < p.rx + p.rw + MARGIN &&
+        c.rx + c.rw + MARGIN > p.rx &&
+        c.ry < p.ry + p.rh + MARGIN &&
+        c.ry + c.rh + MARGIN > p.ry
+      );
+      if (overlaps) continue;
+      placed.push(c);
+      _clusterLabelBoxes.push({ rx: c.rx, ry: c.ry, rw: c.rw, rh: c.rh, cluster: c.cluster });
 
       // Pill background
       ctx.beginPath();
-      _roundRect(ctx, rx, ry, rw, rh, 10);
+      _roundRect(ctx, c.rx, c.ry, c.rw, c.rh, 10);
       ctx.fillStyle = 'rgba(255, 255, 255, 0.90)';
       ctx.fill();
       ctx.strokeStyle = 'rgba(0, 0, 0, 0.12)';
@@ -200,7 +221,7 @@ const Canvas = (() => {
 
       // Label text
       ctx.fillStyle = '#1a1d2e';
-      ctx.fillText(label, sx, sy);
+      ctx.fillText(c.cluster.label, c.sx, c.sy);
     }
 
     ctx.restore();
