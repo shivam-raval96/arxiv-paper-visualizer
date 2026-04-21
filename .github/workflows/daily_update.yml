@@ -14,7 +14,7 @@ on:
       categories:
         description: "Comma-separated arXiv categories"
         required: false
-        default: "cs.AI,cs.CV,cs.LG,cs.NLP,stat.ML,math.ST"
+        default: "cs.AI,cs.CV,cs.LG,cs.CL,stat.ML,math.ST"
       month:
         description: "Rebuild full month YYYY-MM (skips daily fetch if set)"
         required: false
@@ -49,7 +49,7 @@ jobs:
         working-directory: backend
         env:
           DAYS: ${{ github.event.inputs.days || '1' }}
-          CATEGORIES: ${{ github.event.inputs.categories || 'cs.AI,cs.CV,cs.LG,cs.NLP,stat.ML,math.ST' }}
+          CATEGORIES: ${{ github.event.inputs.categories || 'cs.AI,cs.CV,cs.LG,cs.CL,stat.ML,math.ST' }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           if [ -z "$OPENAI_API_KEY" ]; then
@@ -62,7 +62,7 @@ jobs:
         working-directory: backend
         env:
           MONTH: ${{ github.event.inputs.month || '' }}
-          CATEGORIES: ${{ github.event.inputs.categories || 'cs.AI,cs.CV,cs.LG,cs.NLP,stat.ML,math.ST' }}
+          CATEGORIES: ${{ github.event.inputs.categories || 'cs.AI,cs.CV,cs.LG,cs.CL,stat.ML,math.ST' }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           if [ -z "$OPENAI_API_KEY" ]; then

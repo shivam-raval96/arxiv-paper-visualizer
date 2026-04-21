@@ -27,7 +27,7 @@ ARXIV_API = "https://export.arxiv.org/api/query"
 NS = {"atom": "http://www.w3.org/2005/Atom",
       "arxiv": "http://arxiv.org/schemas/atom"}
 
-DEFAULT_CATEGORIES = ["cs.AI", "cs.CV", "cs.LG", "cs.NLP", "stat.ML", "math.ST"]
+DEFAULT_CATEGORIES = ["cs.AI", "cs.CV", "cs.LG", "cs.CL", "stat.ML", "math.ST"]
 MAX_RESULTS_PER_REQUEST = 200
 RETRY_DELAY = 5  # seconds
 
@@ -114,11 +114,8 @@ def parse_feed(xml_bytes: bytes) -> list[dict]:
     return papers
 
 
-def fetch_papers(categories: list[str], days: int) -> list[dict]:
-    """Fetch all papers matching the given categories from the past `days` days."""
-    query = build_query(categories, days)
-    log.info("Query: %s", query)
-
+def _fetch_all_pages(query: str) -> list[dict]:
+    """Paginate through all results for a single query string."""
     all_papers = []
     start = 0
 
@@ -131,16 +128,51 @@ def fetch_papers(categories: list[str], days: int) -> list[dict]:
             break
 
         all_papers.extend(batch)
-        log.info("Fetched %d papers so far", len(all_papers))
+        log.info("  … %d papers so far (start=%d)", len(all_papers), start)
 
         if len(batch) < MAX_RESULTS_PER_REQUEST:
             break  # Last page
 
         start += MAX_RESULTS_PER_REQUEST
-        time.sleep(1)  # Be polite to arXiv
+        time.sleep(3)  # Be polite to arXiv
+
+    return all_papers
+
+
+def fetch_papers(
+    categories: list[str],
+    days: int = 1,
+    date_start: str | None = None,
+    date_end:   str | None = None,
+) -> list[dict]:
+    """Fetch papers for the given categories.
+
+    Pass *either* ``days`` (relative) *or* explicit ``date_start``/``date_end``
+    strings in YYYY-MM-DD format.
+
+    For large date ranges (> 3 days) queries are split per-category to avoid
+    hitting the arXiv API's result-set cap (~3000 per compound OR query).
+    """
+    if date_start and date_end:
+        s = datetime.strptime(date_start, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        e = datetime.strptime(date_end,   "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        date_clause = f"submittedDate:[{s.strftime('%Y%m%d')}000000 TO {e.strftime('%Y%m%d')}235959]"
+        num_days = (e - s).days + 1
+        # For multi-week ranges, query per category to avoid arXiv result caps
+        if num_days > 3:
+            all_papers = _fetch_by_category(categories, date_clause)
+        else:
+            cat_q = " OR ".join(f"cat:{c}" for c in categories)
+            query = f"({cat_q}) AND {date_clause}"
+            log.info("Query: %s", query)
+            all_papers = _fetch_all_pages(query)
+    else:
+        query = build_query(categories, days)
+        log.info("Query: %s", query)
+        all_papers = _fetch_all_pages(query)
 
     # Deduplicate by arxiv_id (keep first occurrence)
-    seen = set()
+    seen: set[str] = set()
     unique = []
     for p in all_papers:
         if p["arxiv_id"] not in seen:
@@ -149,6 +181,19 @@ def fetch_papers(categories: list[str], days: int) -> list[dict]:
 
     log.info("Total unique papers: %d", len(unique))
     return unique
+
+
+def _fetch_by_category(categories: list[str], date_clause: str) -> list[dict]:
+    """Fetch each category separately and merge — avoids API result-set caps."""
+    all_papers = []
+    for cat in categories:
+        query = f"cat:{cat} AND {date_clause}"
+        log.info("Category query: %s", query)
+        batch = _fetch_all_pages(query)
+        log.info("  → %d papers for %s", len(batch), cat)
+        all_papers.extend(batch)
+        time.sleep(3)  # polite gap between categories
+    return all_papers
 
 
 def save_output(papers: list[dict], output_path: Path) -> None:
@@ -170,10 +215,17 @@ def main(args=None):
         help="Comma-separated arXiv categories",
     )
     parser.add_argument("--output", default="data/raw_papers.json", help="Output JSON path")
+    parser.add_argument("--date-start", default=None, help="Explicit start date YYYY-MM-DD")
+    parser.add_argument("--date-end",   default=None, help="Explicit end date YYYY-MM-DD")
     opts = parser.parse_args(args)
 
     categories = [c.strip() for c in opts.categories.split(",") if c.strip()]
-    papers = fetch_papers(categories, opts.days)
+    papers = fetch_papers(
+        categories,
+        days=opts.days,
+        date_start=opts.date_start,
+        date_end=opts.date_end,
+    )
 
     if not papers:
         log.error("No papers fetched — aborting")
