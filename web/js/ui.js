@@ -190,26 +190,44 @@ const UI = (() => {
 
   // ── Tooltip ───────────────────────────────────────────────────────────────────
 
+  function _firstSentence(text) {
+    if (!text) return '';
+    const m = text.match(/^[^.!?]*[.!?]/);
+    const s = m ? m[0].trim() : text.slice(0, 180);
+    return s.length > 220 ? s.slice(0, 217) + '…' : s;
+  }
+
   function showTooltip(paper, sx, sy) {
     const tt = document.getElementById('tooltip');
-    tt.classList.remove('hidden');
-    const authors = (paper.authors || []).slice(0, 3).map(_escape).join(', ')
-                  + ((paper.authors || []).length > 3 ? ' et al.' : '');
+
+    const authors = (paper.authors || []).slice(0, 2).map(_escape).join(', ')
+                  + ((paper.authors || []).length > 2 ? ' et al.' : '');
+    const catClass = 'cat-badge-' + (paper.category || '').replace('.', '-');
+    const firstSent = _firstSentence(paper.abstract || '');
+    const tldr = paper.tldr || '';
 
     tt.innerHTML = `
-      <div class="tooltip-title">${_escape(paper.title)}</div>
-      ${authors ? `<div class="tooltip-authors">${authors}</div>` : ''}
+      <div class="tt-header">
+        <span class="${catClass} tt-cat">${_escape(paper.category || '')}</span>
+        <span class="tt-date">${paper.published || ''}</span>
+      </div>
+      <div class="tt-title">${_escape(paper.title)}</div>
+      ${authors ? `<div class="tt-authors">${authors}</div>` : ''}
+      ${firstSent ? `<div class="tt-abstract">${_escape(firstSent)}</div>` : ''}
+      ${tldr ? `<div class="tt-tldr"><span class="tt-tldr-label">TL;DR</span> ${_escape(tldr)}</div>` : ''}
     `;
+
+    tt.classList.remove('hidden');
 
     const container = document.getElementById('canvas-container');
     const cw = container.clientWidth;
     const ch = container.clientHeight;
-    const tw = tt.offsetWidth  || 280;
-    const th = tt.offsetHeight || 80;
+    const tw = tt.offsetWidth  || 340;
+    const th = tt.offsetHeight || 120;
 
-    let tx = sx + 14;
-    let ty = sy - 10;
-    if (tx + tw > cw - 8) tx = sx - tw - 14;
+    let tx = sx + 16;
+    let ty = sy - 16;
+    if (tx + tw > cw - 8) tx = sx - tw - 16;
     if (ty + th > ch - 8) ty = sy - th - 4;
     if (ty < 4) ty = 4;
 

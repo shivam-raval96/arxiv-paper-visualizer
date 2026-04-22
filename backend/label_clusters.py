@@ -13,9 +13,45 @@ import os
 import sys
 from pathlib import Path
 
+import re
+
 import numpy as np
 from sklearn.cluster import HDBSCAN, KMeans
 from openai import OpenAI
+
+# Patterns that signal a contribution/finding sentence in an abstract
+_CONTRIBUTION_RE = re.compile(
+    r'\b(we propose|we present|we introduce|we develop|we show that|we demonstrate|'
+    r'we achieve|we describe|we design|we build|we train|we evaluate|we release|'
+    r'our approach|our method|our model|our framework|our system|our algorithm|'
+    r'this paper proposes|this paper presents|this paper introduces|'
+    r'this work proposes|this work presents|in this paper,|in this work,)\b',
+    re.IGNORECASE,
+)
+_MAX_TLDR = 200   # chars
+
+
+def _extract_tldr(abstract: str) -> str:
+    """Heuristically extract the key insight/contribution sentence.
+
+    Strategy:
+    1. Find the first sentence that matches contribution keywords.
+    2. Fall back to the last sentence (often states the key result).
+    3. Truncate to _MAX_TLDR chars.
+    """
+    if not abstract:
+        return ''
+    sents = [s.strip() for s in re.split(r'(?<=[.!?])\s+', abstract.strip()) if len(s.strip()) > 15]
+    if not sents:
+        return abstract[:_MAX_TLDR]
+
+    for s in sents:
+        if _CONTRIBUTION_RE.search(s):
+            return (s[:_MAX_TLDR] + '…') if len(s) > _MAX_TLDR else s
+
+    # Fallback: last sentence
+    last = sents[-1]
+    return (last[:_MAX_TLDR] + '…') if len(last) > _MAX_TLDR else last
 
 logging.basicConfig(
     level=logging.INFO,
@@ -162,9 +198,11 @@ def main(args=None):
         for cid in range(n_found)
     ]
 
-    # Annotate papers with cluster_id
+    # Annotate papers with cluster_id and TL;DR
     for i, p in enumerate(valid):
         p["cluster_id"] = int(labels[i])
+        if "tldr" not in p:   # don't overwrite if already set
+            p["tldr"] = _extract_tldr(p.get("abstract", ""))
 
     # Write output
     data["clusters"] = clusters

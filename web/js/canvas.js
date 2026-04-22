@@ -310,11 +310,14 @@ const Canvas = (() => {
       }
 
       let abstractSnip = '', abstractW = 0;
-      if (showAbstract && paper.abstract) {
-        const maxCh = Math.floor(maxW / SMALL_CPW);
-        abstractSnip = paper.abstract.replace(/\s+/g, ' ');
-        if (abstractSnip.length > maxCh) abstractSnip = abstractSnip.slice(0, maxCh - 1).trimEnd() + '…';
-        abstractW = abstractSnip.length * SMALL_CPW;
+      if (showAbstract) {
+        // Prefer pre-computed tldr; fall back to first sentence of abstract
+        const raw = paper.tldr || _firstSentence(paper.abstract || '');
+        if (raw) {
+          const maxCh = Math.floor(maxW / SMALL_CPW);
+          abstractSnip = raw.length > maxCh ? raw.slice(0, maxCh - 1).trimEnd() + '…' : raw;
+          abstractW = abstractSnip.length * SMALL_CPW;
+        }
       }
 
       // ── Card geometry ──────────────────────────────────────────────────────
@@ -359,6 +362,14 @@ const Canvas = (() => {
 
     ctx.globalAlpha = 1;
     ctx.restore();
+  }
+
+  /** Extract first complete sentence from abstract text. */
+  function _firstSentence(text) {
+    if (!text) return '';
+    const m = text.match(/^[^.!?]*[.!?]/);
+    const s = m ? m[0].trim() : text.slice(0, 180);
+    return s.length > 220 ? s.slice(0, 217) + '…' : s;
   }
 
   function _clusterToScreen(centroid_2d) {
