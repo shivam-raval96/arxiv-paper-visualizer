@@ -27,6 +27,14 @@ const UI = (() => {
     document.getElementById('detail-abstract').textContent =
       paper.abstract || 'No abstract available.';
 
+    // Structured metadata
+    const existingMeta = document.getElementById('detail-meta-section');
+    if (existingMeta) existingMeta.remove();
+    const metaHTML = _metaSectionHTML(paper);
+    if (metaHTML) {
+      document.getElementById('detail-abstract-container').insertAdjacentHTML('afterend', metaHTML);
+    }
+
     // Annotation
     const annotationEl = document.getElementById('detail-annotation');
     if (annotationEl) annotationEl.value = _loadAnnotation(paper.arxiv_id);
@@ -202,9 +210,12 @@ const UI = (() => {
 
     const authors = (paper.authors || []).slice(0, 2).map(_escape).join(', ')
                   + ((paper.authors || []).length > 2 ? ' et al.' : '');
-    const catClass = 'cat-badge-' + (paper.category || '').replace('.', '-');
+    const catClass  = 'cat-badge-' + (paper.category || '').replace('.', '-');
     const firstSent = _firstSentence(paper.abstract || '');
-    const tldr = paper.tldr || '';
+    const tldr      = paper.tldr || '';
+
+    // Structured metadata chips (compact, inline)
+    const metaChips = _metaChipsHTML(paper);
 
     tt.innerHTML = `
       <div class="tt-header">
@@ -214,6 +225,7 @@ const UI = (() => {
       <div class="tt-title">${_escape(paper.title)}</div>
       ${authors ? `<div class="tt-authors">${authors}</div>` : ''}
       ${firstSent ? `<div class="tt-abstract">${_escape(firstSent)}</div>` : ''}
+      ${metaChips}
       ${tldr ? `<div class="tt-tldr"><span class="tt-tldr-label">TL;DR</span> ${_escape(tldr)}</div>` : ''}
     `;
 
@@ -961,6 +973,50 @@ const UI = (() => {
     } else {
       localStorage.removeItem(`paper-note-${arxivId}`);
     }
+  }
+
+  // ── Paper metadata helpers ────────────────────────────────────────────────────
+
+  /** Render compact meta rows for tooltip (only non-null fields). */
+  function _metaChipsHTML(paper) {
+    const rows = [
+      { label: 'Methods',  val: paper.methods     },
+      { label: 'Models',   val: paper.models      },
+      { label: 'Dataset',  val: paper.dataset     },
+      { label: 'Eval',     val: paper.evaluations },
+    ].filter(r => r.val);
+    if (!rows.length) return '';
+    return `<div class="tt-meta-rows">${
+      rows.map(r =>
+        `<div class="tt-meta-row"><span class="tt-meta-label">${r.label}</span><span class="tt-meta-val">${_escape(r.val)}</span></div>`
+      ).join('')
+    }</div>`;
+  }
+
+  /** Render full structured metadata section for detail panel. */
+  function _metaSectionHTML(paper) {
+    const fields = [
+      { key: 'methods',     label: 'Methods'     },
+      { key: 'models',      label: 'Models'      },
+      { key: 'dataset',     label: 'Dataset'     },
+      { key: 'baselines',   label: 'Baselines'   },
+      { key: 'evaluations', label: 'Evaluations' },
+      { key: 'insights',    label: 'Insights'    },
+      { key: 'comments',    label: 'Comments'    },
+    ].filter(f => paper[f.key]);
+
+    if (!fields.length) return '';
+
+    return `
+      <div id="detail-meta-section" class="detail-meta-section">
+        <h3>Paper Metadata</h3>
+        <dl class="detail-meta-list">
+          ${fields.map(f => `
+            <dt class="detail-meta-dt">${f.label}</dt>
+            <dd class="detail-meta-dd">${_escape(paper[f.key])}</dd>
+          `).join('')}
+        </dl>
+      </div>`;
   }
 
   // ── Utilities ─────────────────────────────────────────────────────────────────

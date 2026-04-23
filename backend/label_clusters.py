@@ -1,57 +1,26 @@
 """
-label_clusters.py — Cluster papers and generate LLM labels via OpenAI API.
+label_clusters.py — Cluster papers and generate LLM labels + structured metadata.
 
-Reads the 2D-reduced papers.json, runs k-means clustering on embedding_2d
-coordinates, calls GPT-4o-mini to generate a concise topic label per cluster,
-and writes the result back to papers.json.
+Steps:
+  1. HDBSCAN clustering on 2D embeddings (k-means fallback)
+  2. GPT-4o-mini cluster label generation
+  3. Heuristic TL;DR extraction per paper
+  4. Batched GPT-4o-mini structured metadata extraction per paper:
+       dataset, models, methods, baselines, evaluations, insights, comments
 """
 
 import argparse
 import json
 import logging
 import os
-import sys
-from pathlib import Path
-
 import re
+import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 
 import numpy as np
 from sklearn.cluster import HDBSCAN, KMeans
 from openai import OpenAI
-
-# Patterns that signal a contribution/finding sentence in an abstract
-_CONTRIBUTION_RE = re.compile(
-    r'\b(we propose|we present|we introduce|we develop|we show that|we demonstrate|'
-    r'we achieve|we describe|we design|we build|we train|we evaluate|we release|'
-    r'our approach|our method|our model|our framework|our system|our algorithm|'
-    r'this paper proposes|this paper presents|this paper introduces|'
-    r'this work proposes|this work presents|in this paper,|in this work,)\b',
-    re.IGNORECASE,
-)
-_MAX_TLDR = 200   # chars
-
-
-def _extract_tldr(abstract: str) -> str:
-    """Heuristically extract the key insight/contribution sentence.
-
-    Strategy:
-    1. Find the first sentence that matches contribution keywords.
-    2. Fall back to the last sentence (often states the key result).
-    3. Truncate to _MAX_TLDR chars.
-    """
-    if not abstract:
-        return ''
-    sents = [s.strip() for s in re.split(r'(?<=[.!?])\s+', abstract.strip()) if len(s.strip()) > 15]
-    if not sents:
-        return abstract[:_MAX_TLDR]
-
-    for s in sents:
-        if _CONTRIBUTION_RE.search(s):
-            return (s[:_MAX_TLDR] + '…') if len(s) > _MAX_TLDR else s
-
-    # Fallback: last sentence
-    last = sents[-1]
-    return (last[:_MAX_TLDR] + '…') if len(last) > _MAX_TLDR else last
 
 logging.basicConfig(
     level=logging.INFO,
@@ -61,27 +30,156 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 DEFAULT_N_CLUSTERS = 8
-TITLES_PER_CLUSTER = 20   # titles sent to GPT per cluster
+TITLES_PER_CLUSTER = 20
+METADATA_BATCH_SIZE = 5    # papers per GPT metadata request
+METADATA_WORKERS    = 8    # parallel API threads
 
+# Patterns for heuristic TL;DR extraction
+_CONTRIBUTION_RE = re.compile(
+    r'\b(we propose|we present|we introduce|we develop|we show that|we demonstrate|'
+    r'we achieve|we describe|we design|we build|we train|we evaluate|we release|'
+    r'our approach|our method|our model|our framework|our system|our algorithm|'
+    r'this paper proposes|this paper presents|this paper introduces|'
+    r'this work proposes|this work presents|in this paper,|in this work,)\b',
+    re.IGNORECASE,
+)
+_MAX_TLDR = 200
+
+
+# ── TL;DR heuristic ──────────────────────────────────────────────────────────
+
+def _extract_tldr(abstract: str) -> str:
+    """Extract the key contribution/insight sentence from abstract."""
+    if not abstract:
+        return ''
+    sents = [s.strip() for s in re.split(r'(?<=[.!?])\s+', abstract.strip()) if len(s.strip()) > 15]
+    if not sents:
+        return abstract[:_MAX_TLDR]
+    for s in sents:
+        if _CONTRIBUTION_RE.search(s):
+            return (s[:_MAX_TLDR] + '…') if len(s) > _MAX_TLDR else s
+    last = sents[-1]
+    return (last[:_MAX_TLDR] + '…') if len(last) > _MAX_TLDR else last
+
+
+# ── Structured metadata extraction ───────────────────────────────────────────
+
+_META_FIELDS = ('dataset', 'models', 'methods', 'baselines', 'evaluations', 'insights', 'comments')
+
+_META_SYSTEM = (
+    "You are a structured metadata extractor for arXiv ML/AI/stats papers. "
+    "Given paper abstracts, extract the requested fields accurately and concisely."
+)
+
+def _build_meta_prompt(batch: list[dict]) -> str:
+    papers_block = "\n\n".join(
+        f'[{i+1}] TITLE: {p.get("title", "")}\nABSTRACT: {(p.get("abstract") or "")[:600]}'
+        for i, p in enumerate(batch)
+    )
+    return (
+        "Extract structured metadata from the following arXiv paper abstracts.\n"
+        "For each paper return a JSON object with these fields:\n"
+        '  "dataset"     : datasets used or benchmarked (comma-separated string, or null)\n'
+        '  "models"      : model architectures or pretrained models (comma-separated, or null)\n'
+        '  "methods"     : key technical methods/algorithms (comma-separated)\n'
+        '  "baselines"   : baseline methods compared against (comma-separated, or null)\n'
+        '  "evaluations" : evaluation metrics or benchmarks (comma-separated, or null)\n'
+        '  "insights"    : single most novel/surprising finding — 1 specific sentence\n'
+        '  "comments"    : notable limitation, scope, or caveat (brief, or null)\n\n'
+        "Return ONLY a JSON object: {\"papers\": [<obj1>, <obj2>, ...]} "
+        f"with exactly {len(batch)} objects in order. "
+        "Use null for fields absent from the abstract. "
+        "Keep values concise (≤ 15 words per field, except insights ≤ 25 words).\n\n"
+        f"{papers_block}"
+    )
+
+
+def _extract_meta_batch(batch: list[dict], client: OpenAI) -> list[dict]:
+    """Call GPT for one batch; returns list of metadata dicts (empty dict on failure)."""
+    prompt = _build_meta_prompt(batch)
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": _META_SYSTEM},
+                {"role": "user",   "content": prompt},
+            ],
+            max_tokens=600,
+            temperature=0.1,
+            response_format={"type": "json_object"},
+        )
+        content = resp.choices[0].message.content.strip()
+        parsed  = json.loads(content)
+        results = parsed.get("papers", [])
+        if not isinstance(results, list):
+            results = []
+        # Pad if GPT returned fewer items than expected
+        while len(results) < len(batch):
+            results.append({})
+        return results[:len(batch)]
+    except Exception as e:
+        log.warning("Metadata batch failed (%d papers): %s", len(batch), e)
+        return [{} for _ in batch]
+
+
+def extract_paper_metadata(papers: list[dict], client: OpenAI) -> None:
+    """Add structured metadata fields to each paper in-place.
+
+    Papers that already have a non-None 'methods' field are skipped so that
+    re-runs don't re-charge API calls unnecessarily.
+    """
+    to_process = [p for p in papers if p.get("methods") is None]
+    if not to_process:
+        log.info("All papers already have metadata — skipping extraction")
+        return
+
+    batches = [
+        to_process[i: i + METADATA_BATCH_SIZE]
+        for i in range(0, len(to_process), METADATA_BATCH_SIZE)
+    ]
+    log.info(
+        "Extracting metadata for %d papers (%d batches, %d workers)…",
+        len(to_process), len(batches), METADATA_WORKERS,
+    )
+
+    completed = 0
+
+    def process(batch):
+        results = _extract_meta_batch(batch, client)
+        for paper, meta in zip(batch, results):
+            if isinstance(meta, dict):
+                for field in _META_FIELDS:
+                    val = meta.get(field)
+                    paper[field] = val if val else None
+            else:
+                for field in _META_FIELDS:
+                    paper[field] = None
+
+    with ThreadPoolExecutor(max_workers=METADATA_WORKERS) as pool:
+        futures = {pool.submit(process, b): b for b in batches}
+        for fut in as_completed(futures):
+            try:
+                fut.result()
+            except Exception as e:
+                log.warning("Batch error: %s", e)
+            completed += 1
+            if completed % 50 == 0 or completed == len(batches):
+                log.info("  Metadata: %d/%d batches done", completed, len(batches))
+
+    log.info("Metadata extraction complete")
+
+
+# ── Clustering ────────────────────────────────────────────────────────────────
 
 def load_papers(path: Path) -> dict:
-    data = json.loads(path.read_text())
-    return data
+    return json.loads(path.read_text())
 
 
 def cluster(papers: list[dict], n_clusters: int | None = None) -> tuple[np.ndarray, np.ndarray]:
-    """Cluster papers on embedding_2d coords.
-
-    Uses HDBSCAN to auto-discover fine-grained clusters.  min_cluster_size
-    scales with corpus size so larger datasets produce more clusters.
-    Falls back to k-means if HDBSCAN yields fewer than 5 clusters.
-
-    Returns (labels, centroids) where labels are 0-indexed int32.
-    """
+    """HDBSCAN clustering with k-means fallback. Returns (labels, centroids)."""
     coords = np.array([p["embedding_2d"] for p in papers], dtype=np.float32)
     n = len(coords)
 
-    # Scale min_cluster_size so we get ~n/150 clusters for large corpora
     min_size = max(10, n // 150)
     log.info("HDBSCAN min_cluster_size=%d for %d papers", min_size, n)
 
@@ -89,27 +187,21 @@ def cluster(papers: list[dict], n_clusters: int | None = None) -> tuple[np.ndarr
     raw = hdb.fit_predict(coords)
 
     valid_ids = sorted(set(raw) - {-1})
-    n_found = len(valid_ids)
-    n_noise = int((raw == -1).sum())
+    n_found   = len(valid_ids)
+    n_noise   = int((raw == -1).sum())
     log.info("HDBSCAN found %d clusters, %d noise points", n_found, n_noise)
 
     if n_found < 5:
-        # Fallback: k-means with auto-scaled k
         k = n_clusters or max(DEFAULT_N_CLUSTERS, min(40, n // 50))
         log.info("Falling back to k-means with k=%d", k)
         km = KMeans(n_clusters=k, random_state=42, n_init=10)
         labels = km.fit_predict(coords).astype(np.int32)
-        log.info("K-means: %d clusters", k)
         return labels, km.cluster_centers_
 
-    # Compute per-cluster centroids
     centroids = np.array([coords[raw == cid].mean(axis=0) for cid in valid_ids])
+    id_map    = {old: new for new, old in enumerate(valid_ids)}
+    labels    = np.array([id_map.get(l, -1) for l in raw], dtype=np.int32)
 
-    # Remap cluster ids to 0-based contiguous integers
-    id_map = {old: new for new, old in enumerate(valid_ids)}
-    labels = np.array([id_map.get(l, -1) for l in raw], dtype=np.int32)
-
-    # Assign noise points to nearest cluster centroid
     noise_mask = labels == -1
     if noise_mask.any():
         noise_coords = coords[noise_mask]
@@ -121,8 +213,10 @@ def cluster(papers: list[dict], n_clusters: int | None = None) -> tuple[np.ndarr
     return labels, centroids
 
 
+# ── Cluster label generation ──────────────────────────────────────────────────
+
 def generate_labels(cluster_titles: dict[int, list[str]], client: OpenAI) -> dict[int, str]:
-    """Call GPT-4o-mini once per cluster to get a 2-4 word topic label."""
+    """GPT-4o-mini: 2-4 word topic label per cluster."""
     results = {}
     for cid, titles in sorted(cluster_titles.items()):
         sample = titles[:TITLES_PER_CLUSTER]
@@ -132,7 +226,7 @@ def generate_labels(cluster_titles: dict[int, list[str]], client: OpenAI) -> dic
             "reply with ONLY a concise 2-4 word topic label. No explanation, no quotes.\n\n"
             + "\n".join(f"- {t}" for t in sample)
         )
-        log.info("Generating label for cluster %d (%d titles)...", cid, len(titles))
+        log.info("Generating label for cluster %d (%d titles)…", cid, len(titles))
         resp = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
@@ -145,70 +239,74 @@ def generate_labels(cluster_titles: dict[int, list[str]], client: OpenAI) -> dic
     return results
 
 
+# ── Main ──────────────────────────────────────────────────────────────────────
+
 def main(args=None):
     parser = argparse.ArgumentParser(description="Cluster papers and label with OpenAI")
-    parser.add_argument("--input",      default="../web/data/papers.json", help="papers.json path")
-    parser.add_argument("--output",     default=None,                      help="Output path (default: overwrite input)")
-    parser.add_argument("--n-clusters", type=int, default=DEFAULT_N_CLUSTERS, help="Number of clusters")
+    parser.add_argument("--input",      default="../web/data/papers.json")
+    parser.add_argument("--output",     default=None)
+    parser.add_argument("--n-clusters", type=int, default=DEFAULT_N_CLUSTERS)
     opts = parser.parse_args(args)
 
     input_path  = Path(opts.input)
     output_path = Path(opts.output) if opts.output else input_path
 
-    # Load
-    data = load_papers(input_path)
-    papers = data.get("papers", [])
+    data    = load_papers(input_path)
+    papers  = data.get("papers", [])
     if not papers:
-        log.error("No papers found in %s", input_path)
+        log.error("No papers in %s", input_path)
         sys.exit(1)
 
-    # Validate all papers have embedding_2d
     valid = [p for p in papers if isinstance(p.get("embedding_2d"), list)]
     if len(valid) < opts.n_clusters:
-        log.error("Only %d papers have embedding_2d; need at least %d", len(valid), opts.n_clusters)
+        log.error("Too few papers with embedding_2d (%d)", len(valid))
         sys.exit(1)
 
-    # Cluster (n_clusters=None means HDBSCAN auto-detect; only used for k-means fallback)
+    # ── Cluster ───────────────────────────────────────────────────────────────
     n_clusters_arg = opts.n_clusters if opts.n_clusters != DEFAULT_N_CLUSTERS else None
     labels, centroids = cluster(valid, n_clusters_arg)
     n_found = len(centroids)
 
-    # Collect titles per cluster
     cluster_titles: dict[int, list[str]] = {}
     for i, p in enumerate(valid):
-        cid = int(labels[i])
-        cluster_titles.setdefault(cid, []).append(p["title"])
+        cluster_titles.setdefault(int(labels[i]), []).append(p["title"])
 
-    # OpenAI labeling
+    # ── OpenAI ────────────────────────────────────────────────────────────────
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
-        log.error("OPENAI_API_KEY environment variable not set")
+        log.error("OPENAI_API_KEY not set")
         sys.exit(1)
-
     client = OpenAI(api_key=api_key)
+
+    # ── Step A: cluster labels ────────────────────────────────────────────────
+    log.info("━━━ Generating cluster labels ━━━")
     label_map = generate_labels(cluster_titles, client)
 
-    # Build cluster metadata
     clusters = [
         {
-            "id": cid,
-            "label": label_map[cid],
-            "centroid_2d": [round(float(centroids[cid][0]), 4), round(float(centroids[cid][1]), 4)],
+            "id":          cid,
+            "label":       label_map[cid],
+            "centroid_2d": [round(float(centroids[cid][0]), 4),
+                            round(float(centroids[cid][1]), 4)],
         }
         for cid in range(n_found)
     ]
 
-    # Annotate papers with cluster_id and TL;DR
+    # ── Step B: per-paper TL;DR + cluster_id ─────────────────────────────────
     for i, p in enumerate(valid):
         p["cluster_id"] = int(labels[i])
-        if "tldr" not in p:   # don't overwrite if already set
+        if not p.get("tldr"):
             p["tldr"] = _extract_tldr(p.get("abstract", ""))
 
-    # Write output
+    # ── Step C: structured metadata (batched GPT) ─────────────────────────────
+    log.info("━━━ Extracting structured paper metadata ━━━")
+    extract_paper_metadata(valid, client)
+
+    # ── Write ─────────────────────────────────────────────────────────────────
     data["clusters"] = clusters
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(data, indent=2, ensure_ascii=False))
-    log.info("Wrote %d clusters to %s", len(clusters), output_path)
+    log.info("Wrote %d clusters + metadata to %s", n_found, output_path)
 
 
 if __name__ == "__main__":

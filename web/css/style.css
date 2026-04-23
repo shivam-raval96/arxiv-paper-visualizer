@@ -786,6 +786,76 @@ a:hover {
   margin-right: 4px;
 }
 
+.tt-meta-rows {
+  margin-top: 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tt-meta-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+
+.tt-meta-label {
+  font-weight: 700;
+  color: var(--text-secondary);
+  min-width: 52px;
+  flex-shrink: 0;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tt-meta-val {
+  color: var(--text-primary);
+  flex: 1;
+}
+
+/* Detail panel — structured metadata */
+.detail-meta-section {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.detail-meta-section h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin: 0 0 8px 0;
+}
+
+.detail-meta-list {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+}
+
+.detail-meta-dt {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding-top: 1px;
+  white-space: nowrap;
+}
+
+.detail-meta-dd {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
 /* Loading */
 #loading-overlay {
   position: absolute;
