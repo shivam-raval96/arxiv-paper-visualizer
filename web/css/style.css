@@ -2224,3 +2224,164 @@ html.dark-mode #tooltip {
   display: flex;
   gap: 10px;
 }
+
+/* ── Selection Table Panel ────────────────────────────────────────────────── */
+
+.table-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 120;
+  background: var(--bg-primary);
+  border-top: 2px solid var(--border);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.10);
+  display: flex;
+  flex-direction: column;
+  height: 260px;
+  min-height: 40px;
+  max-height: 70vh;
+  transition: height 0.15s ease;
+}
+
+.table-panel.collapsed {
+  height: 40px;
+  overflow: hidden;
+}
+
+.table-panel__handle {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 40px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  cursor: ns-resize;
+  user-select: none;
+  background: var(--bg-secondary);
+  gap: 10px;
+}
+
+.table-panel__handle::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.table-panel__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.table-panel__controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.table-panel__body {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+/* The table itself */
+.sel-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.sel-table th,
+.sel-table td {
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  vertical-align: top;
+  white-space: nowrap;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Title column: wider, sticky */
+.sel-table th:first-child,
+.sel-table td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--bg-primary);
+  min-width: 220px;
+  max-width: 320px;
+  white-space: normal;
+  word-break: break-word;
+  font-weight: 600;
+}
+
+.sel-table th:first-child {
+  background: var(--bg-secondary);
+  z-index: 3;
+}
+
+.sel-table thead th {
+  background: var(--bg-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.sel-table tbody tr {
+  cursor: pointer;
+}
+
+.sel-table tbody tr:hover td {
+  background: rgba(79, 142, 247, 0.06);
+}
+
+.sel-table tbody tr:hover td:first-child {
+  background: rgba(79, 142, 247, 0.10);
+}
+
+.sel-table tbody tr.active-row td {
+  background: rgba(79, 142, 247, 0.12);
+}
+
+/* Long-text cells that can wrap (insights, comments, tldr) */
+.sel-table td.wrap {
+  white-space: normal;
+  max-width: 320px;
+}
+
+/* Null / empty cells */
+.sel-table td.null-cell {
+  color: var(--text-secondary);
+  opacity: 0.4;
+}
+
+/* Dark mode overrides */
+html.dark-mode .sel-table th:first-child,
+html.dark-mode .sel-table td:first-child {
+  background: var(--bg-primary);
+}
+
+html.dark-mode .sel-table thead th {
+  background: var(--bg-secondary);
+}
+
+html.dark-mode .sel-table thead th:first-child {
+  background: var(--bg-secondary);
+}

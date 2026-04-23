@@ -104,6 +104,7 @@ const Lasso = (() => {
     Canvas.render();
     UI.updateSelectionInfo();
     UI.updateSelectionPanel();
+    UI.updateSelectionTable();
   }
 
   /**

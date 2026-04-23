@@ -89,6 +89,7 @@ async function init() {
 
     // 8. Bind UI event listeners
     UI.initEventListeners();
+    UI.initTablePanel();
     Settings.init();
     Reader.init();
 
@@ -161,6 +162,7 @@ async function switchMonth(key) {
     Canvas.rebuildScales();
     applyFiltersAndRender();
     UI.updateInsights();
+    UI.updateSelectionTable();
     UI.closeDetailPanel();
     UI.buildMonthTabs(); // re-render to update active state
   } catch (err) {

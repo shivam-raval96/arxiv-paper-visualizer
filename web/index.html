@@ -383,6 +383,24 @@
       </aside>
     </div>
 
+    <!-- ── Selection Table Panel ── -->
+    <div id="table-panel" class="table-panel hidden">
+      <div class="table-panel__handle" id="table-panel-handle">
+        <span class="table-panel__title">Selected Papers &mdash; <span id="table-panel-count">0</span></span>
+        <div class="table-panel__controls">
+          <button id="table-export-btn" class="action-btn secondary small">Export CSV</button>
+          <button id="table-collapse-btn" class="icon-btn small" title="Collapse">▾</button>
+          <button id="table-close-btn" class="icon-btn small" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="table-panel__body" id="table-panel-body">
+        <table class="sel-table">
+          <thead id="sel-table-head"></thead>
+          <tbody id="sel-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- ── Footer ── -->
     <footer class="app__footer">
       <span class="app__footer-tagline">arXiv embedding explorer — browse, search, and save papers by embedding similarity</span>

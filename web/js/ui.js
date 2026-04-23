@@ -552,6 +552,7 @@ const UI = (() => {
       Canvas.render();
       updateSelectionInfo();
       updateSelectionPanel();
+      updateSelectionTable();
     });
 
     document.getElementById('clear-selection-btn').addEventListener('click', () => {
@@ -559,6 +560,7 @@ const UI = (() => {
       Canvas.render();
       updateSelectionInfo();
       updateSelectionPanel();
+      updateSelectionTable();
     });
 
     // Saved sidebar controls
@@ -716,6 +718,157 @@ const UI = (() => {
         document.addEventListener('mouseup', onUp);
       });
     }
+  }
+
+  // ── Selection Table Panel ─────────────────────────────────────────────────────
+
+  const TABLE_COLS = [
+    { key: 'title',       label: 'Title',       wrap: true  },
+    { key: '_authors',    label: 'Authors',     wrap: false },
+    { key: 'published',   label: 'Date',        wrap: false },
+    { key: 'category',    label: 'Category',    wrap: false },
+    { key: '_cluster',    label: 'Cluster',     wrap: false },
+    { key: 'methods',     label: 'Methods',     wrap: true  },
+    { key: 'models',      label: 'Models',      wrap: true  },
+    { key: 'dataset',     label: 'Dataset',     wrap: false },
+    { key: 'baselines',   label: 'Baselines',   wrap: true  },
+    { key: 'evaluations', label: 'Evaluations', wrap: false },
+    { key: 'insights',    label: 'Insights',    wrap: true  },
+    { key: 'comments',    label: 'Comments',    wrap: true  },
+    { key: 'tldr',        label: 'TL;DR',       wrap: true  },
+  ];
+
+  function _paperTableVal(paper, col) {
+    if (col.key === '_authors') {
+      const a = paper.authors || [];
+      return a.slice(0, 2).join(', ') + (a.length > 2 ? ' et al.' : '');
+    }
+    if (col.key === '_cluster') {
+      const c = (APP.clusters || []).find(c => c.id === paper.cluster_id);
+      return c ? c.label : (paper.cluster_id != null ? `#${paper.cluster_id}` : '');
+    }
+    return paper[col.key] || null;
+  }
+
+  function updateSelectionTable() {
+    const panel   = document.getElementById('table-panel');
+    const countEl = document.getElementById('table-panel-count');
+    const thead   = document.getElementById('sel-table-head');
+    const tbody   = document.getElementById('sel-table-body');
+    const sel     = APP.selectedPapers;
+
+    if (!sel || sel.size === 0) {
+      panel.classList.add('hidden');
+      return;
+    }
+
+    panel.classList.remove('hidden');
+    countEl.textContent = sel.size;
+
+    // Header (only once or on column change)
+    thead.innerHTML = `<tr>${
+      TABLE_COLS.map(c => `<th>${_escape(c.label)}</th>`).join('')
+    }</tr>`;
+
+    // Rows
+    const papers = [...sel]
+      .map(id => APP.allPapers.find(p => p.arxiv_id === id))
+      .filter(Boolean);
+
+    tbody.innerHTML = '';
+    for (const paper of papers) {
+      const tr = document.createElement('tr');
+      if (APP.activePaper?.arxiv_id === paper.arxiv_id) tr.classList.add('active-row');
+
+      for (const col of TABLE_COLS) {
+        const td  = document.createElement('td');
+        const val = _paperTableVal(paper, col);
+        if (col.wrap) td.classList.add('wrap');
+        if (!val) {
+          td.classList.add('null-cell');
+          td.textContent = '—';
+        } else {
+          td.textContent = val;
+          td.title = val; // full text on hover for truncated cells
+        }
+        tr.appendChild(td);
+      }
+
+      tr.addEventListener('click', () => {
+        APP.activePaper = paper;
+        showDetailPanel(paper);
+        Canvas.render();
+        tbody.querySelectorAll('tr').forEach(r => r.classList.remove('active-row'));
+        tr.classList.add('active-row');
+      });
+
+      tbody.appendChild(tr);
+    }
+  }
+
+  function _exportTableCSV() {
+    const sel = APP.selectedPapers;
+    if (!sel || sel.size === 0) return;
+
+    const papers = [...sel]
+      .map(id => APP.allPapers.find(p => p.arxiv_id === id))
+      .filter(Boolean);
+
+    const escape = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const header = TABLE_COLS.map(c => escape(c.label)).join(',');
+    const rows   = papers.map(p =>
+      TABLE_COLS.map(c => escape(_paperTableVal(p, c) ?? '')).join(',')
+    );
+
+    const csv  = [header, ...rows].join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `arxiv_selection_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function _initTablePanel() {
+    // Drag-to-resize from handle
+    const panel  = document.getElementById('table-panel');
+    const handle = document.getElementById('table-panel-handle');
+    let _startY, _startH;
+
+    handle.addEventListener('mousedown', e => {
+      if (e.target.closest('button')) return; // don't drag on button clicks
+      _startY = e.clientY;
+      _startH = panel.offsetHeight;
+      const onMove = ev => {
+        const delta = _startY - ev.clientY;
+        const newH  = Math.max(40, Math.min(window.innerHeight * 0.7, _startH + delta));
+        panel.style.height = newH + 'px';
+        panel.classList.remove('collapsed');
+      };
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+      e.preventDefault();
+    });
+
+    document.getElementById('table-collapse-btn').addEventListener('click', () => {
+      const collapsed = panel.classList.toggle('collapsed');
+      document.getElementById('table-collapse-btn').textContent = collapsed ? '▴' : '▾';
+    });
+
+    document.getElementById('table-close-btn').addEventListener('click', () => {
+      APP.selectedPapers.clear();
+      panel.classList.add('hidden');
+      Canvas.render();
+      updateSelectionInfo();
+      updateSelectionPanel();
+    });
+
+    document.getElementById('table-export-btn').addEventListener('click', _exportTableCSV);
   }
 
   // ── Month Tabs ────────────────────────────────────────────────────────────────
@@ -1039,12 +1192,14 @@ const UI = (() => {
 
   return {
     initEventListeners,
+    initTablePanel: _initTablePanel,
     showDetailPanel,
     closeDetailPanel,
     updateSavedSidebar,
     updateSavedBadge,
     updateSelectionInfo,
     updateSelectionPanel,
+    updateSelectionTable,
     showTooltip,
     hideTooltip,
     toggleLassoMode,
