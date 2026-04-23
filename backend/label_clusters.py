@@ -67,29 +67,43 @@ def _extract_tldr(abstract: str) -> str:
 _META_FIELDS = ('dataset', 'models', 'methods', 'baselines', 'evaluations', 'insights', 'comments')
 
 _META_SYSTEM = (
-    "You are a structured metadata extractor for arXiv ML/AI/stats papers. "
-    "Given paper abstracts, extract the requested fields accurately and concisely."
+    "You are a precise structured metadata extractor for arXiv ML/AI/stats papers. "
+    "Extract only what is explicitly stated in the abstract. Do not infer or hallucinate."
 )
 
 def _build_meta_prompt(batch: list[dict]) -> str:
     papers_block = "\n\n".join(
-        f'[{i+1}] TITLE: {p.get("title", "")}\nABSTRACT: {(p.get("abstract") or "")[:600]}'
+        f'[{i+1}] TITLE: {p.get("title", "")}\nABSTRACT: {(p.get("abstract") or "")[:700]}'
         for i, p in enumerate(batch)
     )
     return (
         "Extract structured metadata from the following arXiv paper abstracts.\n"
-        "For each paper return a JSON object with these fields:\n"
-        '  "dataset"     : datasets used or benchmarked (comma-separated string, or null)\n'
-        '  "models"      : model architectures or pretrained models (comma-separated, or null)\n'
-        '  "methods"     : key technical methods/algorithms (comma-separated)\n'
-        '  "baselines"   : baseline methods compared against (comma-separated, or null)\n'
-        '  "evaluations" : evaluation metrics or benchmarks (comma-separated, or null)\n'
-        '  "insights"    : single most novel/surprising finding — 1 specific sentence\n'
-        '  "comments"    : notable limitation, scope, or caveat (brief, or null)\n\n'
-        "Return ONLY a JSON object: {\"papers\": [<obj1>, <obj2>, ...]} "
-        f"with exactly {len(batch)} objects in order. "
-        "Use null for fields absent from the abstract. "
-        "Keep values concise (≤ 15 words per field, except insights ≤ 25 words).\n\n"
+        "For each paper return a JSON object with exactly these fields:\n\n"
+        '  "dataset": ALL datasets used for training, evaluation, or benchmarking. '
+        'Include every named dataset (e.g. "ImageNet, COCO, SQuAD, MMLU, GSM8K, HumanEval"). '
+        'Comma-separated. null if none mentioned.\n\n'
+        '  "models": Named models ONLY. Prioritize specific LLMs with versions '
+        '(e.g. "Llama 3.2, Qwen 2.5, GPT-4o, Mistral-7B, Gemma-2, Claude 3.5"). '
+        'If no LLMs, list other specific named architectures '
+        '(e.g. "ResNet-50, BERT-base, BiLSTM, ViT-L/14"). '
+        'Generic terms like "transformer" or "neural network" are NOT models — omit them. '
+        'null if no specific model names appear.\n\n'
+        '  "methods": Key technical methods, techniques, or algorithms central to the paper '
+        '(e.g. "LoRA, RLHF, chain-of-thought prompting, contrastive learning, '
+        'knowledge distillation, RAG, DPO"). Comma-separated.\n\n'
+        '  "baselines": Specific named methods, models, or systems explicitly compared against '
+        'as baselines or competing approaches. null if no explicit comparison.\n\n'
+        '  "evaluations": Evaluation metrics (e.g. "BLEU, F1, accuracy, perplexity, win-rate") '
+        'AND benchmark suites (e.g. "MMLU, MT-Bench, HELM, BIG-Bench") — all that appear. '
+        'null if none mentioned.\n\n'
+        '  "insights": The single most novel/surprising quantitative or qualitative finding. '
+        'Be specific (include numbers if stated). Max 30 words. '
+        'E.g. "Achieves 89.3% on MMLU, surpassing GPT-4 with 10x fewer parameters."\n\n'
+        '  "comments": Notable limitation, scope restriction, or caveat stated in the abstract. '
+        'null if none.\n\n'
+        f'Return ONLY a JSON object: {{"papers": [<obj1>, ..., <obj{len(batch)}>]}} '
+        f'with exactly {len(batch)} objects in order. '
+        'null for absent fields. Values ≤ 20 words except insights.\n\n'
         f"{papers_block}"
     )
 
@@ -104,8 +118,8 @@ def _extract_meta_batch(batch: list[dict], client: OpenAI) -> list[dict]:
                 {"role": "system", "content": _META_SYSTEM},
                 {"role": "user",   "content": prompt},
             ],
-            max_tokens=600,
-            temperature=0.1,
+            max_tokens=900,
+            temperature=0.0,
             response_format={"type": "json_object"},
         )
         content = resp.choices[0].message.content.strip()

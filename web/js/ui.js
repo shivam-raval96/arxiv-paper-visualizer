@@ -723,19 +723,19 @@ const UI = (() => {
   // ── Selection Table Panel ─────────────────────────────────────────────────────
 
   const TABLE_COLS = [
-    { key: 'title',       label: 'Title',       wrap: true  },
-    { key: '_authors',    label: 'Authors',     wrap: false },
-    { key: 'published',   label: 'Date',        wrap: false },
-    { key: 'category',    label: 'Category',    wrap: false },
-    { key: '_cluster',    label: 'Cluster',     wrap: false },
-    { key: 'methods',     label: 'Methods',     wrap: true  },
-    { key: 'models',      label: 'Models',      wrap: true  },
-    { key: 'dataset',     label: 'Dataset',     wrap: false },
-    { key: 'baselines',   label: 'Baselines',   wrap: true  },
-    { key: 'evaluations', label: 'Evaluations', wrap: false },
-    { key: 'insights',    label: 'Insights',    wrap: true  },
-    { key: 'comments',    label: 'Comments',    wrap: true  },
-    { key: 'tldr',        label: 'TL;DR',       wrap: true  },
+    { key: 'title',       label: 'Title',        wrap: true  },
+    { key: '_authors',    label: 'Authors',       wrap: false },
+    { key: 'published',   label: 'Date',          wrap: false },
+    { key: 'category',    label: 'Category',      wrap: false },
+    { key: '_cluster',    label: 'Cluster',       wrap: false },
+    { key: 'methods',     label: 'Methods',       wrap: true  },
+    { key: 'models',      label: 'Models / LLMs', wrap: true  },
+    { key: 'dataset',     label: 'Datasets',      wrap: true  },
+    { key: 'baselines',   label: 'Baselines',     wrap: true  },
+    { key: 'evaluations', label: 'Evaluations',   wrap: true  },
+    { key: 'insights',    label: 'Insights',      wrap: true  },
+    { key: 'comments',    label: 'Comments',      wrap: true  },
+    { key: 'tldr',        label: 'TL;DR',         wrap: true  },
   ];
 
   function _paperTableVal(paper, col) {
@@ -1133,10 +1133,10 @@ const UI = (() => {
   /** Render compact meta rows for tooltip (only non-null fields). */
   function _metaChipsHTML(paper) {
     const rows = [
-      { label: 'Methods',  val: paper.methods     },
-      { label: 'Models',   val: paper.models      },
-      { label: 'Dataset',  val: paper.dataset     },
-      { label: 'Eval',     val: paper.evaluations },
+      { label: 'Methods',    val: paper.methods     },
+      { label: 'LLMs/Models', val: paper.models     },
+      { label: 'Datasets',   val: paper.dataset     },
+      { label: 'Eval',       val: paper.evaluations },
     ].filter(r => r.val);
     if (!rows.length) return '';
     return `<div class="tt-meta-rows">${
