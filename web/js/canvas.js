@@ -5,16 +5,16 @@
 const Canvas = (() => {
 
   // ── Category color palette ──────────────────────────────────────────────────
-  // Tableau-inspired categorical palette — distinct, muted, colorblind-friendly
+  // Vibrant categorical palette — high saturation, maximally distinct
   const CATEGORY_COLORS = {
-    'cs.AI':   '#E15759',   // muted red
-    'cs.CV':   '#4E79A7',   // steel blue
-    'cs.LG':   '#59A14F',   // sage green
-    'cs.CL':   '#F28E2B',   // warm orange  (Computation & Language / NLP)
-    'stat.ML': '#B07AA1',   // dusty purple
-    'math.ST': '#76B7B2',   // teal
+    'cs.AI':   '#3B82F6',   // bright blue
+    'cs.CV':   '#EF4444',   // bright red
+    'cs.LG':   '#10B981',   // emerald green
+    'cs.CL':   '#F59E0B',   // amber  (Computation & Language / NLP)
+    'stat.ML': '#8B5CF6',   // violet
+    'math.ST': '#06B6D4',   // cyan
   };
-  const DEFAULT_COLOR = '#9BA3B8';   // neutral blue-grey
+  const DEFAULT_COLOR = '#94A3B8';   // slate blue-grey
 
   // Extra radii on top of Settings.prefs.pointSize
   const POINT_RADIUS_HOVER_EXTRA    = 3;   // hover: slightly enlarged
@@ -469,27 +469,30 @@ const Canvas = (() => {
       ctx.stroke();
     }
 
-    // Main dot — category color always
+    // Main dot — filled + thin black boundary
     ctx.beginPath();
     ctx.arc(bx, by, radius, 0, Math.PI * 2);
     ctx.fillStyle = color;
     ctx.fill();
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.28)';
+    ctx.lineWidth = 0.6 / k;
+    ctx.stroke();
 
-    // Active: black border
+    // Active: solid black border (replaces thin boundary)
     if (isActive) {
       ctx.beginPath();
       ctx.arc(bx, by, radius, 0, Math.PI * 2);
-      ctx.strokeStyle = '#1a1a1a';
-      ctx.lineWidth = 2 / k;
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 1.5 / k;
       ctx.stroke();
     }
 
-    // Hover: subtle white inner ring
+    // Hover: white inner ring
     if (isHovered && !isActive) {
       ctx.beginPath();
-      ctx.arc(bx, by, radius + 1 / k, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
-      ctx.lineWidth = 1.5 / k;
+      ctx.arc(bx, by, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.70)';
+      ctx.lineWidth = 1.2 / k;
       ctx.stroke();
     }
   }
