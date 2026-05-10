@@ -236,6 +236,7 @@ a:hover {
   background: var(--bg-secondary);
   border-radius: var(--radius);
   padding: 3px;
+  flex-shrink: 0;
   border: 1px solid var(--border);
 }
 
@@ -280,6 +281,7 @@ a:hover {
   gap: 6px;
   font-size: 12px;
   color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
 #date-filter label {
@@ -303,6 +305,7 @@ a:hover {
 /* Category dropdown */
 #category-filter {
   position: relative;
+  flex-shrink: 0;
 }
 
 .filter-btn {
@@ -1322,6 +1325,20 @@ a:hover {
   border-radius: var(--radius);
   padding: 3px;
   border: 1px solid var(--border);
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 40%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+#month-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+#month-tabs::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
 }
 
 .month-tab {
