@@ -14,6 +14,7 @@ const Settings = (() => {
     showLabels:   true,
     darkMode:     false,
     warmBg:       true,   // warm parchment canvas background by default
+    noOverlap:    false,  // grid-snap layout via Hungarian assignment
   };
 
   // Session-only OpenAI key (never written to storage)
@@ -65,6 +66,32 @@ const Settings = (() => {
     document.getElementById('show-labels-toggle').addEventListener('change', e => {
       prefs.showLabels = e.target.checked;
       Canvas.render();
+    });
+
+    // No overlap (grid layout via Hungarian assignment)
+    const noOverlapToggle = document.getElementById('no-overlap-toggle');
+    noOverlapToggle.addEventListener('change', async e => {
+      prefs.noOverlap = e.target.checked;
+      if (!prefs.noOverlap) {
+        Canvas.render();
+        return;
+      }
+      // Already precomputed? Instant. Otherwise wait briefly.
+      if (Gridmap.isReady(APP.allPapers)) {
+        Canvas.render();
+        return;
+      }
+      noOverlapToggle.disabled = true;
+      try {
+        await Gridmap.compute(APP.allPapers);
+        Canvas.render();
+      } catch (err) {
+        console.warn('Gridmap compute failed:', err);
+        prefs.noOverlap = false;
+        noOverlapToggle.checked = false;
+      } finally {
+        noOverlapToggle.disabled = false;
+      }
     });
 
     // Warm background

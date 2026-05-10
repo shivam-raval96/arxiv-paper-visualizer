@@ -59,6 +59,15 @@ const Data = (() => {
     APP.clusters     = json.clusters || [];
     APP.currentMonth = monthKey;
     console.log(`Loaded ${APP.allPapers.length} papers for ${entry.label}`);
+
+    // Pre-compute grid layout in background so the No-overlap toggle is instant.
+    // Fire-and-forget: errors are logged but don't block data loading.
+    if (typeof Gridmap !== 'undefined' && APP.allPapers.length) {
+      Gridmap.clearCache();
+      Gridmap.compute(APP.allPapers).catch(err => {
+        console.warn('Gridmap precompute failed:', err);
+      });
+    }
   }
 
   /**

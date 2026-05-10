@@ -88,13 +88,28 @@ const Canvas = (() => {
   // ── Coordinate helpers ────────────────────────────────────────────────────────
 
   /**
+   * Returns the active 2D coords for a paper — grid layout if "No overlap"
+   * is enabled and a grid position has been computed, else raw embedding.
+   */
+  function _paperCoords(p) {
+    return (Settings?.prefs.noOverlap && p._grid_2d) ? p._grid_2d : p.embedding_2d;
+  }
+
+  function _clusterCoords(cluster) {
+    return (Settings?.prefs.noOverlap && cluster._grid_centroid_2d)
+      ? cluster._grid_centroid_2d
+      : cluster.centroid_2d;
+  }
+
+  /**
    * Map a paper's embedding to screen coordinates applying the current zoom transform.
    * @returns {[number, number]} [screenX, screenY]
    */
   function paperToScreen(paper) {
     const t = APP.transform;
-    const bx = xScale(paper.embedding_2d[0]);
-    const by = yScale(paper.embedding_2d[1]);
+    const c = _paperCoords(paper);
+    const bx = xScale(c[0]);
+    const by = yScale(c[1]);
     return [bx * t.k + t.x, by * t.k + t.y];
   }
 
@@ -177,7 +192,7 @@ const Canvas = (() => {
     // ── Build candidate list ─────────────────────────────────────────────────
     const candidates = [];
     for (const cluster of clusters) {
-      const [sx, sy] = _clusterToScreen(cluster.centroid_2d);
+      const [sx, sy] = _clusterToScreen(_clusterCoords(cluster));
       if (sx < -80 || sx > width + 80 || sy < -30 || sy > height + 30) continue;
 
       const tw = ctx.measureText(cluster.label).width;
@@ -430,8 +445,9 @@ const Canvas = (() => {
   }
 
   function _drawDot(paper, baseR, opacity, isSearchActive) {
-    const bx = xScale(paper.embedding_2d[0]);
-    const by = yScale(paper.embedding_2d[1]);
+    const c = _paperCoords(paper);
+    const bx = xScale(c[0]);
+    const by = yScale(c[1]);
     const k  = APP.transform.k;
 
     const isSelected = APP.selectedPapers.has(paper.arxiv_id);
