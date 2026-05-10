@@ -391,6 +391,11 @@ a:hover {
   color: var(--text-primary);
 }
 
+#author-filter {
+  min-width: 0;
+  flex-shrink: 1;
+}
+
 #author-input {
   background: var(--bg-primary);
   border: 1px solid var(--border);
@@ -399,6 +404,11 @@ a:hover {
   border-radius: var(--radius-sm);
   font-size: 13px;
   width: 180px;
+  min-width: 90px;
+}
+
+#settings-btn {
+  flex-shrink: 0;
 }
 
 #author-input:focus {
