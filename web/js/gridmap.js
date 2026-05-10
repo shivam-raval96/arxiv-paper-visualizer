@@ -1,24 +1,21 @@
 /**
- * gridmap.js — No-overlap layout via BSP Grid (DGrid algorithm).
+ * gridmap.js — Hybrid BSP + local collision resolution.
  *
- * Reference: Hilasaca & Paulovich, "Overlap removal of dimensionality
- * reduction scatterplot layouts," IEEE TVCG 2023.
+ * Phase 1: recursive binary space partition (DGrid-style). Split the
+ * point set at the spatial median along its longer tight-bbox axis
+ * until each leaf has <= MIN_LEAF points. Partition boundaries follow
+ * the data distribution, so dense clusters subdivide and sparse gaps
+ * survive as partition edges.
  *
- * Two phases:
- *   1. Recursive binary space partition — split point set along its
- *      longer tight-bbox axis at the spatial median until each leaf
- *      has <= MIN_LEAF points.
- *   2. Per leaf, build a local grid (cell size = point diameter),
- *      then snap each point to its nearest available cell via an
- *      expanding-ring search starting from its original position.
- *
- * Partition boundaries follow the data, so dense clusters subdivide
- * (and expand only as much as needed) while sparse gaps survive as
- * partition edges. Avoids the rectangular artifacts of a global grid
- * and the cluster-blur of force-based collision.
+ * Phase 2: instead of snapping to a rigid grid, run a small d3
+ * force simulation INSIDE each leaf — forceCollide separates
+ * overlapping dots, forceX/forceY anchor each point to its original
+ * position. The simulation is confined to a small local neighborhood
+ * (no global pressure), so clusters keep their shape rather than
+ * inflating into a circle, and there is no axis-aligned grid to
+ * produce visible stripes.
  *
  * Stamps `paper._grid_2d` and `cluster._grid_centroid_2d`.
- * Canvas reads these when Settings.prefs.noOverlap is on.
  */
 
 const Gridmap = (() => {
@@ -26,8 +23,11 @@ const Gridmap = (() => {
   const SIM_W   = 1000;   // notional simulation canvas (px)
   const SIM_H   = 700;
   const PAD     = 40;
-  const CELL    = 10;     // px — ≈ point diameter + margin
-  const MIN_LEAF = 64;    // stop splitting at this leaf size
+  const RADIUS  = 5;      // px collision radius (≈ point radius + margin)
+  const MIN_LEAF = 32;    // stop BSP when leaf <= this many points
+  const TICKS    = 60;    // force iterations per leaf
+  const ANCHOR_K = 0.30;  // forceX/forceY strength toward original position
+  const PACK_FACTOR = 1.4;// area headroom: leaf bbox >= n * π * r² * factor
 
   let _cacheKey = '';
   let _inFlight = null;
@@ -80,65 +80,59 @@ const Gridmap = (() => {
     return out;
   }
 
-  // ── Per-leaf snap ───────────────────────────────────────────────────────────
+  // ── Per-leaf local force simulation ─────────────────────────────────────────
 
-  function _snapLeaf(leaf) {
+  function _resolveLeaf(leaf) {
     const nodes = leaf.nodes;
-    if (!nodes.length) return;
-
-    // Pad bbox so boundary points have room
-    let x0 = leaf.bbox.x0 - CELL / 2;
-    let y0 = leaf.bbox.y0 - CELL / 2;
-    let x1 = leaf.bbox.x1 + CELL / 2;
-    let y1 = leaf.bbox.y1 + CELL / 2;
-
-    let cols = Math.max(1, Math.ceil((x1 - x0) / CELL));
-    let rows = Math.max(1, Math.ceil((y1 - y0) / CELL));
-
-    // Expand grid to guarantee capacity >= n, growing the shorter axis first
-    while (cols * rows < nodes.length) {
-      const aspect = (x1 - x0) / Math.max(1e-9, (y1 - y0));
-      if (cols / Math.max(1, rows) < aspect) cols++;
-      else rows++;
+    if (nodes.length === 0) return;
+    if (nodes.length === 1) {
+      nodes[0].gx = nodes[0].px;
+      nodes[0].gy = nodes[0].py;
+      return;
     }
-    x1 = x0 + cols * CELL;
-    y1 = y0 + rows * CELL;
 
-    const occupied = new Uint8Array(cols * rows);
+    // Ensure leaf bbox has enough area for n disks at RADIUS
+    const need = nodes.length * Math.PI * RADIUS * RADIUS * PACK_FACTOR;
+    let { x0, y0, x1, y1 } = leaf.bbox;
+    let w = Math.max(1, x1 - x0);
+    let h = Math.max(1, y1 - y0);
+    const cx = (x0 + x1) / 2;
+    const cy = (y0 + y1) / 2;
+    if (w * h < need) {
+      const scale = Math.sqrt(need / (w * h));
+      w *= scale; h *= scale;
+      x0 = cx - w / 2; x1 = cx + w / 2;
+      y0 = cy - h / 2; y1 = cy + h / 2;
+    }
+    // Pad by RADIUS so points can sit fully inside without clipping
+    const px0 = x0 + RADIUS, px1 = x1 - RADIUS;
+    const py0 = y0 + RADIUS, py1 = y1 - RADIUS;
 
-    for (const n of nodes) {
-      let cx = Math.floor((n.px - x0) / CELL);
-      let cy = Math.floor((n.py - y0) / CELL);
-      if (cx < 0) cx = 0; else if (cx >= cols) cx = cols - 1;
-      if (cy < 0) cy = 0; else if (cy >= rows) cy = rows - 1;
+    // d3 simulation nodes seeded at original positions
+    const simNodes = nodes.map(n => ({
+      ref: n,
+      ax: n.px, ay: n.py,
+      x:  n.px, y:  n.py,
+    }));
 
-      let placed = false;
-      if (!occupied[cy * cols + cx]) {
-        occupied[cy * cols + cx] = 1;
-        placed = true;
-      } else {
-        // Expanding-ring search outward from (cx, cy)
-        const maxR = cols + rows;
-        ring: for (let r = 1; r <= maxR; r++) {
-          for (let dy = -r; dy <= r; dy++) {
-            for (let dx = -r; dx <= r; dx++) {
-              if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
-              const nx = cx + dx, ny = cy + dy;
-              if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) continue;
-              if (!occupied[ny * cols + nx]) {
-                occupied[ny * cols + nx] = 1;
-                cx = nx; cy = ny;
-                placed = true;
-                break ring;
-              }
-            }
-          }
-        }
-      }
-      if (!placed) continue; // shouldn't happen — capacity is guaranteed
+    const sim = d3.forceSimulation(simNodes)
+      .force('x', d3.forceX(d => d.ax).strength(ANCHOR_K))
+      .force('y', d3.forceY(d => d.ay).strength(ANCHOR_K))
+      .force('collide', d3.forceCollide(RADIUS).strength(1).iterations(2))
+      .alphaDecay(0.06)
+      .velocityDecay(0.5)
+      .stop();
 
-      n.gx = x0 + (cx + 0.5) * CELL;
-      n.gy = y0 + (cy + 0.5) * CELL;
+    for (let t = 0; t < TICKS; t++) sim.tick();
+
+    // Clamp final positions inside the (possibly expanded) leaf bbox.
+    // Keeps adjacent leaves from bleeding into each other.
+    for (const sn of simNodes) {
+      let gx = sn.x, gy = sn.y;
+      if (gx < px0) gx = px0; else if (gx > px1) gx = px1;
+      if (gy < py0) gy = py0; else if (gy > py1) gy = py1;
+      sn.ref.gx = gx;
+      sn.ref.gy = gy;
     }
   }
 
@@ -181,10 +175,10 @@ const Gridmap = (() => {
         // Phase 1: BSP
         const leaves = _bspSplit(nodes);
 
-        // Phase 2: snap per leaf, yielding to the browser between batches
+        // Phase 2: per-leaf force resolution, yielding to the browser
         for (let i = 0; i < leaves.length; i++) {
-          _snapLeaf(leaves[i]);
-          if ((i & 31) === 31) await new Promise(r => setTimeout(r, 0));
+          _resolveLeaf(leaves[i]);
+          if ((i & 15) === 15) await new Promise(r => setTimeout(r, 0));
         }
 
         // Map back to embedding coords via inverse scales
