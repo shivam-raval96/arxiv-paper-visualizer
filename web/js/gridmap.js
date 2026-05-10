@@ -1,38 +1,27 @@
 /**
- * gridmap.js — No-overlap grid layout via Hungarian assignment.
+ * gridmap.js — No-overlap layout via d3.forceCollide().
  *
- * Lazily loads munkres-js (Hungarian, O(n^3)) via dynamic ESM import.
- * For n > CHUNK_LIMIT, recursively median-splits papers into spatial
- * chunks and solves each chunk independently — keeps each Hungarian
- * call bounded while preserving locality.
+ * Pulls each paper toward its UMAP position (forceX/forceY anchored to
+ * the original embedding) while a collision radius pushes overlapping
+ * dots apart. Result mapped back to embedding-space coords so Canvas's
+ * own scales still apply.
  *
- * Stamps `paper._grid_2d` on each paper and `cluster._grid_centroid_2d`
- * on each cluster. Canvas reads these when Settings.prefs.noOverlap is on.
+ * Stamps `paper._grid_2d` and `cluster._grid_centroid_2d`.
+ * Canvas reads these when Settings.prefs.noOverlap is on.
  */
 
 const Gridmap = (() => {
 
-  const CHUNK_LIMIT = 500;
-  const MUNKRES_URL = 'https://cdn.jsdelivr.net/npm/munkres-js@1.2.2/+esm';
+  const SIM_W = 1000;     // notional canvas width for simulation (px)
+  const SIM_H = 700;      // notional canvas height
+  const PAD = 40;
+  const TICKS = 200;      // simulation steps
+  const COLLIDE_R = 7;    // px in simulation space (≈ rendered dot radius + margin)
+  const ANCHOR_STRENGTH = 0.2;
 
-  let _munkres = null;
-  let _munkresPromise = null;
   let _cacheKey = '';
   let _inFlight = null;
   let _inFlightSig = '';
-
-  function _loadMunkres() {
-    if (_munkres) return Promise.resolve(_munkres);
-    if (_munkresPromise) return _munkresPromise;
-    _munkresPromise = import(MUNKRES_URL).then(mod => {
-      _munkres = mod.default || mod.computeMunkres || mod;
-      if (typeof _munkres !== 'function') {
-        throw new Error('munkres-js loaded but no callable export found');
-      }
-      return _munkres;
-    });
-    return _munkresPromise;
-  }
 
   function clearCache() {
     _cacheKey = '';
@@ -43,81 +32,10 @@ const Gridmap = (() => {
     return papers.length + '|' + papers[0].arxiv_id + '|' + papers[papers.length - 1].arxiv_id;
   }
 
-  /**
-   * Recursively median-split until each piece <= CHUNK_LIMIT.
-   * Alternates split axis (depth even = x, odd = y).
-   */
-  function _split(papers, depth) {
-    if (papers.length <= CHUNK_LIMIT) return [papers];
-    const axis = depth % 2;
-    papers.sort((a, b) => a.embedding_2d[axis] - b.embedding_2d[axis]);
-    const mid = Math.floor(papers.length / 2);
-    return [
-      ..._split(papers.slice(0, mid), depth + 1),
-      ..._split(papers.slice(mid),    depth + 1)
-    ];
+  function isReady(papers) {
+    return _signature(papers) === _cacheKey;
   }
 
-  /**
-   * Solve one chunk: build local grid over chunk bbox, run Hungarian,
-   * stamp `_grid_2d` on each paper.
-   */
-  function _solveChunk(papers, munkres) {
-    const n = papers.length;
-    if (n === 0) return;
-
-    let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-    for (const p of papers) {
-      const x = p.embedding_2d[0], y = p.embedding_2d[1];
-      if (x < xMin) xMin = x;
-      if (x > xMax) xMax = x;
-      if (y < yMin) yMin = y;
-      if (y > yMax) yMax = y;
-    }
-    const w = (xMax - xMin) || 1;
-    const h = (yMax - yMin) || 1;
-    const aspect = w / h;
-    const cols = Math.max(1, Math.round(Math.sqrt(n * aspect)));
-    const rows = Math.ceil(n / cols);
-    const cellW = w / cols;
-    const cellH = h / rows;
-
-    // Build cells; trim to exactly n (last row may be partial)
-    const cells = new Array(n);
-    let k = 0;
-    outer: for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        if (k >= n) break outer;
-        cells[k++] = [xMin + (c + 0.5) * cellW, yMin + (r + 0.5) * cellH];
-      }
-    }
-
-    // Square cost matrix (n x n), cost = squared euclidean
-    const cost = new Array(n);
-    for (let i = 0; i < n; i++) {
-      const row = new Array(n);
-      const px = papers[i].embedding_2d[0];
-      const py = papers[i].embedding_2d[1];
-      for (let j = 0; j < n; j++) {
-        const dx = px - cells[j][0];
-        const dy = py - cells[j][1];
-        row[j] = dx * dx + dy * dy;
-      }
-      cost[i] = row;
-    }
-
-    const assignment = munkres(cost);
-    for (const pair of assignment) {
-      const r = pair[0], c = pair[1];
-      papers[r]._grid_2d = cells[c];
-    }
-  }
-
-  /**
-   * Compute grid positions for all papers. Stamps `_grid_2d` on each.
-   * Also recomputes cluster centroids in grid space.
-   * Caches by paper-set signature; safe to call repeatedly.
-   */
   function compute(papers) {
     const sig = _signature(papers);
     if (sig === _cacheKey) return Promise.resolve();
@@ -131,16 +49,49 @@ const Gridmap = (() => {
     _inFlightSig = sig;
     _inFlight = (async () => {
       try {
-        const munkres = await _loadMunkres();
-        const chunks = _split(papers.slice(), 0);
+        // Build local scales from embedding extent into a notional canvas
+        const xExtent = d3.extent(papers, p => p.embedding_2d[0]);
+        const yExtent = d3.extent(papers, p => p.embedding_2d[1]);
+        const xMargin = (xExtent[1] - xExtent[0]) * 0.05 || 1;
+        const yMargin = (yExtent[1] - yExtent[0]) * 0.05 || 1;
 
-        for (const chunk of chunks) {
-          _solveChunk(chunk, munkres);
-          // Yield to browser between chunks so UI stays responsive
+        const xScale = d3.scaleLinear()
+          .domain([xExtent[0] - xMargin, xExtent[1] + xMargin])
+          .range([PAD, SIM_W - PAD]);
+        const yScale = d3.scaleLinear()
+          .domain([yExtent[0] - yMargin, yExtent[1] + yMargin])
+          .range([SIM_H - PAD, PAD]);
+
+        // Build nodes seeded at original positions
+        const nodes = papers.map(p => ({
+          paper: p,
+          ax: xScale(p.embedding_2d[0]),
+          ay: yScale(p.embedding_2d[1]),
+          x:  xScale(p.embedding_2d[0]),
+          y:  yScale(p.embedding_2d[1]),
+        }));
+
+        const sim = d3.forceSimulation(nodes)
+          .force('x', d3.forceX(d => d.ax).strength(ANCHOR_STRENGTH))
+          .force('y', d3.forceY(d => d.ay).strength(ANCHOR_STRENGTH))
+          .force('collide', d3.forceCollide(COLLIDE_R).strength(1).iterations(2))
+          .alphaDecay(0.04)
+          .stop();
+
+        // Tick in chunks, yielding to the browser between batches
+        const BATCH = 25;
+        for (let i = 0; i < TICKS; i += BATCH) {
+          const end = Math.min(TICKS, i + BATCH);
+          for (let t = i; t < end; t++) sim.tick();
           await new Promise(r => setTimeout(r, 0));
         }
 
-        // Recompute cluster centroids in grid space
+        // Map back to embedding-space coords via inverse scales
+        for (const n of nodes) {
+          n.paper._grid_2d = [xScale.invert(n.x), yScale.invert(n.y)];
+        }
+
+        // Recompute cluster centroids in adjusted space
         if (APP.clusters && APP.clusters.length) {
           const sums = new Map();
           for (const p of papers) {
@@ -164,10 +115,6 @@ const Gridmap = (() => {
       }
     })();
     return _inFlight;
-  }
-
-  function isReady(papers) {
-    return _signature(papers) === _cacheKey;
   }
 
   return { compute, clearCache, isReady };
