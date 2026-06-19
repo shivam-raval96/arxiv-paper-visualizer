@@ -1,10 +1,10 @@
 {
   "yesterday": {
-    "key": "2026-06-17",
-    "label": "Jun 17",
-    "file": "papers_2026-06-17.json",
-    "count": 295,
-    "date": "2026-06-17",
+    "key": "2026-06-18",
+    "label": "Jun 18",
+    "file": "papers_2026-06-18.json",
+    "count": 345,
+    "date": "2026-06-18",
     "isDaily": true
   },
   "months": [
@@ -12,7 +12,7 @@
       "key": "2026-06",
       "label": "Jun 2026",
       "file": "papers_2026-06.json",
-      "count": 6979
+      "count": 7449
     },
     {
       "key": "2026-05",
